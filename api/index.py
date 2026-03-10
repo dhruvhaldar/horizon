@@ -106,8 +106,16 @@ def solve_jobshop(req: JobShopRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# Serve static files from the 'public' directory
-# Ensure this is after all other routes
-public_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "public")
+# Resolve static files path
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+public_dir = os.path.join(base_dir, "public")
+
+@app.get("/")
+async def serve_index():
+    from fastapi.responses import FileResponse
+    return FileResponse(os.path.join(public_dir, "index.html"))
+
 if os.path.exists(public_dir):
     app.mount("/", StaticFiles(directory=public_dir, html=True), name="public")
+
+
