@@ -118,13 +118,13 @@ function switchInv(type) {
     const toggle = document.getElementById('inv-toggle');
     if (type === 'eoq') {
         toggle.checked = false;
-        document.getElementById('inv-eoq-inputs').style.display = 'block';
+        document.getElementById('inv-eoq-inputs').style.display = 'flex';
         document.getElementById('inv-cont-inputs').style.display = 'none';
         document.querySelector('#inv-eoq-inputs button').onclick = solveEOQ;
     } else {
         toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
-        document.getElementById('inv-cont-inputs').style.display = 'block';
+        document.getElementById('inv-cont-inputs').style.display = 'flex';
         document.querySelector('#inv-cont-inputs button').onclick = solveContinuous;
     }
 }
