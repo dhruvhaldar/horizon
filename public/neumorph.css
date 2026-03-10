@@ -1,0 +1,158 @@
+:root {
+    --bg-color: #1e1e24;
+    --text-color: #a0aab5;
+    --highlight: #4da8da;
+    --shadow-light: rgba(255, 255, 255, 0.05);
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 2rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    min-height: 100vh;
+}
+
+h1, h2, h3 {
+    color: #cbd5e1;
+    margin-top: 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header.panel {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+/* Soft UI Panel (Extruded) */
+.panel {
+    background: var(--bg-color);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: -5px -5px 10px var(--shadow-light),
+                5px 5px 10px var(--shadow-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Input Fields & Data Containers (Pressed/Inset) */
+.inset {
+    background: var(--bg-color);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    color: var(--highlight);
+    box-shadow: inset -5px -5px 10px var(--shadow-light),
+                inset 5px 5px 10px var(--shadow-dark);
+    width: 100%;
+    box-sizing: border-box;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+.inset:focus {
+    outline: none;
+    color: #fff;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+textarea.inset {
+    resize: vertical;
+}
+
+/* Buttons (Tactile) */
+.btn {
+    background: var(--bg-color);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    color: #cbd5e1;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: -5px -5px 10px var(--shadow-light),
+                5px 5px 10px var(--shadow-dark);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    color: var(--highlight);
+}
+
+.btn:active, .btn.active {
+    box-shadow: inset -5px -5px 10px var(--shadow-light),
+                inset 5px 5px 10px var(--shadow-dark);
+    color: var(--highlight);
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+}
+
+.tabs .btn {
+    flex: 1;
+}
+
+/* Results & Visualization Areas */
+.results {
+    min-height: 60px;
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    color: #a0aab5;
+}
+
+.viz-container {
+    height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* D3.js Styling */
+.node circle {
+    fill: var(--bg-color);
+    stroke: var(--highlight);
+    stroke-width: 3px;
+    filter: drop-shadow(-3px -3px 5px var(--shadow-light)) drop-shadow(3px 3px 5px var(--shadow-dark));
+}
+
+.node text {
+    fill: #cbd5e1;
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.link {
+    fill: none;
+    stroke: #334155;
+    stroke-width: 2px;
+}
