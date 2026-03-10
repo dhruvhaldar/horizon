@@ -6,6 +6,11 @@
     --shadow-light: hsl(220, 30%, 100%);
     --shadow-dark: hsl(220, 30%, 86%);
     --btn-text: var(--shadow-light);
+    --btn-surface: hsl(22, 100%, 94%);
+    --btn-default-gradient: linear-gradient(180deg, hsl(220, 20%, 95%), hsl(220, 20%, 85%) 60%, hsl(220, 20%, 90%) 70%, hsl(220, 20%, 85%));
+    --btn-gradient: linear-gradient(180deg, hsl(42, 95%, 80%) 10%, hsl(42, 100%, 60%) 30%, hsl(22, 90%, 50%) 60%, hsl(22, 90%, 60%) 75%, hsl(22, 90%, 50%));
+    --btn-shadow-dark: hsl(22, 50%, 84%);
+    --btn-shadow-light: hsl(22, 50%, 98%);
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -106,29 +111,34 @@ textarea.inset {
     resize: vertical;
 }
 
-/* Buttons (Tactile) */
+/* Buttons (Tactile - State-Based Gradient) */
 .btn {
-    background: var(--btn-bg);
+    background: var(--btn-default-gradient);
     border: none;
     border-radius: 20px;
     padding: 1rem 2rem;
-    color: var(--btn-text);
+    color: var(--text-color);
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 10px 10px 20px var(--shadow-dark),
-                -10px -10px 20px var(--shadow-light);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 8px 8px 16px var(--shadow-dark),
+                -8px -8px 16px var(--shadow-light);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn:hover {
-    color: var(--highlight);
+    background: var(--btn-gradient);
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+    box-shadow: 12px 12px 24px var(--btn-shadow-dark),
+                -12px -12px 24px var(--btn-shadow-light);
 }
 
 .btn:active, .btn.active {
-    box-shadow: inset 10px 10px 20px var(--shadow-dark),
-                inset -10px -10px 20px var(--shadow-light);
-    color: var(--highlight);
+    box-shadow: inset 5px 5px 15px rgba(0,0,0,0.3),
+                inset -5px -5px 15px rgba(255,255,255,0.3);
+    transform: translateY(0);
 }
 
 .tabs {
