@@ -16,13 +16,36 @@ This project strictly adheres to the course learning outcomes:
 | Scheduling | Production systems | Job-shop scheduling workflows and resource allocation optimization. |
 | Validation | Validate, analyze and optimize | Monte Carlo simulation wrappers to validate the analytical expected values against variance. |
 
-## 🚀 Deployment (Vercel)
+## 🚀 Deployment
 
+### Cloud (Vercel)
 Horizon is designed to run as a serverless mathematical engine.
 
 1. Fork this repository.
 2. Deploy to Vercel (Python runtime is auto-detected).
-3. Access the Systems Dashboard at https://your-horizon.vercel.app.
+3. Access the Systems Dashboard at `https://your-horizon.vercel.app`.
+
+### Local Development
+To run Horizon on your own machine:
+
+1. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. **Start the API Server**:
+   The backend uses FastAPI. You can run it using `uvicorn`:
+   ```bash
+   uvicorn api.index:app --reload
+   ```
+3. **Serve the Frontend**:
+   Since the frontend is a static site in the `public/` directory, you can serve it with any static server (e.g., Python's `http.server`, `live-server`, or just by opening `index.html` if you adjust the API base path). 
+   
+   To serve both together during development, ensure the `uvicorn` server is running on port 8000, and you can access the API at `http://localhost:8000/api`.
+
+   *Note: For full functional parity with Vercel locally, use the [Vercel CLI](https://vercel.com/docs/cli):*
+   ```bash
+   vercel dev
+   ```
 
 ## 📊 Visualizations & Artifacts
 

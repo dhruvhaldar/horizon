@@ -39,9 +39,15 @@
             <!-- Inventory Module -->
             <section class="panel" id="inventory-module">
                 <h2>Inventory Optimization</h2>
-                <div class="tabs">
-                    <button class="btn active" onclick="switchInv('eoq')">EOQ</button>
-                    <button class="btn" onclick="switchInv('continuous')">(R, Q)</button>
+                <div class="toggle-wrapper">
+                    <span class="switch-label">EOQ</span>
+                    <label class="switch">
+                        <input type="checkbox" id="inv-toggle" class="togglesw" onchange="toggleInv()">
+                        <div class="indicator left"></div>
+                        <div class="indicator right"></div>
+                        <div class="button-knob"></div>
+                    </label>
+                    <span class="switch-label" style="margin-left: 1.5rem;">(R, Q)</span>
                 </div>
 
                 <div id="inv-eoq-inputs">

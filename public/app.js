@@ -69,14 +69,14 @@ function drawQueueGraph(gamma, p) {
         .attr("orient", "auto")
         .append("path")
         .attr("d", "M0,-5L10,0L0,5")
-        .attr("fill", "#4da8da");
+        .attr("fill", "#ff6b35");
 
     const link = svg.append("g")
         .selectAll("path")
         .data(links)
         .join("path")
         .attr("class", "link")
-        .attr("stroke", "#4da8da")
+        .attr("stroke", "#ff6b35")
         .attr("marker-end", "url(#arrow)");
 
     const node = svg.append("g")
@@ -107,22 +107,22 @@ function drawQueueGraph(gamma, p) {
 // Inventory
 let invChart = null;
 
-function switchInv(type) {
-    const tabs = document.querySelectorAll('.tabs .btn');
-    tabs.forEach(t => t.classList.remove('active'));
+function toggleInv() {
+    const isChecked = document.getElementById('inv-toggle').checked;
+    switchInv(isChecked ? 'continuous' : 'eoq');
+}
 
+function switchInv(type) {
+    const toggle = document.getElementById('inv-toggle');
     if (type === 'eoq') {
-        tabs[0].classList.add('active');
+        toggle.checked = false;
         document.getElementById('inv-eoq-inputs').style.display = 'block';
         document.getElementById('inv-cont-inputs').style.display = 'none';
-
-        // Ensure continuous inputs trigger EOQ solve
         document.querySelector('#inv-eoq-inputs button').onclick = solveEOQ;
     } else {
-        tabs[1].classList.add('active');
+        toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
         document.getElementById('inv-cont-inputs').style.display = 'block';
-
         document.querySelector('#inv-cont-inputs button').onclick = solveContinuous;
     }
 }
@@ -202,7 +202,7 @@ function drawInventoryChart(Q, R, demand) {
                 {
                     label: 'Inventory Level',
                     data: inventory,
-                    borderColor: '#4da8da',
+                    borderColor: '#ff6b35',
                     borderWidth: 2,
                     fill: false,
                     tension: 0
@@ -225,12 +225,12 @@ function drawInventoryChart(Q, R, demand) {
                 x: { type: 'linear', display: false },
                 y: {
                     beginAtZero: true,
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: '#a0aab5' }
+                    grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                    ticks: { color: '#444' }
                 }
             },
             plugins: {
-                legend: { labels: { color: '#cbd5e1' } }
+                legend: { labels: { color: '#2d3748' } }
             }
         }
     });
