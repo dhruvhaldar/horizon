@@ -25,7 +25,7 @@ h1, h2, h3 {
 h1 {
     font-size: 4rem;
     text-align: center;
-    background: linear-gradient(to bottom, hsl(220, 19%, 91%), hsl(22, 90%, 55%)), hsl(218, 21%, 66%);
+    background: linear-gradient(180deg, hsl(calc(22deg + 20deg) 95% 80%) 10%, hsl(calc(22deg + 20deg) 100% 60%) 30%, hsl(22deg 90% 50%) 60%, hsl(22deg 90% 60%) 75%, hsl(22deg 90% 50%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     padding: 0;
