@@ -28,11 +28,19 @@ Horizon is designed to run as a serverless mathematical engine.
 ### Local Development
 To run Horizon on your own machine:
 
-1. **Install Dependencies**:
+1. **Setup Virtual Environment**:
+   ```bash
+   python -m venv venv
+   # Windows:
+   .\venv\Scripts\activate
+   # macOS/Linux:
+   source venv/bin/activate
+   ```
+2. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
-2. **Start the API Server**:
+3. **Start the API Server**:
    The backend uses FastAPI. You can run it using `uvicorn`:
    ```bash
    uvicorn api.index:app --reload
