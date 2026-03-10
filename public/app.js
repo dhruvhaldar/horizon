@@ -55,8 +55,10 @@ function drawQueueGraph(gamma, p) {
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     const svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "100%");
 
     // Arrow marker
     svg.append("defs").append("marker")
@@ -230,7 +232,7 @@ function drawInventoryChart(Q, R, demand) {
                 }
             },
             plugins: {
-                legend: { labels: { color: '#2d3748' } }
+                legend: { labels: { color: 'hsl(220, 30%, 20%)' } }
             }
         }
     });
@@ -288,8 +290,10 @@ function drawRoutingGraph(nodesList, edges, path) {
         .force("center", d3.forceCenter(width / 2, height / 2));
 
     const svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "100%")
+        .style("height", "100%");
 
     const link = svg.append("g")
         .selectAll("line")

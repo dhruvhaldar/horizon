@@ -1,9 +1,9 @@
 :root {
-    --bg-color: #e0e0e0;
-    --text-color: #444444;
-    --highlight: #ff6b35; /* Using an amber/orange accent */
-    --shadow-light: #ffffff;
-    --shadow-dark: #bebebe;
+    --bg-color: hsl(220, 30%, 94%); /* More colorful blue-grey light background */
+    --text-color: hsl(220, 25%, 25%);
+    --highlight: hsl(22, 90%, 55%); /* Vibrant orange accent from the toggle slider */
+    --shadow-light: hsl(220, 30%, 100%);
+    --shadow-dark: hsl(220, 30%, 86%);
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -17,7 +17,7 @@ body {
 }
 
 h1, h2, h3 {
-    color: #2d3748;
+    color: hsl(220, 30%, 20%);
     margin-top: 0;
 }
 
@@ -128,12 +128,21 @@ textarea.inset {
 }
 
 .viz-container {
-    height: 300px;
+    width: 100%;
+    min-height: 350px;
+    height: auto;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: visible; /* Ensure tooltips or large graphs don't get clipped */
+}
+
+/* Ensure canvas and svg within viz-container scale properly */
+.viz-container canvas, 
+.viz-container svg {
+    max-width: 100%;
+    height: auto !important;
 }
 
 /* D3.js Styling */
@@ -164,7 +173,7 @@ textarea.inset {
   justify-content: center;
   padding: 1rem;
   --hue: 220deg;
-  --width: 12rem; /* Adjusted for layout */
+  --width: 10rem; /* Shortened to prevent label wrapping */
   --accent-hue: 22deg;
   --duration: 0.6s;
   --easing: cubic-bezier(1, 0, 1, 1);
@@ -269,7 +278,8 @@ textarea.inset {
 }
 
 .switch-label {
-    margin-right: 1.5rem;
+    margin-right: 1rem;
     font-weight: bold;
     color: var(--text-color);
+    white-space: nowrap;
 }

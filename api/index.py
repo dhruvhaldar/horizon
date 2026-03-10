@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
+import os
+from fastapi.staticfiles import StaticFiles
 
 from horizon.queueing import jackson_network
 from horizon.inventory import eoq, newsvendor, continuous_review
@@ -103,3 +105,9 @@ def solve_jobshop(req: JobShopRequest):
         return res
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+# Serve static files from the 'public' directory
+# Ensure this is after all other routes
+public_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "public")
+if os.path.exists(public_dir):
+    app.mount("/", StaticFiles(directory=public_dir, html=True), name="public")
