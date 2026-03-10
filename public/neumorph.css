@@ -1,9 +1,11 @@
 :root {
-    --bg-color: hsl(220, 30%, 94%); /* More colorful blue-grey light background */
+    --bg-color: hsl(220, 30%, 94%);
+    --btn-bg: hsl(220, 29%, 20%);
     --text-color: hsl(220, 25%, 25%);
-    --highlight: hsl(22, 90%, 55%); /* Vibrant orange accent from the toggle slider */
+    --highlight: hsl(22, 90%, 55%);
     --shadow-light: hsl(220, 30%, 100%);
     --shadow-dark: hsl(220, 30%, 86%);
+    --btn-text: var(--shadow-light);
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -106,11 +108,11 @@ textarea.inset {
 
 /* Buttons (Tactile) */
 .btn {
-    background: var(--bg-color);
+    background: var(--btn-bg);
     border: none;
     border-radius: 20px;
     padding: 1rem 2rem;
-    color: #444;
+    color: var(--btn-text);
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
