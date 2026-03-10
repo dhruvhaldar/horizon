@@ -302,6 +302,14 @@ textarea.inset {
     width: 100%;
 }
 
+.calc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 340px;
+    justify-content: space-between;
+}
+
 .btn {
     width: 100%;
     box-sizing: border-box;
