@@ -6,3 +6,5 @@ networkx
 pydantic
 pytest
 aiofiles
+playwright
+pytest-playwright
