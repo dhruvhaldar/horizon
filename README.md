@@ -63,14 +63,20 @@ Interactive node-link diagrams visualizing the flow of entities through a system
 
 **Figure 1: Jackson Network.** The D3.js visualization maps the routing probabilities ($P_{ij}$) between nodes. The solver calculates the bottleneck nodes by solving the traffic equations, ensuring the arrival rate $\lambda$ does not exceed the service capacity $\mu$ at any station.
 
+![Queueing Network](assets/queueing_network.png)
+
 ### 2. Stochastic Inventory Optimization
 
 Visualizing the trade-offs between holding costs, ordering costs, and stockout probabilities over the planning horizon.
 
 **Figure 2: The $(R, Q)$ Policy Saw-Tooth Plot.** This Chart.js output simulates inventory levels over time. It highlights the Reorder Point ($R$), the Order Quantity ($Q$), and the safety stock required to buffer against probabilistic lead-time demand.
 
+![Inventory Optimization](assets/inventory_eoq.png)
+
 ### 3. Route Planning & Transport Systems
 
 Graph-based visualizations for solving the Traveling Salesperson Problem (TSP) or Vehicle Routing Problem (VRP).
 
 **Figure 3: Transport Routing.** The tool calculates the most cost-efficient path through a network of delivery nodes, utilizing NetworkX heuristics to minimize total distance and travel time while respecting vehicle capacity constraints.
+
+![Transport Routing](assets/routing_tsp.png)
