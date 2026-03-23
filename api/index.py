@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Dict, Optional, Any
 import os
 from fastapi.staticfiles import StaticFiles
@@ -19,11 +19,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from pydantic import confloat, conint, conlist
+
 class JacksonRequest(BaseModel):
-    gamma: List[float]
-    p: List[List[float]]
-    mu: List[float]
-    c: Optional[List[int]] = None
+    gamma: List[confloat(ge=0)] = Field(..., max_length=100)
+    p: List[conlist(confloat(ge=0, le=1), max_length=100)] = Field(..., max_length=100)
+    mu: List[confloat(gt=0)] = Field(..., max_length=100)
+    c: Optional[List[conint(ge=1, le=100)]] = Field(None, max_length=100)
 
 class EOQRequest(BaseModel):
     demand_rate: float
