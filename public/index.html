@@ -33,18 +33,18 @@
                 <h2>Queueing Networks</h2>
                 <p class="module-def">Stochastic modeling of waiting lines and resource allocation.</p>
                 <div class="input-group">
-                    <label>External Arrivals ($\gamma$):</label>
+                    <label for="q-gamma">External Arrivals ($\gamma$):</label>
                     <span class="helper-text">Avg. arrivals from outside the system per unit time.</span>
                     <input type="text" id="q-gamma" class="inset" value="10, 5" placeholder="e.g., 10, 5" title="Comma-separated rates for each node (e.g., 10 arrivals/hr for node 1).">
                 </div>
                 <div class="input-group">
-                    <label>Service Rates ($\mu$):</label>
+                    <label for="q-mu">Service Rates ($\mu$):</label>
                     <span class="helper-text">Capacity per server at each node.</span>
                     <input type="text" id="q-mu" class="inset" value="20, 15" placeholder="e.g., 20, 15" title="Service capacity for each node. Must be > gamma.">
                 </div>
                 <div class="calc-group">
                     <div class="input-group">
-                        <label>Routing Matrix ($P$):</label>
+                        <label for="q-p">Routing Matrix ($P$):</label>
                         <span class="helper-text">Probability of moving from node $i$ to node $j$.</span>
                         <textarea id="q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5\n0, 0" title="Matrix of transition probabilities between nodes. Sum of each row should be <= 1.">0, 0.5&#10;0, 0</textarea>
                     </div>
@@ -71,18 +71,18 @@
 
                 <div id="inv-eoq-inputs">
                     <div class="input-group">
-                        <label>Demand Rate:</label>
+                        <label for="i-demand">Demand Rate:</label>
                         <span class="helper-text">Total units required per period (e.g., units/year).</span>
                         <input type="number" id="i-demand" class="inset" value="1000" title="Annual or periodic demand.">
                     </div>
                     <div class="input-group">
-                        <label>Ordering Cost:</label>
+                        <label for="i-order">Ordering Cost:</label>
                         <span class="helper-text">Flat cost incurred whenever an order is placed.</span>
                         <input type="number" id="i-order" class="inset" value="50" title="Fixed setup or procurement cost per order.">
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
-                            <label>Holding Cost:</label>
+                            <label for="i-hold">Holding Cost:</label>
                             <span class="helper-text">Cost to carry one unit in stock for one period.</span>
                             <input type="number" id="i-hold" class="inset" value="2" title="Storage, insurance, and capital opportunity cost.">
                         </div>
@@ -92,28 +92,28 @@
 
                 <div id="inv-cont-inputs" style="display: none;">
                     <div class="input-group">
-                        <label>Demand Rate:</label>
+                        <label for="ic-demand">Demand Rate:</label>
                         <span class="helper-text">Average units required per period.</span>
                         <input type="number" id="ic-demand" class="inset" value="1000" title="Deterministic demand mean.">
                     </div>
                     <div class="input-group">
-                        <label>Ordering Cost:</label>
+                        <label for="ic-order">Ordering Cost:</label>
                         <span class="helper-text">Fixed cost to initiate a new order.</span>
                         <input type="number" id="ic-order" class="inset" value="50" title="Setup cost.">
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
-                            <label>Holding Cost:</label>
+                            <label for="ic-hold">Holding Cost:</label>
                             <span class="helper-text">Periodic cost per unit stored.</span>
                             <input type="number" id="ic-hold" class="inset" value="2" title="Inventory carrying cost.">
                         </div>
                         <div class="input-group">
-                            <label>Lead Time Mean:</label>
+                            <label for="ic-lt-mean">Lead Time Mean:</label>
                             <span class="helper-text">Average wait time for delivery.</span>
                             <input type="number" id="ic-lt-mean" class="inset" value="5" title="Average duration from order to receipt.">
                         </div>
                         <div class="input-group">
-                            <label>Lead Time Std Dev:</label>
+                            <label for="ic-lt-std">Lead Time Std Dev:</label>
                             <span class="helper-text">Variation in lead time (for safety stock).</span>
                             <input type="number" id="ic-lt-std" class="inset" value="1.2" title="Uncertainty in supply duration.">
                         </div>
@@ -132,12 +132,12 @@
                 <h2>Route Planning (TSP)</h2>
                 <p class="module-def">Solving the Traveling Salesperson Problem for optimal Hamiltonian cycles.</p>
                 <div class="input-group">
-                    <label>Nodes (comma separated):</label>
+                    <label for="r-nodes">Nodes (comma separated):</label>
                     <span class="helper-text">Identifiers for locations to be visited.</span>
                     <input type="text" id="r-nodes" class="inset" value="A, B, C, D" title="List of distinct node names.">
                 </div>
                 <div class="input-group">
-                    <label>Edges (node1,node2,weight per line):</label>
+                    <label for="r-edges">Edges (node1,node2,weight per line):</label>
                     <span class="helper-text">Travel cost/distance between nodes.</span>
                     <textarea id="r-edges" class="inset" rows="5" title="Edge list format: Source, Target, Cost.">A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
