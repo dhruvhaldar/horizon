@@ -1,5 +1,4 @@
 import numpy as np
-from math import factorial
 
 def mmc_queue(arrival_rate: float, service_rate: float, c: int):
     """
@@ -13,12 +12,20 @@ def mmc_queue(arrival_rate: float, service_rate: float, c: int):
 
     rho = arrival_rate / (c * service_rate)
 
-    # Calculate P0
-    sum_p0 = sum((c * rho) ** n / factorial(n) for n in range(c))
-    p0 = 1.0 / (sum_p0 + ((c * rho) ** c / (factorial(c) * (1 - rho))))
+    # Calculate P0 and Lq iteratively to avoid large factorials and exponents
+    # O(c) time instead of O(c^2) and avoids OverflowError for large c
+    u = c * rho
+    term = 1.0
+    sum_p0 = 1.0
+    for n in range(1, c):
+        term *= u / n
+        sum_p0 += term
+
+    term_c = term * (u / c)
+    p0 = 1.0 / (sum_p0 + (term_c / (1 - rho)))
 
     # Calculate Lq
-    lq = (p0 * ((c * rho) ** c) * rho) / (factorial(c) * (1 - rho) ** 2)
+    lq = (p0 * term_c * rho) / ((1 - rho) ** 2)
 
     # Calculate Wq, W, L
     wq = lq / arrival_rate
