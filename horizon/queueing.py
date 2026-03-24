@@ -14,11 +14,22 @@ def mmc_queue(arrival_rate: float, service_rate: float, c: int):
     rho = arrival_rate / (c * service_rate)
 
     # Calculate P0
-    sum_p0 = sum((c * rho) ** n / factorial(n) for n in range(c))
-    p0 = 1.0 / (sum_p0 + ((c * rho) ** c / (factorial(c) * (1 - rho))))
+    # ⚡ Bolt: Use an iterative running product for term calculation instead of
+    # explicit factorials and exponents. This prevents OverflowError for large c
+    # and significantly improves performance from O(c^2) arithmetic to O(c).
+    r = arrival_rate / service_rate
+    sum_p0 = 0.0
+    current_term = 1.0
+
+    for n in range(c):
+        sum_p0 += current_term
+        current_term *= (r / (n + 1))
+
+    last_term = current_term
+    p0 = 1.0 / (sum_p0 + (last_term / (1 - rho)))
 
     # Calculate Lq
-    lq = (p0 * ((c * rho) ** c) * rho) / (factorial(c) * (1 - rho) ** 2)
+    lq = (p0 * last_term * rho) / ((1 - rho) ** 2)
 
     # Calculate Wq, W, L
     wq = lq / arrival_rate
