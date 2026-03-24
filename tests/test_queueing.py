@@ -31,3 +31,27 @@ def test_jackson_network():
 
     assert res['total_L'] == pytest.approx(3)
     assert res['total_W'] == pytest.approx(3 / 15)
+
+def test_queue_dos_protection():
+    from fastapi.testclient import TestClient
+    from api.index import app
+    client = TestClient(app)
+
+    # Valid input within bounds
+    res_valid = client.post('/api/queue', json={
+        "gamma": [1.0],
+        "p": [[0.0]],
+        "mu": [2.0],
+        "c": [100]
+    })
+    assert res_valid.status_code == 200
+
+    # Invalid input exceeding bounds
+    res_invalid = client.post('/api/queue', json={
+        "gamma": [1.0],
+        "p": [[0.0]],
+        "mu": [2.0],
+        "c": [101]
+    })
+    assert res_invalid.status_code == 400
+    assert "Maximum number of servers (c) exceeded" in res_invalid.json()['detail']
