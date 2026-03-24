@@ -94,7 +94,11 @@ header.panel {
 
 .inset:focus {
     outline: none;
-    color: #fff;
+    color: var(--text-color);
+}
+
+.inset:focus-visible {
+    outline: 2px solid var(--highlight);
 }
 
 .input-group {
@@ -159,6 +163,11 @@ textarea.inset {
     box-shadow: inset 5px 5px 15px rgba(0,0,0,0.3),
                 inset -5px -5px 15px rgba(255,255,255,0.3);
     transform: translateY(0);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 4px;
 }
 
 .tabs {
@@ -231,7 +240,15 @@ textarea.inset {
 }
 
 .togglesw {
-  display: none;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.togglesw:focus-visible ~ .button-knob {
+  outline: 2px solid var(--highlight);
+  outline-offset: 2px;
 }
 
 .switch {
@@ -373,4 +390,10 @@ footer a {
 footer a:hover {
     filter: brightness(1.2);
     text-decoration: underline;
+}
+
+.focus-ring:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
