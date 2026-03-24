@@ -58,6 +58,11 @@ def health_check():
 
 @app.post("/api/queue")
 def solve_queue(req: JacksonRequest):
+    # Security: Prevent CPU/Memory DoS attacks from extremely large factorials
+    # in the M/M/c queueing calculation.
+    if req.c and any(c_val > 100 for c_val in req.c):
+        raise HTTPException(status_code=400, detail="Maximum number of servers (c) exceeded. Must be <= 100.")
+
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
         return res
