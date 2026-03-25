@@ -66,7 +66,8 @@ def solve_queue(req: JacksonRequest):
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
         return res
-    except Exception as e:
+    except ValueError as e:
+        # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/inventory/eoq")
@@ -74,7 +75,7 @@ def solve_eoq(req: EOQRequest):
     try:
         res = eoq(req.demand_rate, req.order_cost, req.holding_cost)
         return res
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/inventory/newsvendor")
@@ -82,7 +83,7 @@ def solve_newsvendor(req: NewsvendorRequest):
     try:
         res = newsvendor(req.selling_price, req.cost, req.salvage_value, req.demand_mean, req.demand_std)
         return res
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/inventory/continuous")
@@ -90,7 +91,7 @@ def solve_continuous(req: ContinuousReviewRequest):
     try:
         res = continuous_review(req.demand_rate, req.order_cost, req.holding_cost, req.lead_time_mean, req.lead_time_std, req.service_level)
         return res
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/route/tsp")
@@ -100,7 +101,7 @@ def solve_tsp(req: TSPRequest):
         edges = [(e[0], e[1], float(e[2])) for e in req.edges]
         res = tsp_approx(req.nodes, edges)
         return res
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/route/jobshop")
@@ -108,7 +109,7 @@ def solve_jobshop(req: JobShopRequest):
     try:
         res = job_shop_cpm(req.jobs)
         return res
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 # Resolve static files path
