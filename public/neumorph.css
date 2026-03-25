@@ -231,7 +231,21 @@ textarea.inset {
 }
 
 .togglesw {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.togglesw:focus-visible + .indicator.left,
+.togglesw:focus-visible ~ .button-knob {
+  outline: 2px solid var(--highlight);
+  outline-offset: 2px;
 }
 
 .switch {
