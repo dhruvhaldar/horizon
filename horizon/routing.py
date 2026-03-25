@@ -22,13 +22,21 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
         raise ValueError("Graph is not connected, TSP has no solution.")
 
     metric_G = nx.Graph()
-    metric_G.add_nodes_from(G.nodes())
+    nodes_list = list(G.nodes())
+    metric_G.add_nodes_from(nodes_list)
 
-    path_lengths = dict(nx.all_pairs_dijkstra_path_length(G))
-    for u in G.nodes():
-        for v in G.nodes():
-            if u != v:
-                metric_G.add_edge(u, v, weight=path_lengths[u][v])
+    # ⚡ Bolt: Use floyd_warshall_numpy instead of all_pairs_dijkstra_path_length
+    # for creating a complete metric graph. This computes all-pairs shortest paths
+    # much faster using optimized C/NumPy operations, reducing TSP setup time
+    # significantly for larger graphs. We also only add edges where i < j.
+    path_lengths = nx.floyd_warshall_numpy(G)
+
+    n = len(nodes_list)
+    edges_to_add = [
+        (nodes_list[i], nodes_list[j], path_lengths[i, j])
+        for i in range(n) for j in range(i + 1, n)
+    ]
+    metric_G.add_weighted_edges_from(edges_to_add)
 
     tsp_path = nx.approximation.traveling_salesman_problem(metric_G, cycle=True)
 
