@@ -275,12 +275,19 @@ function drawRoutingGraph(nodesList, edges, path) {
     // Create links, highlighting the path
     const links = edges.map(e => ({ source: e[0], target: e[1], weight: e[2], isPath: false }));
 
+    // ⚡ Bolt: Replace O(V*E) Array.find loop with O(V+E) Set lookup
+    // for path highlighting. Building a Set of path edges and iterating
+    // links once is significantly faster for dense graphs.
     if (path && path.length > 0) {
+        const pathEdges = new Set();
         for(let i=0; i<path.length - 1; i++) {
-            const u = path[i];
-            const v = path[i+1];
-            const link = links.find(l => (l.source === u && l.target === v) || (l.source === v && l.target === u));
-            if (link) link.isPath = true;
+            pathEdges.add(`${path[i]}-${path[i+1]}`);
+            pathEdges.add(`${path[i+1]}-${path[i]}`);
+        }
+        for (const link of links) {
+            if (pathEdges.has(`${link.source}-${link.target}`)) {
+                link.isPath = true;
+            }
         }
     }
 
