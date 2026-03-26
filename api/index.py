@@ -14,7 +14,9 @@ app = FastAPI(title="Horizon Math API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    # Security: Set allow_credentials=False when allow_origins=["*"] is used
+    # to prevent insecure CORS reflection vulnerabilities
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
