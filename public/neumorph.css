@@ -94,7 +94,11 @@ header.panel {
 
 .inset:focus {
     outline: none;
-    color: #fff;
+}
+
+.inset:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
 }
 
 .input-group {
@@ -153,6 +157,11 @@ textarea.inset {
     transform: translateY(-2px);
     box-shadow: 12px 12px 24px var(--btn-shadow-dark),
                 -12px -12px 24px var(--btn-shadow-light);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
 }
 
 .btn:active, .btn.active {
@@ -387,4 +396,10 @@ footer a {
 footer a:hover {
     filter: brightness(1.2);
     text-decoration: underline;
+}
+
+footer a:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
