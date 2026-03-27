@@ -276,12 +276,20 @@ function drawRoutingGraph(nodesList, edges, path) {
     const links = edges.map(e => ({ source: e[0], target: e[1], weight: e[2], isPath: false }));
 
     if (path && path.length > 0) {
+        // ⚡ Bolt: Use a Set for O(1) path edge lookups instead of O(E) Array.find
+        // inside the loop. This reduces the time complexity from O(V * E) to O(V + E),
+        // significantly improving rendering performance for large/dense routing graphs.
+        const pathEdges = new Set();
         for(let i=0; i<path.length - 1; i++) {
-            const u = path[i];
-            const v = path[i+1];
-            const link = links.find(l => (l.source === u && l.target === v) || (l.source === v && l.target === u));
-            if (link) link.isPath = true;
+            pathEdges.add(`${path[i]}-${path[i+1]}`);
+            pathEdges.add(`${path[i+1]}-${path[i]}`);
         }
+
+        links.forEach(link => {
+            if (pathEdges.has(`${link.source}-${link.target}`)) {
+                link.isPath = true;
+            }
+        });
     }
 
     const simulation = d3.forceSimulation(nodes)
