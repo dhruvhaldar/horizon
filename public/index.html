@@ -48,7 +48,7 @@
                         <span class="helper-text">Probability of moving from node $i$ to node $j$.</span>
                         <textarea id="q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5\n0, 0" title="Matrix of transition probabilities between nodes. Sum of each row should be <= 1.">0, 0.5&#10;0, 0</textarea>
                     </div>
-                    <button class="btn" onclick="solveQueue()" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
+                    <button class="btn" onclick="withLoading(this, solveQueue)" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
                 <div class="results inset" id="queue-results">Results will appear here...</div>
                 <div id="queue-graph" class="viz-container inset"></div>
@@ -86,7 +86,7 @@
                             <span class="helper-text">Cost to carry one unit in stock for one period.</span>
                             <input type="number" id="i-hold" class="inset" value="2" title="Storage, insurance, and capital opportunity cost.">
                         </div>
-                        <button class="btn" onclick="solveEOQ()" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
+                        <button class="btn" onclick="withLoading(this, solveEOQ)" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
                     </div>
                 </div>
 
@@ -117,7 +117,7 @@
                             <span class="helper-text">Variation in lead time (for safety stock).</span>
                             <input type="number" id="ic-lt-std" class="inset" value="1.2" title="Uncertainty in supply duration.">
                         </div>
-                        <button class="btn" onclick="solveContinuous()" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
+                        <button class="btn" onclick="withLoading(this, solveContinuous)" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
                     </div>
                 </div>
 
@@ -141,7 +141,7 @@
                     <span class="helper-text">Travel cost/distance between nodes.</span>
                     <textarea id="r-edges" class="inset" rows="5" title="Edge list format: Source, Target, Cost.">A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
-                <button class="btn" onclick="solveTSP()" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
+                <button class="btn" onclick="withLoading(this, solveTSP)" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
                 <div class="results inset" id="routing-results">Results will appear here...</div>
                 <div id="routing-graph" class="viz-container inset"></div>
             </section>

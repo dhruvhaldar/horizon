@@ -9,3 +9,7 @@
 ## 2026-03-27 - Invisible Text on Focus
 **Learning:** Setting `color: #fff` combined with `outline: none` on focused input elements (`.inset:focus`) with light backgrounds makes the text unreadable when typing and removes visual focus indicators, breaking both keyboard navigation and basic usability.
 **Action:** Never change text color to blend into the background on focus. Use `:focus-visible` with a distinct `outline` (e.g., `2px solid var(--highlight)`) to ensure keyboard users can always see which element is active without affecting mouse users' click experience negatively.
+
+## 2024-05-19 - Added Disabled/Loading States to Action Buttons
+**Learning:** Users lack feedback when performing async operations like solving complex networks or running inventory calculations, making the system feel unresponsive and leading to potential multi-clicks.
+**Action:** Implemented a unified `withLoading` wrapper to visually manage loading and disabled states of asynchronous operations in UI components, improving perceived performance and preventing duplicate submissions.

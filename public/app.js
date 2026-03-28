@@ -1,5 +1,17 @@
 const API_BASE = '/api';
 
+async function withLoading(btnElement, asyncFunc) {
+    const originalText = btnElement.innerText;
+    btnElement.disabled = true;
+    btnElement.innerText = "Calculating...";
+    try {
+        await asyncFunc();
+    } finally {
+        btnElement.innerText = originalText;
+        btnElement.disabled = false;
+    }
+}
+
 // Queueing
 async function solveQueue() {
     const gamma = document.getElementById('q-gamma').value.split(',').map(Number);
@@ -120,12 +132,10 @@ function switchInv(type) {
         toggle.checked = false;
         document.getElementById('inv-eoq-inputs').style.display = 'flex';
         document.getElementById('inv-cont-inputs').style.display = 'none';
-        document.querySelector('#inv-eoq-inputs button').onclick = solveEOQ;
     } else {
         toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
         document.getElementById('inv-cont-inputs').style.display = 'flex';
-        document.querySelector('#inv-cont-inputs button').onclick = solveContinuous;
     }
 }
 
