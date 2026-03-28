@@ -96,6 +96,10 @@ def solve_continuous(req: ContinuousReviewRequest):
 
 @app.post("/api/route/tsp")
 def solve_tsp(req: TSPRequest):
+    # Security: Prevent CPU/Memory DoS attacks from large graphs
+    if len(req.nodes) > 100 or len(req.edges) > 500:
+        raise HTTPException(status_code=400, detail="Graph too large. Maximum 100 nodes and 500 edges allowed.")
+
     try:
         # Convert list of lists back to list of tuples
         edges = [(e[0], e[1], float(e[2])) for e in req.edges]
@@ -106,6 +110,10 @@ def solve_tsp(req: TSPRequest):
 
 @app.post("/api/route/jobshop")
 def solve_jobshop(req: JobShopRequest):
+    # Security: Prevent CPU/Memory DoS attacks from large job sets
+    if len(req.jobs) > 100:
+        raise HTTPException(status_code=400, detail="Too many jobs. Maximum 100 allowed.")
+
     try:
         res = job_shop_cpm(req.jobs)
         return res
