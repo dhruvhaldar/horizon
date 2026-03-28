@@ -9,3 +9,7 @@
 ## 2025-03-27 - Optimize graph edge lookup in visualization loop
 **Learning:** Using `Array.find` inside a rendering loop to match edge source/target pairs leads to $O(V \times E)$ time complexity. This causes severe rendering bottlenecks in D3 graph visualizations when handling large or dense routing graphs (e.g., TSP approximations).
 **Action:** Always pre-compute a `Set` of required edge pairs (e.g., `u-v` and `v-u`) before applying styles. Iterating over the graph's link array and using the $O(1)$ Set lookup reduces the time complexity to $O(V + E)$, ensuring smooth front-end performance regardless of network density.
+
+## 2025-05-10 - Avoid `scipy.stats` distribution object overhead for inverse CDF
+**Learning:** `scipy.stats.norm.ppf` and similar functions are extremely slow (~150x overhead) because they create and configure distribution objects and run extensive, non-vectorized input validations under the hood on every call.
+**Action:** When calculating standard inverse cumulative distribution function (CDF) values, bypass `scipy.stats` entirely and call the underlying raw C/Fortran routines in `scipy.special` (e.g., `special.ndtri(p)`). If the distribution has a custom location $\mu$ and scale $\sigma$, simply compute it manually using the formula $x = \mu + \sigma \times \text{ndtri}(p)$.
