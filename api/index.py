@@ -63,6 +63,10 @@ def solve_queue(req: JacksonRequest):
     if req.c and any(c_val > 100 for c_val in req.c):
         raise HTTPException(status_code=400, detail="Maximum number of servers (c) exceeded. Must be <= 100.")
 
+    # Security: Prevent CPU/Memory DoS attacks from large Jackson Networks (e.g. matrix inversion)
+    if len(req.gamma) > 100:
+        raise HTTPException(status_code=400, detail="Network too large. Maximum 100 nodes allowed.")
+
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
         return res
