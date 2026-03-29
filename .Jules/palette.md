@@ -13,3 +13,6 @@
 ## 2024-05-19 - Added Disabled/Loading States to Action Buttons
 **Learning:** Users lack feedback when performing async operations like solving complex networks or running inventory calculations, making the system feel unresponsive and leading to potential multi-clicks.
 **Action:** Implemented a unified `withLoading` wrapper to visually manage loading and disabled states of asynchronous operations in UI components, improving perceived performance and preventing duplicate submissions.
+## 2026-03-05 - Link helper text to inputs for accessibility
+**Learning:** Found a pattern where `.input-group` elements include domain-specific `<span class="helper-text">` definitions (like OR terminology). These were not programmatically associated with the input fields, making it difficult for screen reader users to hear contextual definitions when focusing the inputs.
+**Action:** Always assign a unique `id` to the helper text element and link it using `aria-describedby` on the corresponding input/textarea element in `.input-group` components.
