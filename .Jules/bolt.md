@@ -13,3 +13,7 @@
 ## 2025-05-10 - Avoid `scipy.stats` distribution object overhead for inverse CDF
 **Learning:** `scipy.stats.norm.ppf` and similar functions are extremely slow (~150x overhead) because they create and configure distribution objects and run extensive, non-vectorized input validations under the hood on every call.
 **Action:** When calculating standard inverse cumulative distribution function (CDF) values, bypass `scipy.stats` entirely and call the underlying raw C/Fortran routines in `scipy.special` (e.g., `special.ndtri(p)`). If the distribution has a custom location $\mu$ and scale $\sigma$, simply compute it manually using the formula $x = \mu + \sigma \times \text{ndtri}(p)$.
+
+## 2025-06-12 - Redundant NetworkX topological sorts
+**Learning:** Checking for cycles using `nx.is_directed_acyclic_graph(G)` and then running `nx.topological_sort(G)` separately in loops adds significant O(V+E) overhead per call. `nx.is_directed_acyclic_graph` actually runs a full topological sort under the hood.
+**Action:** When working with DAGs (like CPM or scheduling), run `nx.topological_sort(G)` exactly once and cache it in a list. Wrap this single call in a `try...except nx.NetworkXUnfeasible:` block to detect cycles for free, eliminating redundant graph traversals.

@@ -61,9 +61,6 @@ def job_shop_cpm(jobs: dict[str, dict]):
         for dep in details.get('dependencies', []):
             G.add_edge(dep, job)
 
-    if not nx.is_directed_acyclic_graph(G):
-         raise ValueError("Job dependencies contain a cycle.")
-
     # Add a start node and an end node
     G.add_node('START', duration=0)
     G.add_node('END', duration=0)
@@ -74,9 +71,18 @@ def job_shop_cpm(jobs: dict[str, dict]):
         if G.out_degree(job) == 0:
             G.add_edge(job, 'END')
 
+    # ⚡ Bolt: Cache a single topological sort traversal into a list.
+    # This implicitly detects cycles (raising NetworkXUnfeasible) and prevents
+    # redundant O(V+E) recalculations from calling `is_directed_acyclic_graph`
+    # and `topological_sort` repeatedly.
+    try:
+        topo_order = list(nx.topological_sort(G))
+    except nx.NetworkXUnfeasible:
+         raise ValueError("Job dependencies contain a cycle.")
+
     # Calculate earliest start times (EST) and earliest finish times (EFT)
     est = {'START': 0}
-    for node in nx.topological_sort(G):
+    for node in topo_order:
         if node == 'START': continue
         est[node] = max((est[pred] + G.nodes[pred]['duration'] for pred in G.predecessors(node)), default=0)
 
@@ -85,7 +91,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
     lft = {'END': project_duration}
 
     # Need to process in reverse topological order
-    for node in reversed(list(nx.topological_sort(G))):
+    for node in reversed(topo_order):
         if node == 'END': continue
         lft[node] = min((lft[succ] - G.nodes[succ]['duration'] for succ in G.successors(node)), default=project_duration)
 
