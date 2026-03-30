@@ -16,3 +16,7 @@
 ## 2026-03-05 - Link helper text to inputs for accessibility
 **Learning:** Found a pattern where `.input-group` elements include domain-specific `<span class="helper-text">` definitions (like OR terminology). These were not programmatically associated with the input fields, making it difficult for screen reader users to hear contextual definitions when focusing the inputs.
 **Action:** Always assign a unique `id` to the helper text element and link it using `aria-describedby` on the corresponding input/textarea element in `.input-group` components.
+
+## 2026-04-18 - Added Disabled State Styles for Action Buttons
+**Learning:** The action buttons lacked a visual indication when they were disabled during asynchronous operations (using the `withLoading` function), making it unclear to users that the form was processing and could not be clicked again. The native `disabled` attribute was being set, but there were no CSS styles specifically targeting `.btn:disabled`.
+**Action:** Always provide explicit visual styling for the `:disabled` state of interactive elements, such as reduced opacity and `cursor: not-allowed`, to clearly communicate state and prevent user confusion.

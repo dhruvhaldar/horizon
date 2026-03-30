@@ -403,3 +403,13 @@ footer a:focus-visible {
     outline-offset: 2px;
     border-radius: 2px;
 }
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--btn-default-gradient);
+    color: var(--text-color);
+    transform: none;
+    box-shadow: 8px 8px 16px var(--shadow-dark),
+                -8px -8px 16px var(--shadow-light);
+}
