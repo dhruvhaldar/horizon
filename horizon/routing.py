@@ -59,6 +59,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     for job, details in jobs.items():
         G.add_node(job, duration=details['duration'])
         for dep in details.get('dependencies', []):
+            if dep not in jobs:
+                raise ValueError(f"Dependency '{dep}' for job '{job}' is not defined.")
             G.add_edge(dep, job)
 
     # Add a start node and an end node
