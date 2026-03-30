@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import scipy.special as special
 
@@ -8,7 +9,9 @@ def eoq(demand_rate: float, order_cost: float, holding_cost: float) -> dict:
     if holding_cost <= 0:
         raise ValueError("Holding cost must be > 0")
 
-    q_opt = np.sqrt((2 * demand_rate * order_cost) / holding_cost)
+    # ⚡ Bolt: Use math.sqrt instead of np.sqrt for scalar values.
+    # np.sqrt introduces significant overhead for scalars.
+    q_opt = math.sqrt((2 * demand_rate * order_cost) / holding_cost)
     total_cost = (demand_rate / q_opt) * order_cost + (q_opt / 2) * holding_cost
 
     return {
@@ -49,7 +52,9 @@ def continuous_review(demand_rate: float, order_cost: float, holding_cost: float
     """
 
     # Estimate EOQ for Q first
-    q_opt = np.sqrt((2 * demand_rate * order_cost) / holding_cost)
+    # ⚡ Bolt: Use math.sqrt instead of np.sqrt for scalar values.
+    # np.sqrt introduces significant overhead for scalars.
+    q_opt = math.sqrt((2 * demand_rate * order_cost) / holding_cost)
 
     # Calculate R based on safety stock
     # ⚡ Bolt: special.ndtri is mathematically equivalent to stats.norm.ppf(..., loc=0, scale=1)

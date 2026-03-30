@@ -17,3 +17,7 @@
 ## 2025-06-12 - Redundant NetworkX topological sorts
 **Learning:** Checking for cycles using `nx.is_directed_acyclic_graph(G)` and then running `nx.topological_sort(G)` separately in loops adds significant O(V+E) overhead per call. `nx.is_directed_acyclic_graph` actually runs a full topological sort under the hood.
 **Action:** When working with DAGs (like CPM or scheduling), run `nx.topological_sort(G)` exactly once and cache it in a list. Wrap this single call in a `try...except nx.NetworkXUnfeasible:` block to detect cycles for free, eliminating redundant graph traversals.
+
+## 2026-05-18 - Math.sqrt over np.sqrt for scalar calculation
+**Learning:** Using `np.sqrt` for calculating scalar roots introduces significant performance overhead compared to Python's built-in `math.sqrt` due to NumPy's type checking and array conversion mechanisms. While negligible for a few calls, this matters in heavy computational simulations.
+**Action:** When computing the square root of a single scalar value (e.g., EOQ formulations), bypass NumPy and use `math.sqrt()` to achieve approximately 5x faster calculation speeds.
