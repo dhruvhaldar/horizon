@@ -20,3 +20,6 @@
 ## 2026-04-18 - Added Disabled State Styles for Action Buttons
 **Learning:** The action buttons lacked a visual indication when they were disabled during asynchronous operations (using the `withLoading` function), making it unclear to users that the form was processing and could not be clicked again. The native `disabled` attribute was being set, but there were no CSS styles specifically targeting `.btn:disabled`.
 **Action:** Always provide explicit visual styling for the `:disabled` state of interactive elements, such as reduced opacity and `cursor: not-allowed`, to clearly communicate state and prevent user confusion.
+## 2026-03-31 - Enter Key Submission for Formless Layouts
+**Learning:** When building custom layouts without native `<form>` wraps (like in this neumorphic UI), users lose the innate ability to press "Enter" to submit or calculate. This breaks keyboard usability and accessibility expectations.
+**Action:** Always implement a global `keydown` listener to catch the "Enter" key within inputs, explicitly ignoring `shift+Enter` for textareas, to seamlessly trigger the closest primary action button.

@@ -346,5 +346,28 @@ function drawRoutingGraph(nodesList, edges, path) {
     });
 }
 
+// UX Enhancement: Enter key submits active module
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const target = e.target;
+        // Don't intercept Enter in textareas if Shift is pressed (allow newlines)
+        if (target.tagName === 'TEXTAREA' && e.shiftKey) return;
+
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            e.preventDefault(); // Prevent default form submission or newline
+
+            // Find the closest logical container (.calc-group or .panel)
+            const container = target.closest('.calc-group, .panel');
+            if (container) {
+                // Find the primary action button within this container
+                const btn = container.querySelector('.btn');
+                if (btn && !btn.disabled) {
+                    btn.click();
+                }
+            }
+        }
+    }
+});
+
 // Initial draw
 switchInv('eoq');
