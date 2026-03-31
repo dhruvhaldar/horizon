@@ -6,6 +6,14 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     Nodes: list of node IDs.
     Edges: list of tuples (node1, node2, weight).
     """
+
+    # Security: Prevent DoS via implicit node creation. Validate that all edges
+    # only reference explicitly defined nodes to enforce API-level size bounds.
+    nodes_set = set(nodes)
+    for u, v, _ in edges:
+        if u not in nodes_set or v not in nodes_set:
+            raise ValueError(f"Edge references undefined node: {u if u not in nodes_set else v}")
+
     G = nx.Graph()
     G.add_nodes_from(nodes)
     G.add_weighted_edges_from(edges)
