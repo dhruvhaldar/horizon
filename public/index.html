@@ -50,7 +50,7 @@
                     </div>
                     <button class="btn" onclick="withLoading(this, solveQueue)" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
-                <div class="results inset" id="queue-results">Results will appear here...</div>
+                <div class="results inset" id="queue-results" aria-live="polite">Results will appear here...</div>
                 <div id="queue-graph" class="viz-container inset"></div>
             </section>
 
@@ -121,7 +121,7 @@
                     </div>
                 </div>
 
-                <div class="results inset" id="inventory-results">Results will appear here...</div>
+                <div class="results inset" id="inventory-results" aria-live="polite">Results will appear here...</div>
                 <div class="viz-container inset">
                     <canvas id="inventory-chart"></canvas>
                 </div>
@@ -142,7 +142,7 @@
                     <textarea id="r-edges" aria-describedby="help-r-edges" class="inset" rows="5" title="Edge list format: Source, Target, Cost.">A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
                 <button class="btn" onclick="withLoading(this, solveTSP)" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
-                <div class="results inset" id="routing-results">Results will appear here...</div>
+                <div class="results inset" id="routing-results" aria-live="polite">Results will appear here...</div>
                 <div id="routing-graph" class="viz-container inset"></div>
             </section>
         </div>

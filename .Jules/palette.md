@@ -23,3 +23,7 @@
 ## 2026-03-31 - Enter Key Submission for Formless Layouts
 **Learning:** When building custom layouts without native `<form>` wraps (like in this neumorphic UI), users lose the innate ability to press "Enter" to submit or calculate. This breaks keyboard usability and accessibility expectations.
 **Action:** Always implement a global `keydown` listener to catch the "Enter" key within inputs, explicitly ignoring `shift+Enter` for textareas, to seamlessly trigger the closest primary action button.
+
+## 2026-04-19 - Missing Screen Reader Announcements for Async Results
+**Learning:** Asynchronous operations update text content dynamically without page reloads, leaving screen reader users unaware that calculations have finished or errors have occurred.
+**Action:** Always add `aria-live="polite"` to DOM nodes that receive dynamic textual updates (like results or error containers) so screen readers can automatically announce the new content without losing context.
