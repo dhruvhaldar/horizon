@@ -67,6 +67,15 @@ def solve_queue(req: JacksonRequest):
     if len(req.gamma) > 100:
         raise HTTPException(status_code=400, detail="Network too large. Maximum 100 nodes allowed.")
 
+    # Security: Prevent 500 Internal Server Error (IndexError) when array lengths do not match gamma.
+    n = len(req.gamma)
+    if len(req.mu) != n:
+        raise HTTPException(status_code=400, detail="Length of mu must match length of gamma.")
+    if req.c is not None and len(req.c) != n:
+        raise HTTPException(status_code=400, detail="Length of c must match length of gamma.")
+    if len(req.p) != n or any(len(row) != n for row in req.p):
+        raise HTTPException(status_code=400, detail="p must be a square matrix matching the length of gamma.")
+
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
         return res
@@ -109,8 +118,9 @@ def solve_tsp(req: TSPRequest):
         edges = [(e[0], e[1], float(e[2])) for e in req.edges]
         res = tsp_approx(req.nodes, edges)
         return res
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except (ValueError, IndexError) as e:
+        # Security: Catch IndexError for malformed edge inputs (e.g. missing weight) to prevent 500 errors
+        raise HTTPException(status_code=400, detail="Invalid edge format or values. Expected [node1, node2, weight].")
 
 @app.post("/api/route/jobshop")
 def solve_jobshop(req: JobShopRequest):
