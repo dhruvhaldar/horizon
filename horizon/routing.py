@@ -39,9 +39,16 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # significantly for larger graphs. We also only add edges where i < j.
     path_lengths = nx.floyd_warshall_numpy(G)
 
+    # ⚡ Bolt: Convert the NumPy array to a native Python list of lists before
+    # iterating over it. Accessing individual scalar elements of a NumPy array
+    # inside a Python loop incurs significant type-checking and boxing overhead.
+    # .tolist() converts the entire array to CPython floats at C-speed, making
+    # the subsequent O(N^2) list comprehension noticeably faster.
+    path_lengths_list = path_lengths.tolist()
+
     n = len(nodes_list)
     edges_to_add = [
-        (nodes_list[i], nodes_list[j], path_lengths[i, j])
+        (nodes_list[i], nodes_list[j], path_lengths_list[i][j])
         for i in range(n) for j in range(i + 1, n)
     ]
     metric_G.add_weighted_edges_from(edges_to_add)
