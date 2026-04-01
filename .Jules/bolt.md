@@ -21,3 +21,7 @@
 ## 2026-05-18 - Math.sqrt over np.sqrt for scalar calculation
 **Learning:** Using `np.sqrt` for calculating scalar roots introduces significant performance overhead compared to Python's built-in `math.sqrt` due to NumPy's type checking and array conversion mechanisms. While negligible for a few calls, this matters in heavy computational simulations.
 **Action:** When computing the square root of a single scalar value (e.g., EOQ formulations), bypass NumPy and use `math.sqrt()` to achieve approximately 5x faster calculation speeds.
+
+## 2026-06-19 - NumPy array scalar access bottleneck
+**Learning:** Accessing individual scalar elements of a `numpy.ndarray` within a Python loop (e.g., list comprehensions) is extremely slow due to the overhead of type-checking and boxing each element into a CPython float.
+**Action:** When you need to iterate over a NumPy array in Python to extract individual values, convert the entire array to a native list of lists using `.tolist()` first. This pushes the conversion to C-speed and makes the subsequent Python iterations significantly faster.
