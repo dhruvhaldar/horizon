@@ -66,9 +66,15 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
     i_minus_p = np.eye(n) - p_mat.T
     lambda_vec = np.linalg.solve(i_minus_p, gamma_vec)
 
+    # ⚡ Bolt: Convert the NumPy array to a native Python list before iterating over it.
+    # Accessing individual scalar elements of a NumPy array inside a Python loop
+    # incurs significant type-checking and boxing overhead. .tolist() converts the
+    # entire array at C-speed, making the subsequent iterations faster.
+    lambda_vec_list = lambda_vec.tolist()
+
     results = {}
     for i in range(n):
-        l_i = lambda_vec[i]
+        l_i = lambda_vec_list[i]
         mu_i = mu[i]
         c_i = c[i]
 
