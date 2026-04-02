@@ -113,6 +113,10 @@ def solve_tsp(req: TSPRequest):
     if len(req.nodes) > 100 or len(req.edges) > 500:
         raise HTTPException(status_code=400, detail="Graph too large. Maximum 100 nodes and 500 edges allowed.")
 
+    # Security: Prevent 500 Internal Server Error (NetworkXPointlessConcept) from graphs with < 2 nodes
+    if len(req.nodes) < 2:
+        raise HTTPException(status_code=400, detail="Graph too small. Minimum 2 nodes required for TSP.")
+
     try:
         # Convert list of lists back to list of tuples
         edges = [(e[0], e[1], float(e[2])) for e in req.edges]
