@@ -36,3 +36,13 @@
 **Vulnerability:** The `/api/route/tsp` endpoint lacks validation for empty or single-node graphs. Passing zero nodes or one node to NetworkX algorithms (e.g., `nx.is_connected`) raises `nx.NetworkXPointlessConcept` internally, which propagates up as an unhandled 500 Internal Server Error.
 **Learning:** External libraries (like NetworkX) throw specialized exceptions for mathematically undefined states. Allowing these to propagate causes generic 500 errors.
 **Prevention:** Always validate lower physical/logical bounds for mathematical/graph operations directly at the API layer (e.g., TSP requires at least 2 nodes).
+
+## 2025-05-24 - [MEDIUM] Missing Error Handling for Unbounded Divisors causing 500 Errors
+**Vulnerability:** The `/api/inventory/continuous` endpoint lacked bounds validation for `holding_cost`. A user could supply `holding_cost=0`, causing a `ZeroDivisionError` deep in the backend inventory equations. Uncaught generic exceptions bubbled up as 500 Internal Server Errors, risking system stability and potential diagnostic information leakage.
+**Learning:** Purely mathematical API endpoints must rigorously validate non-zero divisors and physical parameter bounds directly at the API boundary, regardless of whether backend models implicitly assume valid inputs.
+**Prevention:** Always validate critical equation parameters (like costs > 0) directly on the request object at the FastAPI router layer to ensure invalid data is blocked with a 400 Bad Request before hitting mathematical algorithms.
+
+## 2025-05-24 - [MEDIUM] Missing Error Handling for Specialized Math Library Exceptions causing 500 Errors
+**Vulnerability:** The `/api/queue` endpoint passes routing probability matrices directly to `numpy.linalg.solve`. Singular matrices (e.g., probability rows summing to 1.0) trigger `np.linalg.LinAlgError`. Unhandled, this propagates as a 500 Internal Server Error.
+**Learning:** Scientific libraries (NumPy, SciPy, NetworkX) throw specialized domain exceptions for undefined mathematical states. Default FastAPI exception handlers do not catch these domain-specific exceptions as client errors.
+**Prevention:** Explicitly catch specialized library exceptions (like `np.linalg.LinAlgError` or `nx.NetworkXError`) at the router boundary and translate them to safe, generic 400 Bad Request responses to prevent information leakage and application instability.

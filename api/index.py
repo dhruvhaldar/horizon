@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 import os
 from fastapi.staticfiles import StaticFiles
+import numpy as np
 
 from horizon.queueing import jackson_network
 from horizon.inventory import eoq, newsvendor, continuous_review
@@ -82,6 +83,8 @@ def solve_queue(req: JacksonRequest):
     except ValueError as e:
         # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
+    except np.linalg.LinAlgError:
+        raise HTTPException(status_code=400, detail="Mathematical error: Singular routing matrix.")
 
 @app.post("/api/inventory/eoq")
 def solve_eoq(req: EOQRequest):
@@ -101,6 +104,8 @@ def solve_newsvendor(req: NewsvendorRequest):
 
 @app.post("/api/inventory/continuous")
 def solve_continuous(req: ContinuousReviewRequest):
+    if req.holding_cost <= 0:
+        raise HTTPException(status_code=400, detail="Holding cost must be > 0")
     try:
         res = continuous_review(req.demand_rate, req.order_cost, req.holding_cost, req.lead_time_mean, req.lead_time_std, req.service_level)
         return res
