@@ -71,7 +71,13 @@ def job_shop_cpm(jobs: dict[str, dict]):
     """
     G = nx.DiGraph()
 
+    # ⚡ Bolt: Pre-fetch node durations into a native Python dict.
+    # Repeatedly accessing G.nodes[node]['duration'] inside performance-critical
+    # traversal loops introduces significant NetworkX property lookup overhead.
+    durations = {'START': 0, 'END': 0}
+
     for job, details in jobs.items():
+        durations[job] = details['duration']
         G.add_node(job, duration=details['duration'])
         for dep in details.get('dependencies', []):
             if dep not in jobs:
@@ -101,7 +107,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
     est = {'START': 0}
     for node in topo_order:
         if node == 'START': continue
-        est[node] = max((est[pred] + G.nodes[pred]['duration'] for pred in G.predecessors(node)), default=0)
+        est[node] = max((est[pred] + durations[pred] for pred in G.predecessors(node)), default=0)
 
     # Calculate latest start times (LST) and latest finish times (LFT)
     project_duration = est['END']
@@ -110,14 +116,14 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # Need to process in reverse topological order
     for node in reversed(topo_order):
         if node == 'END': continue
-        lft[node] = min((lft[succ] - G.nodes[succ]['duration'] for succ in G.successors(node)), default=project_duration)
+        lft[node] = min((lft[succ] - durations[succ] for succ in G.successors(node)), default=project_duration)
 
     # Identify critical path
     critical_path = []
     slack = {}
     for node in G.nodes():
         if node in ('START', 'END'): continue
-        s = lft[node] - est[node] - G.nodes[node]['duration']
+        s = lft[node] - est[node] - durations[node]
         slack[node] = s
         if s == 0:
             critical_path.append(node)

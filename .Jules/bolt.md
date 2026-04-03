@@ -25,3 +25,7 @@
 ## 2026-06-19 - NumPy array scalar access bottleneck
 **Learning:** Accessing individual scalar elements of a `numpy.ndarray` within a Python loop (e.g., list comprehensions) is extremely slow due to the overhead of type-checking and boxing each element into a CPython float.
 **Action:** When you need to iterate over a NumPy array in Python to extract individual values, convert the entire array to a native list of lists using `.tolist()` first. This pushes the conversion to C-speed and makes the subsequent Python iterations significantly faster.
+
+## 2024-03-01 - NetworkX Node Attribute Lookup Overhead
+**Learning:** Repeatedly accessing node attributes in NetworkX graphs (e.g., `G.nodes[node]['duration']`) within performance-critical traversal loops introduces significant NetworkX property lookup overhead, acting as a bottleneck.
+**Action:** Pre-fetch these node attributes into a native Python dictionary before iterating over the graph. Replacing NetworkX node attribute accesses with native dict lookups (e.g., `durations[node]`) significantly improves performance in critical path or graph traversal loops.
