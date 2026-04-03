@@ -27,3 +27,7 @@
 ## 2026-04-19 - Missing Screen Reader Announcements for Async Results
 **Learning:** Asynchronous operations update text content dynamically without page reloads, leaving screen reader users unaware that calculations have finished or errors have occurred.
 **Action:** Always add `aria-live="polite"` to DOM nodes that receive dynamic textual updates (like results or error containers) so screen readers can automatically announce the new content without losing context.
+
+## 2024-04-03 - Accessible Landmarks and Dynamic Visualizations
+**Learning:** Using `<section>` tags without accessible names does not create ARIA region landmarks for screen readers. Furthermore, dynamic D3 and Canvas visualizations inside containers are completely invisible to assistive technologies unless given an explicit role (e.g., `role="img"`) and descriptive text (e.g., `aria-label`).
+**Action:** When creating modular dashboards or complex visualizations, explicitly link `<section>` tags to their heading elements using `aria-labelledby`, and ensure all visual-only canvases or empty dynamic `div`s have semantic roles and text descriptions for screen readers.
