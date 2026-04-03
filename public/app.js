@@ -69,6 +69,8 @@ function drawQueueGraph(gamma, p) {
     const svg = container.append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("role", "img")
+        .attr("aria-label", "Queueing network node-link diagram")
         .style("width", "100%")
         .style("height", "100%");
 
@@ -310,6 +312,8 @@ function drawRoutingGraph(nodesList, edges, path) {
     const svg = container.append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("role", "img")
+        .attr("aria-label", "Routing network graph showing the optimal path")
         .style("width", "100%")
         .style("height", "100%");
 

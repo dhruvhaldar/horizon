@@ -27,3 +27,7 @@
 ## 2026-04-19 - Missing Screen Reader Announcements for Async Results
 **Learning:** Asynchronous operations update text content dynamically without page reloads, leaving screen reader users unaware that calculations have finished or errors have occurred.
 **Action:** Always add `aria-live="polite"` to DOM nodes that receive dynamic textual updates (like results or error containers) so screen readers can automatically announce the new content without losing context.
+
+## 2026-04-20 - Invisible Visualizations
+**Learning:** `<canvas>` elements and dynamically generated `<svg>` elements (like those created by D3) are completely invisible or meaningless to screen readers by default. They lack intrinsic semantic meaning, so users using assistive technologies receive no indication that a graph or chart exists.
+**Action:** Always add `role="img"` and a descriptive `aria-label` to `<canvas>` and `<svg>` elements to explicitly identify them as images/visualizations to screen readers. For `<canvas>`, also include text content inside the tag as a fallback.
