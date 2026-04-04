@@ -70,7 +70,9 @@ function drawQueueGraph(gamma, p) {
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
-        .style("height", "100%");
+        .style("height", "100%")
+        .attr("role", "img")
+        .attr("aria-label", "Queueing network visualization graph");
 
     // Arrow marker
     svg.append("defs").append("marker")
@@ -311,7 +313,9 @@ function drawRoutingGraph(nodesList, edges, path) {
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
-        .style("height", "100%");
+        .style("height", "100%")
+        .attr("role", "img")
+        .attr("aria-label", "Route planning map visualization");
 
     const link = svg.append("g")
         .selectAll("line")

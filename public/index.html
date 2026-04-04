@@ -29,8 +29,8 @@
 
         <div class="grid">
             <!-- Queueing Module -->
-            <section class="panel" id="queueing-module">
-                <h2>Queueing Networks</h2>
+            <section class="panel" id="queueing-module" aria-labelledby="queueing-heading">
+                <h2 id="queueing-heading">Queueing Networks</h2>
                 <p class="module-def">Stochastic modeling of waiting lines and resource allocation.</p>
                 <div class="input-group">
                     <label for="q-gamma">External Arrivals ($\gamma$):</label>
@@ -55,8 +55,8 @@
             </section>
 
             <!-- Inventory Module -->
-            <section class="panel" id="inventory-module">
-                <h2>Inventory Optimization</h2>
+            <section class="panel" id="inventory-module" aria-labelledby="inventory-heading">
+                <h2 id="inventory-heading">Inventory Optimization</h2>
                 <p class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
                 <div class="toggle-wrapper">
                     <span class="switch-label">EOQ</span>
@@ -123,13 +123,15 @@
 
                 <div class="results inset" id="inventory-results" aria-live="polite">Results will appear here...</div>
                 <div class="viz-container inset">
-                    <canvas id="inventory-chart"></canvas>
+                    <canvas id="inventory-chart" role="img" aria-label="Inventory optimization saw-tooth plot">
+                        Your browser does not support the canvas element.
+                    </canvas>
                 </div>
             </section>
 
             <!-- Routing Module -->
-            <section class="panel" id="routing-module">
-                <h2>Route Planning (TSP)</h2>
+            <section class="panel" id="routing-module" aria-labelledby="routing-heading">
+                <h2 id="routing-heading">Route Planning (TSP)</h2>
                 <p class="module-def">Solving the Traveling Salesperson Problem for optimal Hamiltonian cycles.</p>
                 <div class="input-group">
                     <label for="r-nodes">Nodes (comma separated):</label>

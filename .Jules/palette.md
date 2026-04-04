@@ -27,3 +27,7 @@
 ## 2026-04-19 - Missing Screen Reader Announcements for Async Results
 **Learning:** Asynchronous operations update text content dynamically without page reloads, leaving screen reader users unaware that calculations have finished or errors have occurred.
 **Action:** Always add `aria-live="polite"` to DOM nodes that receive dynamic textual updates (like results or error containers) so screen readers can automatically announce the new content without losing context.
+
+## 2024-05-24 - Accessibility for Dynamic Visual Containers
+**Learning:** In applications heavily relying on dynamic visual rendering (like D3.js and Chart.js), these generated containers often lack semantic meaning, rendering them invisible or confusing to screen readers.
+**Action:** Always ensure dynamic visual containers (like `<svg>` or `<canvas>`) explicitly include `role="img"` and an `aria-label` attribute describing the content. Additionally, structurally link sections to headings using `aria-labelledby` for proper region landmark navigation.
