@@ -63,6 +63,12 @@ def solve_queue(req: JacksonRequest):
     if req.c and any(c_val > 100 for c_val in req.c):
         raise HTTPException(status_code=400, detail="Maximum number of servers (c) exceeded. Must be <= 100.")
 
+    # Security: Prevent ZeroDivisionError and 500 error leaks by validating physical limits.
+    if req.c and any(c_val <= 0 for c_val in req.c):
+        raise HTTPException(status_code=400, detail="Number of servers (c) must be > 0.")
+    if any(m <= 0 for m in req.mu):
+        raise HTTPException(status_code=400, detail="Service rate (mu) must be > 0.")
+
     # Security: Prevent CPU/Memory DoS attacks from large Jackson Networks (e.g. matrix inversion)
     if len(req.gamma) > 100:
         raise HTTPException(status_code=400, detail="Network too large. Maximum 100 nodes allowed.")
@@ -82,6 +88,12 @@ def solve_queue(req: JacksonRequest):
     except ValueError as e:
         # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        import numpy as np
+        # Security: Catch specialized mathematical library exceptions like LinAlgError to prevent 500 error leaks.
+        if isinstance(e, np.linalg.LinAlgError):
+            raise HTTPException(status_code=400, detail="Singular matrix")
+        raise
 
 @app.post("/api/inventory/eoq")
 def solve_eoq(req: EOQRequest):
