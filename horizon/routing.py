@@ -97,11 +97,16 @@ def job_shop_cpm(jobs: dict[str, dict]):
     except nx.NetworkXUnfeasible:
          raise ValueError("Job dependencies contain a cycle.")
 
+    # ⚡ Bolt: Pre-fetch node durations into a native dictionary
+    # Repeatedly accessing node attributes via G.nodes[node]['duration'] incurs significant overhead
+    # Pre-fetching attributes into a native Python dictionary improves lookup performance in the loop.
+    durations = nx.get_node_attributes(G, 'duration')
+
     # Calculate earliest start times (EST) and earliest finish times (EFT)
     est = {'START': 0}
     for node in topo_order:
         if node == 'START': continue
-        est[node] = max((est[pred] + G.nodes[pred]['duration'] for pred in G.predecessors(node)), default=0)
+        est[node] = max((est[pred] + durations[pred] for pred in G.predecessors(node)), default=0)
 
     # Calculate latest start times (LST) and latest finish times (LFT)
     project_duration = est['END']
@@ -110,14 +115,14 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # Need to process in reverse topological order
     for node in reversed(topo_order):
         if node == 'END': continue
-        lft[node] = min((lft[succ] - G.nodes[succ]['duration'] for succ in G.successors(node)), default=project_duration)
+        lft[node] = min((lft[succ] - durations[succ] for succ in G.successors(node)), default=project_duration)
 
     # Identify critical path
     critical_path = []
     slack = {}
     for node in G.nodes():
         if node in ('START', 'END'): continue
-        s = lft[node] - est[node] - G.nodes[node]['duration']
+        s = lft[node] - est[node] - durations[node]
         slack[node] = s
         if s == 0:
             critical_path.append(node)
