@@ -1,0 +1,3 @@
+## 2024-05-24 - NetworkX Attribute Access Overhead
+**Learning:** Repeatedly accessing node attributes inside tight loops using `G.nodes[node]['attr']` in NetworkX incurs significant dictionary-wrapping and property access overhead. This becomes a measurable bottleneck during O(V+E) traversals like computing Earliest Start Times (EST) and Latest Finish Times (LFT) in scheduling algorithms.
+**Action:** When performing performance-critical graph traversals that frequently read node data, pre-fetch the necessary attributes into a native, flat Python dictionary (`durations = {n: d['attr'] for n, d in G.nodes(data=True)}`) beforehand to convert chained lookups into O(1) dict access.
