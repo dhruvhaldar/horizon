@@ -51,6 +51,9 @@ def continuous_review(demand_rate: float, order_cost: float, holding_cost: float
     Continuous review (R, Q) policy with normal demand.
     """
 
+    if holding_cost <= 0:
+        raise ValueError("Holding cost must be > 0")
+
     # Estimate EOQ for Q first
     # ⚡ Bolt: Use math.sqrt instead of np.sqrt for scalar values.
     # np.sqrt introduces significant overhead for scalars.
