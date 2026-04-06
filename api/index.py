@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 import os
+import numpy as np
 from fastapi.staticfiles import StaticFiles
 
 from horizon.queueing import jackson_network
@@ -79,7 +80,7 @@ def solve_queue(req: JacksonRequest):
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
         return res
-    except ValueError as e:
+    except (ValueError, np.linalg.LinAlgError) as e:
         # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
 
