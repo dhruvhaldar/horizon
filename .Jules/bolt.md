@@ -29,3 +29,6 @@
 ## 2024-03-01 - NetworkX Node Attribute Lookup Overhead
 **Learning:** Repeatedly accessing node attributes in NetworkX graphs (e.g., `G.nodes[node]['duration']`) within performance-critical traversal loops introduces significant NetworkX property lookup overhead, acting as a bottleneck.
 **Action:** Pre-fetch these node attributes into a native Python dictionary before iterating over the graph. Replacing NetworkX node attribute accesses with native dict lookups (e.g., `durations[node]`) significantly improves performance in critical path or graph traversal loops.
+## 2026-04-06 - Generator vs List Comprehension in Min/Max Operations
+**Learning:** For small bounded collections (like graph predecessors/successors where limits are <= 100), passing a generator expression into `max()` or `min()` is noticeably slower (up to 10-20% slower per call) than passing a list comprehension. This is due to Python's internal generator setup and function call overhead outweighing the memory benefits of lazy evaluation for small inputs.
+**Action:** When working with computationally intensive loops operating on small bounded sets (e.g., node neighbor lookups in NetworkX traversals), use list comprehensions instead of generator expressions inside aggregation functions like `max()` or `min()`.

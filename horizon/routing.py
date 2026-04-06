@@ -112,7 +112,10 @@ def job_shop_cpm(jobs: dict[str, dict]):
     est = {'START': 0}
     for node in topo_order:
         if node == 'START': continue
-        est[node] = max((est[pred] + durations[pred] for pred in G.predecessors(node)), default=0)
+        # ⚡ Bolt: Use a list comprehension instead of a generator expression inside max().
+        # For small graphs (N <= 100 per API limit), constructing a small list is faster
+        # than the generator setup and function call overhead, improving traversal speed.
+        est[node] = max([est[pred] + durations[pred] for pred in G.predecessors(node)], default=0)
 
     # Calculate latest start times (LST) and latest finish times (LFT)
     project_duration = est['END']
@@ -121,7 +124,10 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # Need to process in reverse topological order
     for node in reversed(topo_order):
         if node == 'END': continue
-        lft[node] = min((lft[succ] - durations[succ] for succ in G.successors(node)), default=project_duration)
+        # ⚡ Bolt: Use a list comprehension instead of a generator expression inside min().
+        # Similar to EST, constructing a small list is faster than generator overhead
+        # for these bounded graph sizes.
+        lft[node] = min([lft[succ] - durations[succ] for succ in G.successors(node)], default=project_duration)
 
     # Identify critical path
     critical_path = []
