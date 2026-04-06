@@ -98,6 +98,9 @@ def solve_queue(req: JacksonRequest):
 
 @app.post("/api/inventory/eoq")
 def solve_eoq(req: EOQRequest):
+    # Security: Prevent ZeroDivisionError and 500 error leaks by validating physical limits.
+    if req.demand_rate <= 0 or req.order_cost <= 0 or req.holding_cost <= 0:
+        raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")
     try:
         res = eoq(req.demand_rate, req.order_cost, req.holding_cost)
         return res
@@ -114,6 +117,9 @@ def solve_newsvendor(req: NewsvendorRequest):
 
 @app.post("/api/inventory/continuous")
 def solve_continuous(req: ContinuousReviewRequest):
+    # Security: Prevent mathematical undefined states and ZeroDivisionErrors.
+    if req.demand_rate <= 0 or req.order_cost <= 0 or req.holding_cost <= 0:
+        raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")
     try:
         res = continuous_review(req.demand_rate, req.order_cost, req.holding_cost, req.lead_time_mean, req.lead_time_std, req.service_level)
         return res
