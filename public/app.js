@@ -3,12 +3,14 @@ const API_BASE = '/api';
 async function withLoading(btnElement, asyncFunc) {
     const originalText = btnElement.innerText;
     btnElement.disabled = true;
-    btnElement.innerText = "Calculating...";
+    btnElement.innerText = "⏳ Calculating...";
+    btnElement.setAttribute('aria-busy', 'true');
     try {
         await asyncFunc();
     } finally {
         btnElement.innerText = originalText;
         btnElement.disabled = false;
+        btnElement.removeAttribute('aria-busy');
     }
 }
 
@@ -31,7 +33,8 @@ async function solveQueue() {
         document.getElementById('queue-results').innerText = JSON.stringify(data, null, 2);
         drawQueueGraph(gamma, p);
     } catch (e) {
-        document.getElementById('queue-results').innerText = e.message;
+        document.getElementById('queue-results').innerText = `❌ Error: ${e.message}`;
+        d3.select("#queue-graph").selectAll("*").remove();
     }
 }
 
@@ -156,7 +159,11 @@ async function solveEOQ() {
         document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, 0, demand);
     } catch (e) {
-        document.getElementById('inventory-results').innerText = e.message;
+        document.getElementById('inventory-results').innerText = `❌ Error: ${e.message}`;
+        if (invChart) {
+            invChart.destroy();
+            invChart = null;
+        }
     }
 }
 
@@ -182,7 +189,11 @@ async function solveContinuous() {
         document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, data.R, demand);
     } catch (e) {
-        document.getElementById('inventory-results').innerText = e.message;
+        document.getElementById('inventory-results').innerText = `❌ Error: ${e.message}`;
+        if (invChart) {
+            invChart.destroy();
+            invChart = null;
+        }
     }
 }
 
@@ -269,7 +280,8 @@ async function solveTSP() {
         document.getElementById('routing-results').innerText = JSON.stringify(data, null, 2);
         drawRoutingGraph(nodes, edges, data.path);
     } catch (e) {
-        document.getElementById('routing-results').innerText = e.message;
+        document.getElementById('routing-results').innerText = `❌ Error: ${e.message}`;
+        d3.select("#routing-graph").selectAll("*").remove();
     }
 }
 

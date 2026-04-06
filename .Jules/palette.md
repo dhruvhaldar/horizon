@@ -27,3 +27,6 @@
 ## 2026-04-19 - Missing Screen Reader Announcements for Async Results
 **Learning:** Asynchronous operations update text content dynamically without page reloads, leaving screen reader users unaware that calculations have finished or errors have occurred.
 **Action:** Always add `aria-live="polite"` to DOM nodes that receive dynamic textual updates (like results or error containers) so screen readers can automatically announce the new content without losing context.
+## 2024-05-24 - Prevent Stale Data Confusion in Async Workflows
+**Learning:** When async operations fail, leaving previously rendered visualizations (D3 graphs, Chart.js canvases) on the screen creates severe UX confusion, as users may mistakenly interpret the stale successful data as the result of their new (failed) input.
+**Action:** Always explicitly destroy or clear visualization containers in the `catch` blocks of async data-fetching workflows to ensure failure states are unambiguous.
