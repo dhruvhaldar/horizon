@@ -36,3 +36,7 @@
 **Vulnerability:** The `/api/route/tsp` endpoint lacks validation for empty or single-node graphs. Passing zero nodes or one node to NetworkX algorithms (e.g., `nx.is_connected`) raises `nx.NetworkXPointlessConcept` internally, which propagates up as an unhandled 500 Internal Server Error.
 **Learning:** External libraries (like NetworkX) throw specialized exceptions for mathematically undefined states. Allowing these to propagate causes generic 500 errors.
 **Prevention:** Always validate lower physical/logical bounds for mathematical/graph operations directly at the API layer (e.g., TSP requires at least 2 nodes).
+## 2024-05-24 - [Fix Unhandled Exceptions in Mathematical Modeling Endpoints]
+**Vulnerability:** Unhandled mathematically undefined states (e.g. divisors <= 0 or singular matrices) caused generic 500 Internal Server Errors, bypassing expected error handling and potentially leaking internal details.
+**Learning:** Certain mathematical functions and libraries (like NumPy or internal division formulas) throw specialized exceptions (like `LinAlgError` or `ZeroDivisionError`) instead of the standard `ValueError` typically expected by validation layers.
+**Prevention:** Always validate physical or logical lower bounds directly at the API layer (e.g. servers `c > 0`, service rates `mu > 0`). Additionally, explicitly catch specialized mathematical library exceptions when calling out to external solvers (e.g., `np.linalg.solve`).
