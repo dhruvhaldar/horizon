@@ -71,7 +71,13 @@ def job_shop_cpm(jobs: dict[str, dict]):
     """
     G = nx.DiGraph()
 
+    # ⚡ Bolt: Pre-fetch node durations into a native Python dict.
+    # Repeatedly accessing G.nodes[node]['duration'] inside performance-critical
+    # traversal loops introduces significant NetworkX property lookup overhead.
+    durations = {'START': 0, 'END': 0}
+
     for job, details in jobs.items():
+        durations[job] = details['duration']
         G.add_node(job, duration=details['duration'])
         for dep in details.get('dependencies', []):
             if dep not in jobs:
