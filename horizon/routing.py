@@ -56,7 +56,10 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     tsp_path = nx.approximation.traveling_salesman_problem(metric_G, cycle=True)
 
     # Calculate total weight
-    total_weight = sum(metric_G[u][v]['weight'] for u, v in zip(tsp_path[:-1], tsp_path[1:]))
+    # ⚡ Bolt: Use a list comprehension instead of a generator expression inside sum().
+    # For small, bounded collections, constructing a list is faster than the generator
+    # setup overhead.
+    total_weight = sum([metric_G[u][v]['weight'] for u, v in zip(tsp_path[:-1], tsp_path[1:])])
 
     return {
         "path": tsp_path,

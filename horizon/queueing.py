@@ -86,7 +86,10 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
         }
 
     # System totals
-    total_L = sum(results[f"node_{i}"]["L"] for i in range(n))
+    # ⚡ Bolt: Use a list comprehension instead of a generator expression inside sum().
+    # For small, bounded collections, constructing a list is faster than the generator
+    # setup overhead.
+    total_L = sum([results[f"node_{i}"]["L"] for i in range(n)])
     total_gamma = sum(gamma)
     total_W = total_L / total_gamma if total_gamma > 0 else 0
 
