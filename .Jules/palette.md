@@ -30,3 +30,6 @@
 ## 2024-05-24 - Prevent Stale Data Confusion in Async Workflows
 **Learning:** When async operations fail, leaving previously rendered visualizations (D3 graphs, Chart.js canvases) on the screen creates severe UX confusion, as users may mistakenly interpret the stale successful data as the result of their new (failed) input.
 **Action:** Always explicitly destroy or clear visualization containers in the `catch` blocks of async data-fetching workflows to ensure failure states are unambiguous.
+## 2024-05-18 - CSS-based Empty States for Visualizations
+**Learning:** D3.js visualization containers often experience empty states before rendering or when an error clears them (e.g., `d3.select("#graph").selectAll("*").remove()`). Relying on JavaScript to manage placeholder text in these states is brittle and error-prone.
+**Action:** Use the CSS `:empty::before` pseudo-class pattern (`#container:empty::before { content: "Placeholder"; }`) for visualization containers. This creates a highly robust, JS-free empty state that automatically appears when the container has no children and seamlessly disappears the moment D3.js appends an SVG or Canvas.
