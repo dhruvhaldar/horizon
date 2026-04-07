@@ -205,6 +205,28 @@ textarea.inset {
     height: auto !important;
 }
 
+/* Dynamic Empty States for Visualizations */
+.viz-container:empty::before {
+    content: "Visualization will appear here...";
+    color: var(--text-color);
+    opacity: 0.5;
+    font-weight: 500;
+    font-size: 1.1rem;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+#queue-graph:empty::before {
+    content: "Run network solver to generate graph";
+}
+
+#routing-graph:empty::before {
+    content: "Optimize route to generate map";
+}
+
 /* D3.js Styling */
 .node circle {
     fill: var(--bg-color);
