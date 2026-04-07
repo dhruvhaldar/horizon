@@ -80,6 +80,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     durations = {'START': 0, 'END': 0}
 
     for job, details in jobs.items():
+        if 'duration' not in details:
+            raise ValueError(f"Job '{job}' is missing 'duration' definition.")
         durations[job] = details['duration']
         G.add_node(job, duration=details['duration'])
         for dep in details.get('dependencies', []):
