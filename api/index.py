@@ -120,6 +120,9 @@ def solve_continuous(req: ContinuousReviewRequest):
     # Security: Prevent mathematical undefined states and ZeroDivisionErrors.
     if req.demand_rate <= 0 or req.order_cost <= 0 or req.holding_cost <= 0:
         raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")
+    # Security: Prevent 500 error leaks and JSON serialization crashes from nan/inf bounds.
+    if req.service_level <= 0 or req.service_level >= 1:
+        raise HTTPException(status_code=400, detail="Service level must be between 0 and 1 (exclusive).")
     try:
         res = continuous_review(req.demand_rate, req.order_cost, req.holding_cost, req.lead_time_mean, req.lead_time_std, req.service_level)
         return res
