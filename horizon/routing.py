@@ -29,29 +29,23 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     if not nx.is_connected(G):
         raise ValueError("Graph is not connected, TSP has no solution.")
 
-    metric_G = nx.Graph()
     nodes_list = list(G.nodes())
-    metric_G.add_nodes_from(nodes_list)
 
     # ⚡ Bolt: Use floyd_warshall_numpy instead of all_pairs_dijkstra_path_length
     # for creating a complete metric graph. This computes all-pairs shortest paths
     # much faster using optimized C/NumPy operations, reducing TSP setup time
-    # significantly for larger graphs. We also only add edges where i < j.
+    # significantly for larger graphs.
     path_lengths = nx.floyd_warshall_numpy(G)
 
-    # ⚡ Bolt: Convert the NumPy array to a native Python list of lists before
-    # iterating over it. Accessing individual scalar elements of a NumPy array
-    # inside a Python loop incurs significant type-checking and boxing overhead.
-    # .tolist() converts the entire array to CPython floats at C-speed, making
-    # the subsequent O(N^2) list comprehension noticeably faster.
-    path_lengths_list = path_lengths.tolist()
+    # ⚡ Bolt: Use nx.from_numpy_array to construct the metric closure graph directly
+    # from the NumPy distance matrix. This bypasses the severe Python overhead of
+    # creating an O(N^2) list of edge tuples using nested list comprehensions,
+    # building the complete graph natively at C-speed.
+    metric_G = nx.from_numpy_array(path_lengths)
 
-    n = len(nodes_list)
-    edges_to_add = [
-        (nodes_list[i], nodes_list[j], path_lengths_list[i][j])
-        for i in range(n) for j in range(i + 1, n)
-    ]
-    metric_G.add_weighted_edges_from(edges_to_add)
+    # Map integer nodes back to original string IDs
+    mapping = {i: nodes_list[i] for i in range(len(nodes_list))}
+    nx.relabel_nodes(metric_G, mapping, copy=False)
 
     tsp_path = nx.approximation.traveling_salesman_problem(metric_G, cycle=True)
 

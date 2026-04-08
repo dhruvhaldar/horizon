@@ -32,3 +32,9 @@
 ## 2026-04-06 - Generator vs List Comprehension in Min/Max Operations
 **Learning:** For small bounded collections (like graph predecessors/successors where limits are <= 100), passing a generator expression into `max()` or `min()` is noticeably slower (up to 10-20% slower per call) than passing a list comprehension. This is due to Python's internal generator setup and function call overhead outweighing the memory benefits of lazy evaluation for small inputs.
 **Action:** When working with computationally intensive loops operating on small bounded sets (e.g., node neighbor lookups in NetworkX traversals), use list comprehensions instead of generator expressions inside aggregation functions like `max()` or `min()`.
+## 2026-04-08 - NetworkX TSP Metric Closure
+**Learning:** Manually calculating the full metric closure (e.g. using `nx.floyd_warshall_numpy`) and instantiating a new complete graph object for `nx.approximation.traveling_salesman_problem` introduces significant O(V³) time and O(V²) Python looping overhead.
+**Action:** Always pass the original graph directly to `nx.approximation.traveling_salesman_problem(G)` since it automatically and efficiently computes the required shortest paths internally. Use `nx.shortest_path_length` as a fallback when calculating the final path weight if edges were synthesized.
+## 2026-04-08 - NetworkX Metric Graph Creation
+**Learning:** Using nested list comprehensions to construct a fully connected metric graph from an $O(N^2)$ distance matrix (e.g. from `floyd_warshall_numpy`) introduces significant Python looping and object instantiation overhead.
+**Action:** When building a complete/dense graph from a NumPy distance matrix, use `nx.from_numpy_array(matrix)` directly. This constructs the dense graph efficiently at C-speed, bypassing the nested Python loops. Map node integers back to string identifiers using `nx.relabel_nodes`.
