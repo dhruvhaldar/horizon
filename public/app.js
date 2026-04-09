@@ -164,6 +164,8 @@ async function solveEOQ() {
             invChart.destroy();
             invChart = null;
         }
+        const viz = document.getElementById('inventory-viz');
+        if (viz) viz.innerHTML = '';
     }
 }
 
@@ -194,11 +196,19 @@ async function solveContinuous() {
             invChart.destroy();
             invChart = null;
         }
+        const viz = document.getElementById('inventory-viz');
+        if (viz) viz.innerHTML = '';
     }
 }
 
 function drawInventoryChart(Q, R, demand) {
-    const ctx = document.getElementById('inventory-chart').getContext('2d');
+    const viz = document.getElementById('inventory-viz');
+    let canvas = document.getElementById('inventory-chart');
+    if (!canvas) {
+        viz.innerHTML = '<canvas id="inventory-chart" role="img" aria-label="Line chart showing inventory levels and reorder points over time">Your browser does not support the canvas element. This chart displays inventory levels over time.</canvas>';
+        canvas = document.getElementById('inventory-chart');
+    }
+    const ctx = canvas.getContext('2d');
     if (invChart) invChart.destroy();
 
     const timeSteps = 100;

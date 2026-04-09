@@ -33,3 +33,6 @@
 ## 2024-05-18 - CSS-based Empty States for Visualizations
 **Learning:** D3.js visualization containers often experience empty states before rendering or when an error clears them (e.g., `d3.select("#graph").selectAll("*").remove()`). Relying on JavaScript to manage placeholder text in these states is brittle and error-prone.
 **Action:** Use the CSS `:empty::before` pseudo-class pattern (`#container:empty::before { content: "Placeholder"; }`) for visualization containers. This creates a highly robust, JS-free empty state that automatically appears when the container has no children and seamlessly disappears the moment D3.js appends an SVG or Canvas.
+## 2026-04-20 - Dynamic Canvas Injection for CSS Empty States
+**Learning:** Hardcoded `<canvas>` elements defeat the CSS `:empty::before` placeholder pattern, leaving users with confusing blank UI regions on initial load and after errors.
+**Action:** Always inject `<canvas>` elements dynamically only when data is ready to be rendered, and clear the container's innerHTML on error, ensuring consistent CSS empty states across all visualization types while preserving canvas ARIA roles.
