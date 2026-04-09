@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 import os
 import numpy as np
 from fastapi.staticfiles import StaticFiles
@@ -48,10 +48,14 @@ class ContinuousReviewRequest(BaseModel):
 
 class TSPRequest(BaseModel):
     nodes: List[str]
-    edges: List[List[Any]] # [node1, node2, weight]
+    edges: List[Tuple[str, str, float]]
+
+class JobDetails(BaseModel):
+    duration: float
+    dependencies: Optional[List[str]] = []
 
 class JobShopRequest(BaseModel):
-    jobs: Dict[str, Dict[str, Any]]
+    jobs: Dict[str, JobDetails]
 
 @app.get("/api/health")
 def health_check():
@@ -140,13 +144,10 @@ def solve_tsp(req: TSPRequest):
         raise HTTPException(status_code=400, detail="Graph too small. Minimum 2 nodes required for TSP.")
 
     try:
-        # Convert list of lists back to list of tuples
-        edges = [(e[0], e[1], float(e[2])) for e in req.edges]
-        res = tsp_approx(req.nodes, edges)
+        res = tsp_approx(req.nodes, req.edges)
         return res
-    except (ValueError, IndexError) as e:
-        # Security: Catch IndexError for malformed edge inputs (e.g. missing weight) to prevent 500 errors
-        raise HTTPException(status_code=400, detail="Invalid edge format or values. Expected [node1, node2, weight].")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/route/jobshop")
 def solve_jobshop(req: JobShopRequest):
@@ -155,7 +156,9 @@ def solve_jobshop(req: JobShopRequest):
         raise HTTPException(status_code=400, detail="Too many jobs. Maximum 100 allowed.")
 
     try:
-        res = job_shop_cpm(req.jobs)
+        # Convert Pydantic models back to dict for the backend function
+        jobs_dict = {k: v.model_dump() for k, v in req.jobs.items()}
+        res = job_shop_cpm(jobs_dict)
         return res
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
