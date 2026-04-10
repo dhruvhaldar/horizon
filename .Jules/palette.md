@@ -36,3 +36,7 @@
 ## 2026-04-20 - Dynamic Canvas Injection for CSS Empty States
 **Learning:** Hardcoded `<canvas>` elements defeat the CSS `:empty::before` placeholder pattern, leaving users with confusing blank UI regions on initial load and after errors.
 **Action:** Always inject `<canvas>` elements dynamically only when data is ready to be rendered, and clear the container's innerHTML on error, ensuring consistent CSS empty states across all visualization types while preserving canvas ARIA roles.
+
+## 2024-05-25 - HTML5 Number Input Step Constraints
+**Learning:** Using `<input type="number">` for floating-point values (like standard deviation `1.2`) without defining the `step` attribute makes the input natively invalid (step mismatch) because the default step is 1. This causes browser spinner controls to snap values to integers, frustrating users and destroying decimal precision.
+**Action:** Always add `step="any"` (and appropriate `min`/`max` bounds) to numeric inputs meant for continuous/floating-point mathematical data to ensure smooth cross-browser UX and accurate spinner behavior.
