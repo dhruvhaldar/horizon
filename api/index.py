@@ -44,7 +44,7 @@ class ContinuousReviewRequest(BaseModel):
     holding_cost: float
     lead_time_mean: float
     lead_time_std: float
-    service_level: Optional[float] = 0.95
+    service_level: float = 0.95
 
 class TSPRequest(BaseModel):
     nodes: List[str]
@@ -52,7 +52,7 @@ class TSPRequest(BaseModel):
 
 class JobDetails(BaseModel):
     duration: float
-    dependencies: Optional[List[str]] = []
+    dependencies: List[str] = []
 
 class JobShopRequest(BaseModel):
     jobs: Dict[str, JobDetails]
