@@ -73,6 +73,9 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
     lambda_vec_list = lambda_vec.tolist()
 
     results = {}
+    total_L = 0.0
+    total_gamma = 0.0
+
     for i in range(n):
         l_i = lambda_vec_list[i]
         mu_i = mu[i]
@@ -85,12 +88,13 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
             **node_metrics
         }
 
+        # ⚡ Bolt: Accumulate totals directly inside the main processing loop.
+        # This avoids redundant O(N) string formatting (`f"node_{i}"`), dictionary
+        # lookups, and the overhead of constructing intermediate lists for `sum()`.
+        total_L += node_metrics["L"]
+        total_gamma += gamma[i]
+
     # System totals
-    # ⚡ Bolt: Use a list comprehension instead of a generator expression inside sum().
-    # For small, bounded collections, constructing a list is faster than the generator
-    # setup overhead.
-    total_L = sum([results[f"node_{i}"]["L"] for i in range(n)])
-    total_gamma = sum(gamma)
     total_W = total_L / total_gamma if total_gamma > 0 else 0
 
     return {
