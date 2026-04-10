@@ -73,18 +73,18 @@
                     <div class="input-group">
                         <label for="i-demand">Demand Rate:</label>
                         <span id="help-i-demand" class="helper-text">Total units required per period (e.g., units/year).</span>
-                        <input type="number" id="i-demand" aria-describedby="help-i-demand" class="inset" value="1000" title="Annual or periodic demand.">
+                        <input type="number" id="i-demand" aria-describedby="help-i-demand" class="inset" value="1000" step="any" min="0" title="Annual or periodic demand.">
                     </div>
                     <div class="input-group">
                         <label for="i-order">Ordering Cost:</label>
                         <span id="help-i-order" class="helper-text">Flat cost incurred whenever an order is placed.</span>
-                        <input type="number" id="i-order" aria-describedby="help-i-order" class="inset" value="50" title="Fixed setup or procurement cost per order.">
+                        <input type="number" id="i-order" aria-describedby="help-i-order" class="inset" value="50" step="any" min="0" title="Fixed setup or procurement cost per order.">
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
                             <label for="i-hold">Holding Cost:</label>
                             <span id="help-i-hold" class="helper-text">Cost to carry one unit in stock for one period.</span>
-                            <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" title="Storage, insurance, and capital opportunity cost.">
+                            <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" step="any" min="0" title="Storage, insurance, and capital opportunity cost.">
                         </div>
                         <button class="btn" onclick="withLoading(this, solveEOQ)" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
                     </div>
@@ -94,28 +94,28 @@
                     <div class="input-group">
                         <label for="ic-demand">Demand Rate:</label>
                         <span id="help-ic-demand" class="helper-text">Average units required per period.</span>
-                        <input type="number" id="ic-demand" aria-describedby="help-ic-demand" class="inset" value="1000" title="Deterministic demand mean.">
+                        <input type="number" id="ic-demand" aria-describedby="help-ic-demand" class="inset" value="1000" step="any" min="0" title="Deterministic demand mean.">
                     </div>
                     <div class="input-group">
                         <label for="ic-order">Ordering Cost:</label>
                         <span id="help-ic-order" class="helper-text">Fixed cost to initiate a new order.</span>
-                        <input type="number" id="ic-order" aria-describedby="help-ic-order" class="inset" value="50" title="Setup cost.">
+                        <input type="number" id="ic-order" aria-describedby="help-ic-order" class="inset" value="50" step="any" min="0" title="Setup cost.">
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
                             <label for="ic-hold">Holding Cost:</label>
                             <span id="help-ic-hold" class="helper-text">Periodic cost per unit stored.</span>
-                            <input type="number" id="ic-hold" aria-describedby="help-ic-hold" class="inset" value="2" title="Inventory carrying cost.">
+                            <input type="number" id="ic-hold" aria-describedby="help-ic-hold" class="inset" value="2" step="any" min="0" title="Inventory carrying cost.">
                         </div>
                         <div class="input-group">
                             <label for="ic-lt-mean">Lead Time Mean:</label>
                             <span id="help-ic-lt-mean" class="helper-text">Average wait time for delivery.</span>
-                            <input type="number" id="ic-lt-mean" aria-describedby="help-ic-lt-mean" class="inset" value="5" title="Average duration from order to receipt.">
+                            <input type="number" id="ic-lt-mean" aria-describedby="help-ic-lt-mean" class="inset" value="5" step="any" min="0" title="Average duration from order to receipt.">
                         </div>
                         <div class="input-group">
                             <label for="ic-lt-std">Lead Time Std Dev:</label>
                             <span id="help-ic-lt-std" class="helper-text">Variation in lead time (for safety stock).</span>
-                            <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" title="Uncertainty in supply duration.">
+                            <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" step="any" min="0" title="Uncertainty in supply duration.">
                         </div>
                         <button class="btn" onclick="withLoading(this, solveContinuous)" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
                     </div>
