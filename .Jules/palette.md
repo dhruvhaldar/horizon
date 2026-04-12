@@ -40,3 +40,7 @@
 ## 2024-05-25 - HTML5 Number Input Step Constraints
 **Learning:** Using `<input type="number">` for floating-point values (like standard deviation `1.2`) without defining the `step` attribute makes the input natively invalid (step mismatch) because the default step is 1. This causes browser spinner controls to snap values to integers, frustrating users and destroying decimal precision.
 **Action:** Always add `step="any"` (and appropriate `min`/`max` bounds) to numeric inputs meant for continuous/floating-point mathematical data to ensure smooth cross-browser UX and accurate spinner behavior.
+
+## 2024-04-12 - Missing HTML5 Validation on Async Actions
+**Learning:** Standard HTML5 form validation (using `required` attributes and the browser's native `.reportValidity()`) does not naturally trigger when action buttons execute JavaScript click handlers instead of native form submissions. This is common in non-traditional or app-like layouts (like this app's formless neumorphic design), leading to users submitting incomplete data and encountering error states.
+**Action:** When building formless UIs with async handlers, manually query relevant visible inputs (`input`, `textarea`) inside the contextual container and call `.reportValidity()` on them prior to making network requests, aborting the action if validation fails.
