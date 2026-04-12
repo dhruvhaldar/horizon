@@ -90,15 +90,12 @@ def solve_queue(req: JacksonRequest):
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
         return res
-    except (ValueError, np.linalg.LinAlgError) as e:
+    except ValueError as e:
         # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        import numpy as np
+    except np.linalg.LinAlgError:
         # Security: Catch specialized mathematical library exceptions like LinAlgError to prevent 500 error leaks.
-        if isinstance(e, np.linalg.LinAlgError):
-            raise HTTPException(status_code=400, detail="Singular matrix")
-        raise
+        raise HTTPException(status_code=400, detail="Singular matrix")
 
 @app.post("/api/inventory/eoq")
 def solve_eoq(req: EOQRequest):
