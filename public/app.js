@@ -1,6 +1,23 @@
 const API_BASE = '/api';
 
 async function withLoading(btnElement, asyncFunc) {
+    // UX Enhancement: Trigger native HTML5 validation on visible inputs before async operations
+    const container = btnElement.closest('.panel');
+    if (container) {
+        const inputs = container.querySelectorAll('input, textarea');
+        let isValid = true;
+        for (let input of inputs) {
+            // Only validate if the element is not visually hidden (like toggles) and is currently displayed
+            if (input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)) {
+                if (!input.reportValidity()) {
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+        if (!isValid) return;
+    }
+
     const originalText = btnElement.innerText;
     btnElement.disabled = true;
     btnElement.innerText = "⏳ Calculating...";

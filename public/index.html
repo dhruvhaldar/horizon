@@ -35,18 +35,18 @@
                 <div class="input-group">
                     <label for="q-gamma">External Arrivals ($\gamma$):</label>
                     <span id="help-q-gamma" class="helper-text">Avg. arrivals from outside the system per unit time.</span>
-                    <input type="text" id="q-gamma" aria-describedby="help-q-gamma" class="inset" value="10, 5" placeholder="e.g., 10, 5" title="Comma-separated rates for each node (e.g., 10 arrivals/hr for node 1).">
+                    <input type="text" id="q-gamma" aria-describedby="help-q-gamma" class="inset" value="10, 5" placeholder="e.g., 10, 5" title="Comma-separated rates for each node (e.g., 10 arrivals/hr for node 1)." required>
                 </div>
                 <div class="input-group">
                     <label for="q-mu">Service Rates ($\mu$):</label>
                     <span id="help-q-mu" class="helper-text">Capacity per server at each node.</span>
-                    <input type="text" id="q-mu" aria-describedby="help-q-mu" class="inset" value="20, 15" placeholder="e.g., 20, 15" title="Service capacity for each node. Must be > gamma.">
+                    <input type="text" id="q-mu" aria-describedby="help-q-mu" class="inset" value="20, 15" placeholder="e.g., 20, 15" title="Service capacity for each node. Must be > gamma." required>
                 </div>
                 <div class="calc-group">
                     <div class="input-group">
                         <label for="q-p">Routing Matrix ($P$):</label>
                         <span id="help-q-p" class="helper-text">Probability of moving from node $i$ to node $j$.</span>
-                        <textarea id="q-p" aria-describedby="help-q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5\n0, 0" title="Matrix of transition probabilities between nodes. Sum of each row should be <= 1.">0, 0.5&#10;0, 0</textarea>
+                        <textarea id="q-p" aria-describedby="help-q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5\n0, 0" title="Matrix of transition probabilities between nodes. Sum of each row should be <= 1." required>0, 0.5&#10;0, 0</textarea>
                     </div>
                     <button class="btn" onclick="withLoading(this, solveQueue)" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
@@ -73,18 +73,18 @@
                     <div class="input-group">
                         <label for="i-demand">Demand Rate:</label>
                         <span id="help-i-demand" class="helper-text">Total units required per period (e.g., units/year).</span>
-                        <input type="number" id="i-demand" aria-describedby="help-i-demand" class="inset" value="1000" step="any" min="0" title="Annual or periodic demand.">
+                        <input type="number" id="i-demand" aria-describedby="help-i-demand" class="inset" value="1000" step="any" min="0" title="Annual or periodic demand." required>
                     </div>
                     <div class="input-group">
                         <label for="i-order">Ordering Cost:</label>
                         <span id="help-i-order" class="helper-text">Flat cost incurred whenever an order is placed.</span>
-                        <input type="number" id="i-order" aria-describedby="help-i-order" class="inset" value="50" step="any" min="0" title="Fixed setup or procurement cost per order.">
+                        <input type="number" id="i-order" aria-describedby="help-i-order" class="inset" value="50" step="any" min="0" title="Fixed setup or procurement cost per order." required>
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
                             <label for="i-hold">Holding Cost:</label>
                             <span id="help-i-hold" class="helper-text">Cost to carry one unit in stock for one period.</span>
-                            <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" step="any" min="0" title="Storage, insurance, and capital opportunity cost.">
+                            <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" step="any" min="0" title="Storage, insurance, and capital opportunity cost." required>
                         </div>
                         <button class="btn" onclick="withLoading(this, solveEOQ)" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
                     </div>
@@ -94,28 +94,28 @@
                     <div class="input-group">
                         <label for="ic-demand">Demand Rate:</label>
                         <span id="help-ic-demand" class="helper-text">Average units required per period.</span>
-                        <input type="number" id="ic-demand" aria-describedby="help-ic-demand" class="inset" value="1000" step="any" min="0" title="Deterministic demand mean.">
+                        <input type="number" id="ic-demand" aria-describedby="help-ic-demand" class="inset" value="1000" step="any" min="0" title="Deterministic demand mean." required>
                     </div>
                     <div class="input-group">
                         <label for="ic-order">Ordering Cost:</label>
                         <span id="help-ic-order" class="helper-text">Fixed cost to initiate a new order.</span>
-                        <input type="number" id="ic-order" aria-describedby="help-ic-order" class="inset" value="50" step="any" min="0" title="Setup cost.">
+                        <input type="number" id="ic-order" aria-describedby="help-ic-order" class="inset" value="50" step="any" min="0" title="Setup cost." required>
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
                             <label for="ic-hold">Holding Cost:</label>
                             <span id="help-ic-hold" class="helper-text">Periodic cost per unit stored.</span>
-                            <input type="number" id="ic-hold" aria-describedby="help-ic-hold" class="inset" value="2" step="any" min="0" title="Inventory carrying cost.">
+                            <input type="number" id="ic-hold" aria-describedby="help-ic-hold" class="inset" value="2" step="any" min="0" title="Inventory carrying cost." required>
                         </div>
                         <div class="input-group">
                             <label for="ic-lt-mean">Lead Time Mean:</label>
                             <span id="help-ic-lt-mean" class="helper-text">Average wait time for delivery.</span>
-                            <input type="number" id="ic-lt-mean" aria-describedby="help-ic-lt-mean" class="inset" value="5" step="any" min="0" title="Average duration from order to receipt.">
+                            <input type="number" id="ic-lt-mean" aria-describedby="help-ic-lt-mean" class="inset" value="5" step="any" min="0" title="Average duration from order to receipt." required>
                         </div>
                         <div class="input-group">
                             <label for="ic-lt-std">Lead Time Std Dev:</label>
                             <span id="help-ic-lt-std" class="helper-text">Variation in lead time (for safety stock).</span>
-                            <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" step="any" min="0" title="Uncertainty in supply duration.">
+                            <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" step="any" min="0" title="Uncertainty in supply duration." required>
                         </div>
                         <button class="btn" onclick="withLoading(this, solveContinuous)" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
                     </div>
@@ -132,12 +132,12 @@
                 <div class="input-group">
                     <label for="r-nodes">Nodes (comma separated):</label>
                     <span id="help-r-nodes" class="helper-text">Identifiers for locations to be visited.</span>
-                    <input type="text" id="r-nodes" aria-describedby="help-r-nodes" class="inset" value="A, B, C, D" title="List of distinct node names.">
+                    <input type="text" id="r-nodes" aria-describedby="help-r-nodes" class="inset" value="A, B, C, D" title="List of distinct node names." required>
                 </div>
                 <div class="input-group">
                     <label for="r-edges">Edges (node1,node2,weight per line):</label>
                     <span id="help-r-edges" class="helper-text">Travel cost/distance between nodes.</span>
-                    <textarea id="r-edges" aria-describedby="help-r-edges" class="inset" rows="5" title="Edge list format: Source, Target, Cost.">A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
+                    <textarea id="r-edges" aria-describedby="help-r-edges" class="inset" rows="5" title="Edge list format: Source, Target, Cost." required>A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
                 <button class="btn" onclick="withLoading(this, solveTSP)" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
                 <div class="results inset" id="routing-results" aria-live="polite">Results will appear here...</div>
