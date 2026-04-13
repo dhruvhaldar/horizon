@@ -20,25 +20,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class JacksonRequest(BaseModel):
+class SafeBaseModel(BaseModel):
+    # Security: Reject 'NaN' and 'Infinity' string representations in float fields
+    # to prevent unhandled ValueError crashes during JSON serialization (500 Internal Server Error).
+    model_config = {"allow_inf_nan": False}
+
+class JacksonRequest(SafeBaseModel):
     gamma: List[float]
     p: List[List[float]]
     mu: List[float]
     c: Optional[List[int]] = None
 
-class EOQRequest(BaseModel):
+class EOQRequest(SafeBaseModel):
     demand_rate: float
     order_cost: float
     holding_cost: float
 
-class NewsvendorRequest(BaseModel):
+class NewsvendorRequest(SafeBaseModel):
     selling_price: float
     cost: float
     salvage_value: float
     demand_mean: float
     demand_std: float
 
-class ContinuousReviewRequest(BaseModel):
+class ContinuousReviewRequest(SafeBaseModel):
     demand_rate: float
     order_cost: float
     holding_cost: float
@@ -46,15 +51,15 @@ class ContinuousReviewRequest(BaseModel):
     lead_time_std: float
     service_level: float = 0.95
 
-class TSPRequest(BaseModel):
+class TSPRequest(SafeBaseModel):
     nodes: List[str]
     edges: List[Tuple[str, str, float]]
 
-class JobDetails(BaseModel):
+class JobDetails(SafeBaseModel):
     duration: float
     dependencies: List[str] = []
 
-class JobShopRequest(BaseModel):
+class JobShopRequest(SafeBaseModel):
     jobs: Dict[str, JobDetails]
 
 @app.get("/api/health")
