@@ -44,3 +44,6 @@
 ## 2024-04-12 - Missing HTML5 Validation on Async Actions
 **Learning:** Standard HTML5 form validation (using `required` attributes and the browser's native `.reportValidity()`) does not naturally trigger when action buttons execute JavaScript click handlers instead of native form submissions. This is common in non-traditional or app-like layouts (like this app's formless neumorphic design), leading to users submitting incomplete data and encountering error states.
 **Action:** When building formless UIs with async handlers, manually query relevant visible inputs (`input`, `textarea`) inside the contextual container and call `.reportValidity()` on them prior to making network requests, aborting the action if validation fails.
+## 2026-05-15 - Unreadable Error Arrays from API
+**Learning:** When APIs (like FastAPI/Pydantic) return 422 Validation errors, the detail payload is often an array of objects. Directly passing this payload to a new `Error()` constructor or innerText causes the browser to stringify it as `[object Object]`, which is completely unhelpful to the user.
+**Action:** Always inspect error payloads and implement a formatting helper (e.g., mapping over array objects to extract the `msg` fields) before displaying them in the UI to ensure users receive actionable, human-readable feedback.
