@@ -1,5 +1,13 @@
 const API_BASE = '/api';
 
+// Helper to format validation errors from FastAPI
+function formatError(detail) {
+    if (Array.isArray(detail)) {
+        return detail.map(err => err.msg).join(', ');
+    }
+    return detail;
+}
+
 async function withLoading(btnElement, asyncFunc) {
     // UX Enhancement: Trigger native HTML5 validation on visible inputs before async operations
     const container = btnElement.closest('.panel');
@@ -45,7 +53,7 @@ async function solveQueue() {
             body: JSON.stringify({ gamma, p, mu, c: mu.map(() => 1) })
         });
         const data = await res.json();
-        if(!res.ok) throw new Error(data.detail || 'Error solving queue');
+        if(!res.ok) throw new Error(formatError(data.detail) || 'Error solving queue');
 
         document.getElementById('queue-results').innerText = JSON.stringify(data, null, 2);
         drawQueueGraph(gamma, p);
@@ -171,7 +179,7 @@ async function solveEOQ() {
             body: JSON.stringify({ demand_rate: demand, order_cost: order, holding_cost: hold })
         });
         const data = await res.json();
-        if(!res.ok) throw new Error(data.detail || 'Error calculating EOQ');
+        if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating EOQ');
 
         document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, 0, demand);
@@ -203,7 +211,7 @@ async function solveContinuous() {
             })
         });
         const data = await res.json();
-        if(!res.ok) throw new Error(data.detail || 'Error calculating (R, Q)');
+        if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating (R, Q)');
 
         document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, data.R, demand);
@@ -302,7 +310,7 @@ async function solveTSP() {
             body: JSON.stringify({ nodes, edges })
         });
         const data = await res.json();
-        if(!res.ok) throw new Error(data.detail || 'Error calculating TSP');
+        if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating TSP');
 
         document.getElementById('routing-results').innerText = JSON.stringify(data, null, 2);
         drawRoutingGraph(nodes, edges, data.path);
