@@ -43,17 +43,19 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # building the complete graph natively at C-speed.
     metric_G = nx.from_numpy_array(path_lengths)
 
-    # Map integer nodes back to original string IDs
-    mapping = {i: nodes_list[i] for i in range(len(nodes_list))}
-    nx.relabel_nodes(metric_G, mapping, copy=False)
-
-    tsp_path = nx.approximation.traveling_salesman_problem(metric_G, cycle=True)
+    # ⚡ Bolt: Do not run nx.relabel_nodes before TSP. NetworkX modifies labels in O(V+E),
+    # which introduces significant O(N^2) overhead for dense graphs and makes all subsequent
+    # node lookups during TSP approximation use string hashing instead of faster integer indexing.
+    tsp_path_int = nx.approximation.traveling_salesman_problem(metric_G, cycle=True)
 
     # Calculate total weight
     # ⚡ Bolt: Use a list comprehension instead of a generator expression inside sum().
     # For small, bounded collections, constructing a list is faster than the generator
     # setup overhead.
-    total_weight = sum([metric_G[u][v]['weight'] for u, v in zip(tsp_path[:-1], tsp_path[1:])])
+    total_weight = sum([metric_G[u][v]['weight'] for u, v in zip(tsp_path_int[:-1], tsp_path_int[1:])])
+
+    # Map the resulting integer path back to original string IDs in O(N) time
+    tsp_path = [nodes_list[node] for node in tsp_path_int]
 
     return {
         "path": tsp_path,

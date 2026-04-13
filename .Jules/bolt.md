@@ -46,3 +46,6 @@
 ## 2026-06-21 - Avoid redundant dictionary lookups and string building for aggregation
 **Learning:** In `horizon/queueing.py`, aggregating `total_L` with a list comprehension like `sum([results[f"node_{i}"]["L"] for i in range(n)])` after building the `results` dictionary requires $O(N)$ string creations (`f"node_{i}"`) and $O(N)$ nested dictionary lookups for data that was just computed.
 **Action:** When calculating system totals from newly computed node metrics inside a loop, accumulate the totals directly in local scope during that primary processing loop rather than re-querying the data structure later.
+## 2024-05-24 - NetworkX relabel_nodes overhead
+**Learning:** Using `nx.relabel_nodes` directly on large generated graphs introduces significant mapping overhead (O(V+E)) before running `traveling_salesman_problem`, and makes TSP algorithm inner loops slower because they rely on string hash mapping rather than sequential integers.
+**Action:** When approximating TSP, execute the algorithm on the integer-labeled graph first. Calculate weight using these integers, and then map the returned path array to original node names at the end in O(N) time.
