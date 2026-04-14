@@ -12,3 +12,7 @@
 ## 2025-05-18 - Dictionary Comprehension vs. Copy & Pop overhead
 **Learning:** In Python, rebuilding a dictionary using a comprehension to exclude a few specific keys (e.g., `{k: v for k, v in est.items() if k not in ('START', 'END')}`) evaluates the condition for every element, introducing O(N) evaluation overhead.
 **Action:** When filtering out a small number of known keys from a dictionary, use `.copy()` followed by `.pop('KEY', None)` (or `del`). This is roughly 20x faster because the C-level copy and targeted key deletions bypass Python-level iteration and condition checking entirely.
+
+## 2026-04-14 - Bulk Graph Construction Overhead
+**Learning:** In NetworkX, building a `DiGraph` or `Graph` by repeatedly calling `.add_node()` and `.add_edge()` within a performance-critical loop introduces significant dict wrapping and validation overhead per item. When building graphs dynamically from input dictionaries (like in Job-Shop scheduling), this becomes a measurable bottleneck.
+**Action:** When creating graphs from bounded inputs, gather all nodes and edges into native Python lists first, then call `G.add_nodes_from()` and `G.add_edges_from()` once. This executes the NetworkX insertions in bulk, resulting in faster and more efficient graph creation.

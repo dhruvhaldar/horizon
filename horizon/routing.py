@@ -75,25 +75,42 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # traversal loops introduces significant NetworkX property lookup overhead.
     durations = {'START': 0, 'END': 0}
 
+    # ⚡ Bolt: Build lists of nodes and edges in Python space and add them in bulk
+    # instead of adding them iteratively in loops. This bypasses repetitive NetworkX
+    # validation and dict wrapping overhead, improving graph creation performance.
+    nodes_list = []
+    edges_list = []
+
     for job, details in jobs.items():
         if 'duration' not in details:
             raise ValueError(f"Job '{job}' is missing 'duration' definition.")
-        durations[job] = details['duration']
-        G.add_node(job, duration=details['duration'])
-        for dep in details.get('dependencies', []):
+        d = details['duration']
+        durations[job] = d
+        nodes_list.append((job, {'duration': d}))
+
+        deps = details.get('dependencies', [])
+        for dep in deps:
             if dep not in jobs:
                 raise ValueError(f"Dependency '{dep}' for job '{job}' is not defined.")
-            G.add_edge(dep, job)
+            edges_list.append((dep, job))
 
-    # Add a start node and an end node
-    G.add_node('START', duration=0)
-    G.add_node('END', duration=0)
+        if not deps:
+            edges_list.append(('START', job))
 
-    for job, details in jobs.items():
-        if not details.get('dependencies', []):
-            G.add_edge('START', job)
+    nodes_list.append(('START', {'duration': 0}))
+    nodes_list.append(('END', {'duration': 0}))
+
+    G.add_nodes_from(nodes_list)
+    G.add_edges_from(edges_list)
+
+    # Add edges to END node for nodes with no successors
+    # We must do this after the bulk add to correctly check out_degree
+    end_edges = []
+    for job in jobs:
         if G.out_degree(job) == 0:
-            G.add_edge(job, 'END')
+            end_edges.append((job, 'END'))
+    if end_edges:
+        G.add_edges_from(end_edges)
 
     # ⚡ Bolt: Cache a single topological sort traversal into a list.
     # This implicitly detects cycles (raising NetworkXUnfeasible) and prevents
