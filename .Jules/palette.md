@@ -47,3 +47,7 @@
 ## 2026-05-15 - Unreadable Error Arrays from API
 **Learning:** When APIs (like FastAPI/Pydantic) return 422 Validation errors, the detail payload is often an array of objects. Directly passing this payload to a new `Error()` constructor or innerText causes the browser to stringify it as `[object Object]`, which is completely unhelpful to the user.
 **Action:** Always inspect error payloads and implement a formatting helper (e.g., mapping over array objects to extract the `msg` fields) before displaying them in the UI to ensure users receive actionable, human-readable feedback.
+
+## 2026-05-18 - Missing ARIA Roles on Dynamic Visualization Containers
+**Learning:** Visualization containers (like `#inventory-viz`) that start empty and dynamically receive `<canvas>` elements often get overlooked for accessibility because the canvas doesn't exist on page load. While other SVG-based containers in the app had ARIA attributes, the canvas container was missing them, leaving screen reader users unaware of the chart's existence even after rendering.
+**Action:** Always ensure structural layout containers meant for visualizations explicitly define `role="img"` and a descriptive `aria-label` (e.g., "Inventory Optimization Chart") directly in the HTML, regardless of whether the child graphic is a `<canvas>` or `<svg>` injected later by JavaScript.
