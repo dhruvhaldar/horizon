@@ -49,10 +49,12 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     tsp_path_int = nx.approximation.traveling_salesman_problem(metric_G, cycle=True)
 
     # Calculate total weight
-    # ⚡ Bolt: Use a list comprehension instead of a generator expression inside sum().
-    # For small, bounded collections, constructing a list is faster than the generator
-    # setup overhead.
-    total_weight = sum([metric_G[u][v]['weight'] for u, v in zip(tsp_path_int[:-1], tsp_path_int[1:])])
+    # ⚡ Bolt: Use vectorized NumPy array indexing instead of a Python loop and
+    # NetworkX dictionary lookups. This directly computes the sum of the path
+    # weights at C-speed using the existing distance matrix.
+    u_idx = tsp_path_int[:-1]
+    v_idx = tsp_path_int[1:]
+    total_weight = float(path_lengths[u_idx, v_idx].sum())
 
     # Map the resulting integer path back to original string IDs in O(N) time
     tsp_path = [nodes_list[node] for node in tsp_path_int]
