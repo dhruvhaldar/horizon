@@ -51,3 +51,7 @@
 ## 2026-05-18 - Missing ARIA Roles on Dynamic Visualization Containers
 **Learning:** Visualization containers (like `#inventory-viz`) that start empty and dynamically receive `<canvas>` elements often get overlooked for accessibility because the canvas doesn't exist on page load. While other SVG-based containers in the app had ARIA attributes, the canvas container was missing them, leaving screen reader users unaware of the chart's existence even after rendering.
 **Action:** Always ensure structural layout containers meant for visualizations explicitly define `role="img"` and a descriptive `aria-label` (e.g., "Inventory Optimization Chart") directly in the HTML, regardless of whether the child graphic is a `<canvas>` or `<svg>` injected later by JavaScript.
+
+## 2026-05-19 - Clickable Labels for Custom Toggles
+**Learning:** Custom UI switches often map `onclick` behavior strictly to the `<input type="checkbox">` toggle itself. Users naturally expect to click the accompanying text labels to switch states. When labels aren't clickable, it creates a frustrating, restricted interaction area.
+**Action:** Always add `cursor: pointer` and explicit `onclick` handlers (or proper `<label for="...">` associations) to the text labels accompanying custom toggle switches to maximize the clickable area and match user expectations.

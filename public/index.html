@@ -59,14 +59,14 @@
                 <h2 id="inventory-heading">Inventory Optimization</h2>
                 <p class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
                 <div class="toggle-wrapper">
-                    <span class="switch-label">EOQ</span>
+                    <span class="switch-label" onclick="switchInv('eoq')" style="cursor: pointer;">EOQ</span>
                     <label class="switch">
-                        <input type="checkbox" id="inv-toggle" class="togglesw" aria-label="Toggle between EOQ and Continuous Review models" onchange="toggleInv()">
+                        <input type="checkbox" id="inv-toggle" class="togglesw" aria-label="Toggle between EOQ and Continuous Review models" role="switch" onchange="toggleInv()">
                         <div class="indicator left"></div>
                         <div class="indicator right"></div>
                         <div class="button-knob"></div>
                     </label>
-                    <span class="switch-label" style="margin-left: 1rem;">(R, Q)</span>
+                    <span class="switch-label" style="margin-left: 1rem; cursor: pointer;" onclick="switchInv('continuous')">(R, Q)</span>
                 </div>
 
                 <div id="inv-eoq-inputs">
