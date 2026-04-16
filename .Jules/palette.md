@@ -24,6 +24,10 @@
 **Learning:** When building custom layouts without native `<form>` wraps (like in this neumorphic UI), users lose the innate ability to press "Enter" to submit or calculate. This breaks keyboard usability and accessibility expectations.
 **Action:** Always implement a global `keydown` listener to catch the "Enter" key within inputs, explicitly ignoring `shift+Enter` for textareas, to seamlessly trigger the closest primary action button.
 
+## 2026-06-15 - Global Keydown Listeners in Toggled UI Sections
+**Learning:** When using global `keydown` listeners to simulate "Enter to submit" behavior by finding the closest action button (`container.querySelector('.btn')`), it can inadvertently select and trigger hidden buttons in UI sections that use conditional toggles (e.g., `display: none` for inactive views). This causes the wrong action to run and confuses the user.
+**Action:** Always filter dynamically selected action buttons by visibility (e.g., ensuring `offsetWidth > 0` or `offsetHeight > 0`) in global keydown handlers before triggering a click event, ensuring only the active UI context is submitted.
+
 ## 2026-04-19 - Missing Screen Reader Announcements for Async Results
 **Learning:** Asynchronous operations update text content dynamically without page reloads, leaving screen reader users unaware that calculations have finished or errors have occurred.
 **Action:** Always add `aria-live="polite"` to DOM nodes that receive dynamic textual updates (like results or error containers) so screen readers can automatically announce the new content without losing context.
