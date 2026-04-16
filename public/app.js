@@ -406,8 +406,9 @@ document.addEventListener('keydown', (e) => {
             // Find the closest logical container (.calc-group or .panel)
             const container = target.closest('.calc-group, .panel');
             if (container) {
-                // Find the primary action button within this container
-                const btn = container.querySelector('.btn');
+                // Find the visible primary action button within this container
+                const btns = Array.from(container.querySelectorAll('.btn'));
+                const btn = btns.find(b => b.offsetWidth > 0 || b.offsetHeight > 0);
                 if (btn && !btn.disabled) {
                     btn.click();
                 }
