@@ -23,3 +23,11 @@
 ## 2026-06-03 - Pydantic Model Serialization Overhead
 **Learning:** Reconstructing a dictionary of Pydantic models by using a dictionary comprehension and calling `.model_dump()` on each individual nested item (e.g. `{k: v.model_dump() for k, v in req.jobs.items()}`) introduces significant Python looping overhead and individual method call overhead.
 **Action:** When serializing collections in Pydantic BaseModels, always use the top-level `.model_dump()` and extract the required nested dictionary (e.g. `req.model_dump()['jobs']`). This shifts the entire serialization process down to Pydantic-Core (Rust), improving performance roughly 2.5x compared to manual Python iteration.
+
+## 2024-05-18 - Avoid NetworkX out_degree checks during Graph Construction
+**Learning:** Checking `G.out_degree(node) == 0` for every node after graph creation to find nodes without successors adds O(V) overhead from NetworkX dictionary lookups.
+**Action:** Track successor nodes dynamically in a Python `set` during the initial edge extraction loop, and use `node not in has_successors` instead to bypass the overhead.
+
+## 2024-05-18 - Use dict.fromkeys() instead of Dictionary Comprehensions
+**Learning:** Using `dict.fromkeys(iterable, default_value)` is measurably faster for initializing state dictionaries (like `est = {}`) than using a dictionary comprehension (`{k: default_value for k in iterable}`) because it executes entirely in C without Python loop overhead.
+**Action:** Use `dict.fromkeys()` when initializing DP state arrays with constant defaults.
