@@ -74,7 +74,10 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
 
     results = {}
     total_L = 0.0
-    total_gamma = 0.0
+
+    # ⚡ Bolt: Calculate the total gamma natively at C-speed using sum() rather
+    # than iterating in the Python loop.
+    total_gamma = sum(gamma)
 
     for i in range(n):
         l_i = lambda_vec_list[i]
@@ -83,16 +86,17 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
 
         # Calculate metrics for each node as an M/M/c queue
         node_metrics = mmc_queue(l_i, mu_i, c_i)
-        results[f"node_{i}"] = {
-            "lambda": l_i,
-            **node_metrics
-        }
+
+        # ⚡ Bolt: Mutate the returned dictionary in-place instead of using
+        # the dict unpacking syntax (**node_metrics), which forces an unnecessary
+        # full copy of the dictionary for every node.
+        node_metrics["lambda"] = l_i
+        results[f"node_{i}"] = node_metrics
 
         # ⚡ Bolt: Accumulate totals directly inside the main processing loop.
         # This avoids redundant O(N) string formatting (`f"node_{i}"`), dictionary
         # lookups, and the overhead of constructing intermediate lists for `sum()`.
         total_L += node_metrics["L"]
-        total_gamma += gamma[i]
 
     # System totals
     total_W = total_L / total_gamma if total_gamma > 0 else 0
