@@ -83,6 +83,9 @@ def job_shop_cpm(jobs: dict[str, dict]):
     nodes_list = []
     edges_list = []
 
+    # ⚡ Bolt: Track nodes with successors during parsing to avoid O(V) degree checks later.
+    has_successors = set()
+
     for job, details in jobs.items():
         if 'duration' not in details:
             raise ValueError(f"Job '{job}' is missing 'duration' definition.")
@@ -95,6 +98,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
             if dep not in jobs:
                 raise ValueError(f"Dependency '{dep}' for job '{job}' is not defined.")
             edges_list.append((dep, job))
+            has_successors.add(dep)
 
         if not deps:
             edges_list.append(('START', job))
@@ -107,9 +111,10 @@ def job_shop_cpm(jobs: dict[str, dict]):
 
     # Add edges to END node for nodes with no successors
     # We must do this after the bulk add to correctly check out_degree
+    # ⚡ Bolt: Use O(1) set lookup instead of calling O(V) NetworkX `G.out_degree()`
     end_edges = []
     for job in jobs:
-        if G.out_degree(job) == 0:
+        if job not in has_successors:
             end_edges.append((job, 'END'))
     if end_edges:
         G.add_edges_from(end_edges)
@@ -123,17 +128,13 @@ def job_shop_cpm(jobs: dict[str, dict]):
     except nx.NetworkXUnfeasible:
          raise ValueError("Job dependencies contain a cycle.")
 
-    # ⚡ Bolt: Pre-fetch duration attributes into a native Python dict.
-    # Repeatedly accessing G.nodes[node]['duration'] inside loops incurs overhead.
-    # This optimization slightly speeds up O(V+E) traversals.
-    durations = {node: data['duration'] for node, data in G.nodes(data=True)}
-
     # Calculate earliest start times (EST) and earliest finish times (EFT)
     # ⚡ Bolt: Replace "pull" list comprehension DP with a "push" DP state update.
     # By initializing all nodes to 0 and iteratively pushing values to successors,
     # we eliminate the overhead of generating intermediate lists for max().
     # This reduces overall traversal time from ~0.150s to ~0.086s per 1000 dense loops.
-    est = {node: 0 for node in topo_order}
+    # ⚡ Bolt: Also use dict.fromkeys to initialize the dictionary at C-speed.
+    est = dict.fromkeys(topo_order, 0)
     for u in topo_order:
         curr = est[u] + durations[u]
         for v in G.successors(u):
@@ -144,7 +145,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     project_duration = est['END']
     # ⚡ Bolt: Apply the same "push" DP pattern for backward LFT propagation,
     # propagating minimal bounds to predecessors to replace min() comprehension overhead.
-    lft = {node: project_duration for node in topo_order}
+    # ⚡ Bolt: Also use dict.fromkeys to initialize the dictionary at C-speed.
+    lft = dict.fromkeys(topo_order, project_duration)
     for u in reversed(topo_order):
         curr = lft[u] - durations[u]
         for v in G.predecessors(u):
