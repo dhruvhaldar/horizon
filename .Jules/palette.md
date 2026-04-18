@@ -59,3 +59,7 @@
 ## 2026-05-19 - Clickable Labels for Custom Toggles
 **Learning:** Custom UI switches often map `onclick` behavior strictly to the `<input type="checkbox">` toggle itself. Users naturally expect to click the accompanying text labels to switch states. When labels aren't clickable, it creates a frustrating, restricted interaction area.
 **Action:** Always add `cursor: pointer` and explicit `onclick` handlers (or proper `<label for="...">` associations) to the text labels accompanying custom toggle switches to maximize the clickable area and match user expectations.
+
+## 2026-06-16 - Make Keyboard Shortcuts Discoverable
+**Learning:** Users cannot utilize global keyboard shortcuts (like "Enter to calculate") if the UI provides no visible hints, rendering the feature essentially invisible.
+**Action:** Always provide a subtle, visible hint in the UI (e.g., a header tip or tooltip) to communicate available global keyboard shortcuts to users.
