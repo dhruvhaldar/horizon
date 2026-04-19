@@ -23,3 +23,6 @@
 ## 2026-06-03 - Pydantic Model Serialization Overhead
 **Learning:** Reconstructing a dictionary of Pydantic models by using a dictionary comprehension and calling `.model_dump()` on each individual nested item (e.g. `{k: v.model_dump() for k, v in req.jobs.items()}`) introduces significant Python looping overhead and individual method call overhead.
 **Action:** When serializing collections in Pydantic BaseModels, always use the top-level `.model_dump()` and extract the required nested dictionary (e.g. `req.model_dump()['jobs']`). This shifts the entire serialization process down to Pydantic-Core (Rust), improving performance roughly 2.5x compared to manual Python iteration.
+## 2025-03-02 - Replace NetworkX out_degree with Python set tracking for Job Shop endpoints
+**Learning:** When identifying nodes without successors during NetworkX graph construction, track dependent nodes dynamically using a native Python set during the initial data iteration rather than calling `G.out_degree(node) == 0` after graph creation. This bypasses O(V) validation and dictionary mapping overhead from NetworkX method calls.
+**Action:** Use Python sets to pre-calculate graph properties when iterating over raw graph data during graph construction, rather than relying on heavy NetworkX methods afterward.

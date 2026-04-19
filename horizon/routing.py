@@ -83,6 +83,11 @@ def job_shop_cpm(jobs: dict[str, dict]):
     nodes_list = []
     edges_list = []
 
+    # ⚡ Bolt: Use a native Python set to track which jobs are dependencies (have successors).
+    # This bypasses the need to call the O(V) NetworkX `G.out_degree(node)` later,
+    # which introduces significant validation and dict wrapper overhead.
+    has_successors = set()
+
     for job, details in jobs.items():
         if 'duration' not in details:
             raise ValueError(f"Job '{job}' is missing 'duration' definition.")
@@ -95,6 +100,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
             if dep not in jobs:
                 raise ValueError(f"Dependency '{dep}' for job '{job}' is not defined.")
             edges_list.append((dep, job))
+            has_successors.add(dep)
 
         if not deps:
             edges_list.append(('START', job))
@@ -106,10 +112,9 @@ def job_shop_cpm(jobs: dict[str, dict]):
     G.add_edges_from(edges_list)
 
     # Add edges to END node for nodes with no successors
-    # We must do this after the bulk add to correctly check out_degree
     end_edges = []
     for job in jobs:
-        if G.out_degree(job) == 0:
+        if job not in has_successors:
             end_edges.append((job, 'END'))
     if end_edges:
         G.add_edges_from(end_edges)
