@@ -142,6 +142,9 @@ def solve_tsp(req: TSPRequest):
         raise HTTPException(status_code=400, detail="Graph too large. Maximum 100 nodes and 500 edges allowed.")
 
     # Security: Prevent 500 Internal Server Error (NetworkXPointlessConcept) from graphs with < 2 nodes
+    # Also ensure nodes are unique to prevent mathematically invalid graphs.
+    if len(set(req.nodes)) != len(req.nodes):
+        raise HTTPException(status_code=400, detail="Nodes must be unique.")
     if len(req.nodes) < 2:
         raise HTTPException(status_code=400, detail="Graph too small. Minimum 2 nodes required for TSP.")
 
