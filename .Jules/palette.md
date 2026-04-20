@@ -59,3 +59,11 @@
 ## 2026-05-19 - Clickable Labels for Custom Toggles
 **Learning:** Custom UI switches often map `onclick` behavior strictly to the `<input type="checkbox">` toggle itself. Users naturally expect to click the accompanying text labels to switch states. When labels aren't clickable, it creates a frustrating, restricted interaction area.
 **Action:** Always add `cursor: pointer` and explicit `onclick` handlers (or proper `<label for="...">` associations) to the text labels accompanying custom toggle switches to maximize the clickable area and match user expectations.
+
+## 2026-06-21 - Keyboard Shortcut Discoverability
+**Learning:** Global keyboard shortcuts (like "Enter to submit" in formless UIs) are helpful, but if they aren't visually communicated, users will never know they exist, defeating their UX purpose.
+**Action:** Always provide a subtle, visible hint in the interface (e.g., a header tip or tooltip) for custom global shortcuts to ensure discoverability.
+
+## 2026-06-21 - Semantic ARIA Landmarks
+**Learning:** Using generic `<div>` containers for the main content wrapper prevents screen readers from easily identifying the primary section of the application.
+**Action:** Always use semantic HTML tags like `<main>` instead of generic `<div>` containers for the primary content wrapper to establish proper ARIA landmarks.
