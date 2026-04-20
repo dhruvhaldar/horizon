@@ -23,3 +23,7 @@
 ## 2026-06-03 - Pydantic Model Serialization Overhead
 **Learning:** Reconstructing a dictionary of Pydantic models by using a dictionary comprehension and calling `.model_dump()` on each individual nested item (e.g. `{k: v.model_dump() for k, v in req.jobs.items()}`) introduces significant Python looping overhead and individual method call overhead.
 **Action:** When serializing collections in Pydantic BaseModels, always use the top-level `.model_dump()` and extract the required nested dictionary (e.g. `req.model_dump()['jobs']`). This shifts the entire serialization process down to Pydantic-Core (Rust), improving performance roughly 2.5x compared to manual Python iteration.
+## 2024-04-20 - Graph Creation Overhead
+
+**Learning:** When building NetworkX graphs dynamically in performance-critical paths, NetworkX `out_degree(node)` lookups inside loops create O(V) validation and dictionary overhead. Iterating over the `G.nodes()` wrapper and using dictionary comprehensions for DP initialization also introduce subtle iteration and method wrapping overhead.
+**Action:** Track dependent nodes dynamically during graph building with native Python sets (e.g. `has_successors = set()`). Use `dict.fromkeys()` for initialization over dictionary comprehensions, and iterate over native property dictionaries instead of NetworkX graph view objects (e.g., `G.nodes()`).

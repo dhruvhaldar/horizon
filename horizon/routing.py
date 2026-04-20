@@ -83,6 +83,10 @@ def job_shop_cpm(jobs: dict[str, dict]):
     nodes_list = []
     edges_list = []
 
+    # ⚡ Bolt: Track dependent nodes dynamically during the data pass to bypass O(V)
+    # NetworkX out_degree() lookups later.
+    has_successors = set()
+
     for job, details in jobs.items():
         if 'duration' not in details:
             raise ValueError(f"Job '{job}' is missing 'duration' definition.")
@@ -95,6 +99,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
             if dep not in jobs:
                 raise ValueError(f"Dependency '{dep}' for job '{job}' is not defined.")
             edges_list.append((dep, job))
+            has_successors.add(dep)
 
         if not deps:
             edges_list.append(('START', job))
@@ -106,10 +111,9 @@ def job_shop_cpm(jobs: dict[str, dict]):
     G.add_edges_from(edges_list)
 
     # Add edges to END node for nodes with no successors
-    # We must do this after the bulk add to correctly check out_degree
     end_edges = []
     for job in jobs:
-        if G.out_degree(job) == 0:
+        if job not in has_successors:
             end_edges.append((job, 'END'))
     if end_edges:
         G.add_edges_from(end_edges)
@@ -133,7 +137,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # By initializing all nodes to 0 and iteratively pushing values to successors,
     # we eliminate the overhead of generating intermediate lists for max().
     # This reduces overall traversal time from ~0.150s to ~0.086s per 1000 dense loops.
-    est = {node: 0 for node in topo_order}
+    # We use dict.fromkeys() instead of dict comprehensions for slightly faster C-level initialization.
+    est = dict.fromkeys(topo_order, 0)
     for u in topo_order:
         curr = est[u] + durations[u]
         for v in G.successors(u):
@@ -144,7 +149,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
     project_duration = est['END']
     # ⚡ Bolt: Apply the same "push" DP pattern for backward LFT propagation,
     # propagating minimal bounds to predecessors to replace min() comprehension overhead.
-    lft = {node: project_duration for node in topo_order}
+    lft = dict.fromkeys(topo_order, project_duration)
     for u in reversed(topo_order):
         curr = lft[u] - durations[u]
         for v in G.predecessors(u):
@@ -154,9 +159,11 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # Identify critical path
     critical_path = []
     slack = {}
-    for node in G.nodes():
+    # ⚡ Bolt: Iterate over the native durations dictionary instead of G.nodes().
+    # This bypasses NetworkX iterator wrapping overhead in the inner loop.
+    for node, d in durations.items():
         if node in ('START', 'END'): continue
-        s = lft[node] - est[node] - durations[node]
+        s = lft[node] - est[node] - d
         slack[node] = s
         if s == 0:
             critical_path.append(node)
