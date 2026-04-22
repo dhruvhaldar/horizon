@@ -14,16 +14,23 @@ async function withLoading(btnElement, asyncFunc) {
     if (container) {
         const inputs = container.querySelectorAll('input, textarea');
         let isValid = true;
+        let firstInvalid = null;
         for (let input of inputs) {
             // Only validate if the element is not visually hidden (like toggles) and is currently displayed
             if (input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)) {
-                if (!input.reportValidity()) {
+                if (!input.checkValidity()) {
                     isValid = false;
-                    break;
+                    input.setAttribute('aria-invalid', 'true');
+                    if (!firstInvalid) firstInvalid = input;
+                } else {
+                    input.removeAttribute('aria-invalid');
                 }
             }
         }
-        if (!isValid) return;
+        if (!isValid) {
+            if (firstInvalid) firstInvalid.reportValidity();
+            return;
+        }
     }
 
     const originalText = btnElement.innerText;
@@ -392,6 +399,15 @@ function drawRoutingGraph(nodesList, edges, path) {
         node.attr("transform", d => `translate(${d.x},${d.y})`);
     });
 }
+
+// UX Enhancement: Clear inline validation styling dynamically on input
+document.addEventListener('input', (e) => {
+    if (e.target.hasAttribute('aria-invalid')) {
+        if (e.target.checkValidity()) {
+            e.target.removeAttribute('aria-invalid');
+        }
+    }
+});
 
 // UX Enhancement: Enter key submits active module
 document.addEventListener('keydown', (e) => {

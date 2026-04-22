@@ -63,3 +63,7 @@
 ## 2026-06-25 - Custom Keyboard Shortcuts Require Visual Hints
 **Learning:** While implementing global keyboard shortcuts (like "Enter to submit") in custom formless UIs greatly improves keyboard accessibility, users will not intuitively know these shortcuts exist since they aren't using a standard HTML form.
 **Action:** Always provide a subtle, visible hint in the interface (e.g., a header tip or tooltip) alongside global custom keyboard shortcut listeners to ensure the feature is discoverable and actually benefits users.
+
+## 2026-06-26 - Inline Validation Feedback
+**Learning:** Native browser form validation tooltips disappear quickly and only highlight one field at a time, leaving no persistent visual indicator of error state on the input element itself. Using `input:invalid` applies aggressively on page load.
+**Action:** When manually calling `.reportValidity()` or checking validity in async workflows, explicitly add `aria-invalid="true"` to invalid inputs. Use this ARIA attribute as a CSS hook (`.inset[aria-invalid="true"]`) to provide a persistent, styled inline error state, and dynamically remove it via an `input` event listener when the user corrects their entry.
