@@ -90,6 +90,8 @@ def solve_queue(req: JacksonRequest):
         raise HTTPException(status_code=400, detail="Number of servers (c) must be > 0.")
     if any(m <= 0 for m in req.mu):
         raise HTTPException(status_code=400, detail="Service rate (mu) must be > 0.")
+    if any(g <= 0 for g in req.gamma):
+        raise HTTPException(status_code=400, detail="Arrival rate (gamma) must be > 0.")
 
     # Security: Prevent CPU/Memory DoS attacks from large Jackson Networks (e.g. matrix inversion)
     if len(req.gamma) > 100:
