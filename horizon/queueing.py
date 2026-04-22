@@ -8,6 +8,9 @@ def mmc_queue(arrival_rate: float, service_rate: float, c: int):
     service_rate: mu
     c: number of servers
     """
+    if arrival_rate <= 0:
+        raise ValueError("Arrival rate (lambda) must be > 0")
+
     if arrival_rate >= c * service_rate:
          raise ValueError("Arrival rate must be strictly less than c * service_rate for stability")
 
