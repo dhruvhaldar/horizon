@@ -82,6 +82,7 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # validation and dict wrapping overhead, improving graph creation performance.
     nodes_list = []
     edges_list = []
+    has_successors = set()
 
     for job, details in jobs.items():
         if 'duration' not in details:
@@ -95,24 +96,24 @@ def job_shop_cpm(jobs: dict[str, dict]):
             if dep not in jobs:
                 raise ValueError(f"Dependency '{dep}' for job '{job}' is not defined.")
             edges_list.append((dep, job))
+            has_successors.add(dep)
 
         if not deps:
             edges_list.append(('START', job))
+            has_successors.add('START')
 
     nodes_list.append(('START', {'duration': 0}))
     nodes_list.append(('END', {'duration': 0}))
 
+    # ⚡ Bolt: Identify nodes without successors directly during graph construction iteration
+    # using a native Python set, rather than calling G.out_degree(node) after graph creation.
+    # This prevents an O(V) pass involving heavy NetworkX method calls.
+    for job in jobs:
+        if job not in has_successors:
+            edges_list.append((job, 'END'))
+
     G.add_nodes_from(nodes_list)
     G.add_edges_from(edges_list)
-
-    # Add edges to END node for nodes with no successors
-    # We must do this after the bulk add to correctly check out_degree
-    end_edges = []
-    for job in jobs:
-        if G.out_degree(job) == 0:
-            end_edges.append((job, 'END'))
-    if end_edges:
-        G.add_edges_from(end_edges)
 
     # ⚡ Bolt: Cache a single topological sort traversal into a list.
     # This implicitly detects cycles (raising NetworkXUnfeasible) and prevents

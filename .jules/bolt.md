@@ -27,3 +27,6 @@
 ## 2026-06-15 - Dictionary Unpacking vs. In-Place Mutation Overhead
 **Learning:** In performance-critical Python loops, using dictionary unpacking/spread syntax (e.g., `{**d, 'new_key': value}`) creates a completely new dictionary and copies all elements over on every single iteration. This introduces unnecessary memory allocation and copying overhead.
 **Action:** When a dictionary is instantiated specifically for the current loop iteration (like the return value from a helper function) and won't be reused elsewhere, mutate it in-place instead (e.g., `d['new_key'] = value`). This avoids the unpacking overhead and is roughly 35-40% faster.
+## 2025-06-25 - NetworkX out_degree loop overhead
+**Learning:** In NetworkX, calling `G.out_degree(node)` repeatedly inside a loop after a graph is built introduces O(V) overhead because of function dispatching and dict lookups.
+**Action:** When you need to identify nodes without successors (e.g., leaves) during graph creation, track dependent nodes dynamically using a native Python `set` (e.g., `has_successors.add(dep)`) while parsing the initial data. Checking against a local `set` is significantly faster than using `G.out_degree()` after the fact.
