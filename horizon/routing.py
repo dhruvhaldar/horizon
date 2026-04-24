@@ -134,7 +134,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     # By initializing all nodes to 0 and iteratively pushing values to successors,
     # we eliminate the overhead of generating intermediate lists for max().
     # This reduces overall traversal time from ~0.150s to ~0.086s per 1000 dense loops.
-    est = {node: 0 for node in topo_order}
+    # ⚡ Bolt: Use dict.fromkeys() instead of dict comprehensions for faster C-level initialization.
+    est = dict.fromkeys(topo_order, 0)
     for u in topo_order:
         curr = est[u] + durations[u]
         for v in G.successors(u):
@@ -145,7 +146,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     project_duration = est['END']
     # ⚡ Bolt: Apply the same "push" DP pattern for backward LFT propagation,
     # propagating minimal bounds to predecessors to replace min() comprehension overhead.
-    lft = {node: project_duration for node in topo_order}
+    # ⚡ Bolt: Use dict.fromkeys() instead of dict comprehensions for faster C-level initialization.
+    lft = dict.fromkeys(topo_order, project_duration)
     for u in reversed(topo_order):
         curr = lft[u] - durations[u]
         for v in G.predecessors(u):
