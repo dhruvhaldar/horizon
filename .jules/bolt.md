@@ -30,3 +30,10 @@
 ## 2025-06-25 - NetworkX out_degree loop overhead
 **Learning:** In NetworkX, calling `G.out_degree(node)` repeatedly inside a loop after a graph is built introduces O(V) overhead because of function dispatching and dict lookups.
 **Action:** When you need to identify nodes without successors (e.g., leaves) during graph creation, track dependent nodes dynamically using a native Python `set` (e.g., `has_successors.add(dep)`) while parsing the initial data. Checking against a local `set` is significantly faster than using `G.out_degree()` after the fact.
+## 2026-06-25 - dict.fromkeys initialization vs dict comprehensions
+**Learning:** In Python, initializing dictionaries with a static constant value is significantly faster at the C-level using `dict.fromkeys(iterable, default_value)` rather than evaluating a dictionary comprehension like `{k: default_value for k in iterable}`, saving iteration overhead and bytecode execution time.
+**Action:** Replace `{node: 0 for node in order}` loops and similar patterns with `dict.fromkeys()` for performance-critical dictionary building phases.
+
+## 2026-06-25 - Avoid False Positives in Optimization Reviews
+**Learning:** Reviewers may flag optimizations that remove lines containing side-effects or dependent state assignments (e.g., removing a NetworkX generator loop that actually loads real durations).
+**Action:** Ensure optimizations strictly preserve side-effects. Before modifying loops or generator logic, confirm exactly what is being assigned.
