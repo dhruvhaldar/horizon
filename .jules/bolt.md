@@ -37,3 +37,10 @@
 ## 2026-06-25 - Avoid False Positives in Optimization Reviews
 **Learning:** Reviewers may flag optimizations that remove lines containing side-effects or dependent state assignments (e.g., removing a NetworkX generator loop that actually loads real durations).
 **Action:** Ensure optimizations strictly preserve side-effects. Before modifying loops or generator logic, confirm exactly what is being assigned.
+## 2026-06-25 - Generator Expressions vs. List Comprehensions in any()
+**Learning:** Replacing generator expressions with list comprehensions inside `any()` (or `all()`) completely defeats the short-circuit evaluation by forcing Python to evaluate the entire list in memory beforehand. This removes the $O(1)$ best-case exit.
+**Action:** Never replace generator expressions inside `any()` or `all()` with list comprehensions.
+
+## 2026-06-25 - Redundant NetworkX property extraction
+**Learning:** In `horizon/routing.py`, querying `G.nodes(data=True)` to build a duration dictionary after having already built it natively during the initial loop adds a completely redundant $O(V)$ overhead.
+**Action:** Track properties in native dictionaries during the initial processing loop and avoid re-querying NetworkX graph properties to populate identical structures later.
