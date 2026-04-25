@@ -124,10 +124,10 @@ def job_shop_cpm(jobs: dict[str, dict]):
     except nx.NetworkXUnfeasible:
          raise ValueError("Job dependencies contain a cycle.")
 
-    # ⚡ Bolt: Pre-fetch duration attributes into a native Python dict.
-    # Repeatedly accessing G.nodes[node]['duration'] inside loops incurs overhead.
-    # This optimization slightly speeds up O(V+E) traversals.
-    durations = {node: data['duration'] for node, data in G.nodes(data=True)}
+    # ⚡ Bolt: We already built the native `durations` Python dictionary during the
+    # initial parsing loop above. We skip the redundant O(V) graph traversal
+    # to re-extract durations via `G.nodes(data=True)`, eliminating unnecessary
+    # NetworkX property access overhead.
 
     # Calculate earliest start times (EST) and earliest finish times (EFT)
     # ⚡ Bolt: Replace "pull" list comprehension DP with a "push" DP state update.
