@@ -67,3 +67,7 @@
 ## 2026-06-26 - Inline Validation Feedback
 **Learning:** Native browser form validation tooltips disappear quickly and only highlight one field at a time, leaving no persistent visual indicator of error state on the input element itself. Using `input:invalid` applies aggressively on page load.
 **Action:** When manually calling `.reportValidity()` or checking validity in async workflows, explicitly add `aria-invalid="true"` to invalid inputs. Use this ARIA attribute as a CSS hook (`.inset[aria-invalid="true"]`) to provide a persistent, styled inline error state, and dynamically remove it via an `input` event listener when the user corrects their entry.
+
+## 2026-10-25 - Disable Spellcheck on Technical Inputs
+**Learning:** Native browser spellcheck and autocomplete features interfere with technical and mathematical inputs (like routing matrices or comma-separated numeric vectors). The squiggly red underlines degrade the UX by incorrectly marking math data as misspelled words, and the autocomplete dropdowns obscure critical parts of the UI while providing irrelevant suggestions.
+**Action:** Always add `spellcheck="false"` and `autocomplete="off"` to `<input>` and `<textarea>` elements intended for raw mathematical matrices, programmatic lists, or non-natural-language text inputs to prevent confusing visual artifacts and ensure a clean workspace.
