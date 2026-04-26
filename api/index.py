@@ -82,18 +82,16 @@ def health_check():
 def solve_queue(req: JacksonRequest):
     # Security: Prevent CPU/Memory DoS attacks from extremely large factorials
     # in the M/M/c queueing calculation.
-    # ⚡ Bolt: Pass list comprehensions to any() instead of generator expressions.
-    # For small bounded arrays, list comprehensions bypass Python's generator setup
-    # overhead, making the evaluation significantly faster.
-    if req.c and any([c_val > 100 for c_val in req.c]):
+    # ⚡ Bolt: Restore generator expressions inside any() for short-circuiting.
+    if req.c and any(c_val > 100 for c_val in req.c):
         raise HTTPException(status_code=400, detail="Maximum number of servers (c) exceeded. Must be <= 100.")
 
     # Security: Prevent ZeroDivisionError and 500 error leaks by validating physical limits.
-    if req.c and any([c_val <= 0 for c_val in req.c]):
+    if req.c and any(c_val <= 0 for c_val in req.c):
         raise HTTPException(status_code=400, detail="Number of servers (c) must be > 0.")
-    if any([m <= 0 for m in req.mu]):
+    if any(m <= 0 for m in req.mu):
         raise HTTPException(status_code=400, detail="Service rate (mu) must be > 0.")
-    if any([g <= 0 for g in req.gamma]):
+    if any(g <= 0 for g in req.gamma):
         raise HTTPException(status_code=400, detail="Arrival rate (gamma) must be > 0.")
 
     # Security: Prevent CPU/Memory DoS attacks from large Jackson Networks (e.g. matrix inversion)
@@ -106,7 +104,7 @@ def solve_queue(req: JacksonRequest):
         raise HTTPException(status_code=400, detail="Length of mu must match length of gamma.")
     if req.c is not None and len(req.c) != n:
         raise HTTPException(status_code=400, detail="Length of c must match length of gamma.")
-    if len(req.p) != n or any([len(row) != n for row in req.p]):
+    if len(req.p) != n or any(len(row) != n for row in req.p):
         raise HTTPException(status_code=400, detail="p must be a square matrix matching the length of gamma.")
 
     try:
