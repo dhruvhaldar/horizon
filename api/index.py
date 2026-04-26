@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any, Tuple
 import os
+import math
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -31,6 +32,19 @@ async def add_security_headers(request, call_next):
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     return response
+
+def validate_finite(obj: Any) -> Any:
+    """Security: Prevent 500 errors by rejecting Inf/NaN outputs before JSON serialization."""
+    if isinstance(obj, dict):
+        for v in obj.values():
+            validate_finite(v)
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        for v in obj:
+            validate_finite(v)
+    elif isinstance(obj, float):
+        if math.isinf(obj) or math.isnan(obj):
+            raise ValueError("Mathematical result is out of bounds (Infinity/NaN)")
+    return obj
 
 class SafeBaseModel(BaseModel):
     # Security: Reject 'NaN' and 'Infinity' string representations in float fields
@@ -111,7 +125,7 @@ def solve_queue(req: JacksonRequest):
 
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
-        return res
+        return validate_finite(res)
     except ValueError as e:
         # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
@@ -126,7 +140,7 @@ def solve_eoq(req: EOQRequest):
         raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")
     try:
         res = eoq(req.demand_rate, req.order_cost, req.holding_cost)
-        return res
+        return validate_finite(res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -134,7 +148,7 @@ def solve_eoq(req: EOQRequest):
 def solve_newsvendor(req: NewsvendorRequest):
     try:
         res = newsvendor(req.selling_price, req.cost, req.salvage_value, req.demand_mean, req.demand_std)
-        return res
+        return validate_finite(res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -148,7 +162,7 @@ def solve_continuous(req: ContinuousReviewRequest):
         raise HTTPException(status_code=400, detail="Service level must be between 0 and 1 (exclusive).")
     try:
         res = continuous_review(req.demand_rate, req.order_cost, req.holding_cost, req.lead_time_mean, req.lead_time_std, req.service_level)
-        return res
+        return validate_finite(res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -167,7 +181,7 @@ def solve_tsp(req: TSPRequest):
 
     try:
         res = tsp_approx(req.nodes, req.edges)
-        return res
+        return validate_finite(res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -185,7 +199,7 @@ def solve_jobshop(req: JobShopRequest):
         # rather than performing O(N) Python iterations and method calls.
         jobs_dict = req.model_dump()['jobs']
         res = job_shop_cpm(jobs_dict)
-        return res
+        return validate_finite(res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
