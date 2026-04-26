@@ -71,3 +71,6 @@
 ## 2026-10-25 - Disable Spellcheck on Technical Inputs
 **Learning:** Native browser spellcheck and autocomplete features interfere with technical and mathematical inputs (like routing matrices or comma-separated numeric vectors). The squiggly red underlines degrade the UX by incorrectly marking math data as misspelled words, and the autocomplete dropdowns obscure critical parts of the UI while providing irrelevant suggestions.
 **Action:** Always add `spellcheck="false"` and `autocomplete="off"` to `<input>` and `<textarea>` elements intended for raw mathematical matrices, programmatic lists, or non-natural-language text inputs to prevent confusing visual artifacts and ensure a clean workspace.
+## 2026-04-26 - Stale Data Dimming
+**Learning:** When users edit input fields after already performing a calculation, the previously generated output (results text and charts) remains fully visible. This creates a confusing UX where users might mistakenly associate the new, unsubmitted input values with the old, stale output.
+**Action:** Apply a subtle visual dimming (e.g., `opacity: 0.5`, `filter: grayscale(100%)`) to result containers and visualizations as soon as a user edits an input, and restore full visibility when a new calculation completes.

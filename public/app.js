@@ -43,6 +43,16 @@ async function withLoading(btnElement, asyncFunc) {
         btnElement.innerText = originalText;
         btnElement.disabled = false;
         btnElement.removeAttribute('aria-busy');
+
+        // UX Enhancement: Restore data visibility after calculation
+        const panel = btnElement.closest('.panel');
+        if (panel) {
+            const staleContainers = panel.querySelectorAll('.results, .viz-container');
+            staleContainers.forEach(el => {
+                el.style.opacity = '';
+                el.style.filter = '';
+            });
+        }
     }
 }
 
@@ -406,6 +416,21 @@ document.addEventListener('input', (e) => {
         if (e.target.checkValidity()) {
             e.target.removeAttribute('aria-invalid');
         }
+    }
+
+    // UX Enhancement: Dim stale data when inputs change
+    const panel = e.target.closest('.panel');
+    if (panel) {
+        const staleContainers = panel.querySelectorAll('.results, .viz-container');
+        staleContainers.forEach(container => {
+            // Only dim if it has actual data, not default/error states
+            if (container.classList.contains('results') && container.innerText.includes('Results will appear here...')) return;
+            if (container.innerText.includes('❌ Error:')) return;
+
+            container.style.opacity = '0.5';
+            container.style.filter = 'grayscale(100%)';
+            container.style.transition = 'opacity 0.3s ease, filter 0.3s ease';
+        });
     }
 });
 
