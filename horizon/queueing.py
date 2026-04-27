@@ -77,7 +77,7 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
 
     results = {}
     total_L = 0.0
-    total_gamma = 0.0
+    total_gamma = sum(gamma)
 
     for i in range(n):
         l_i = lambda_vec_list[i]
@@ -98,7 +98,6 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
         # This avoids redundant O(N) string formatting (`f"node_{i}"`), dictionary
         # lookups, and the overhead of constructing intermediate lists for `sum()`.
         total_L += node_metrics["L"]
-        total_gamma += gamma[i]
 
     # System totals
     total_W = total_L / total_gamma if total_gamma > 0 else 0

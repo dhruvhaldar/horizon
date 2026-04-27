@@ -44,3 +44,6 @@
 ## 2026-06-25 - Redundant NetworkX property extraction
 **Learning:** In `horizon/routing.py`, querying `G.nodes(data=True)` to build a duration dictionary after having already built it natively during the initial loop adds a completely redundant $O(V)$ overhead.
 **Action:** Track properties in native dictionaries during the initial processing loop and avoid re-querying NetworkX graph properties to populate identical structures later.
+## 2026-06-25 - Avoid accumulating existing lists in Python loops
+**Learning:** When calculating the sum of elements from an existing Python list (like an input argument), accumulating the total sequentially inside a Python `for` loop (e.g., `total += lst[i]`) introduces significant looping and indexing overhead.
+**Action:** Always use the built-in, C-implemented `sum(lst)` function outside the loop. It iterates over the elements at C-speed, which is roughly 3-4x faster than a Python-level accumulation loop.
