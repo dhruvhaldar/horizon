@@ -74,3 +74,6 @@
 ## 2026-04-26 - Stale Data Dimming
 **Learning:** When users edit input fields after already performing a calculation, the previously generated output (results text and charts) remains fully visible. This creates a confusing UX where users might mistakenly associate the new, unsubmitted input values with the old, stale output.
 **Action:** Apply a subtle visual dimming (e.g., `opacity: 0.5`, `filter: grayscale(100%)`) to result containers and visualizations as soon as a user edits an input, and restore full visibility when a new calculation completes.
+## 2024-05-27 - Accessible Required Indicators
+**Learning:** To enhance UX and accessibility on required form fields, appending a visual indicator (like an asterisk) directly within the associated `<label>` provides immediate visual guidance. However, if the input already has the HTML5 `required` attribute, screen readers will natively announce it. An exposed asterisk will cause the screen reader to redundantly announce 'star' or 'asterisk'.
+**Action:** When adding visual required indicators to labels, always wrap the indicator (e.g., `*`) in a `<span aria-hidden="true">`. This ensures sighted users get the visual cue while preserving a clean, non-redundant experience for screen reader users.
