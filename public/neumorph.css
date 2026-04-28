@@ -422,15 +422,18 @@ footer {
 }
 
 footer a {
-    color: var(--highlight);
-    text-decoration: none;
+    color: var(--text-color);
+    text-decoration: underline;
+    text-decoration-color: var(--highlight);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
     font-weight: bold;
     transition: filter 0.2s ease;
 }
 
 footer a:hover {
     filter: brightness(1.2);
-    text-decoration: underline;
+    text-decoration-thickness: 3px;
 }
 
 footer a:focus-visible {
