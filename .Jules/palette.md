@@ -77,3 +77,6 @@
 ## 2024-05-27 - Accessible Required Indicators
 **Learning:** To enhance UX and accessibility on required form fields, appending a visual indicator (like an asterisk) directly within the associated `<label>` provides immediate visual guidance. However, if the input already has the HTML5 `required` attribute, screen readers will natively announce it. An exposed asterisk will cause the screen reader to redundantly announce 'star' or 'asterisk'.
 **Action:** When adding visual required indicators to labels, always wrap the indicator (e.g., `*`) in a `<span aria-hidden="true">`. This ensures sighted users get the visual cue while preserving a clean, non-redundant experience for screen reader users.
+## 2025-02-23 - Improve WCAG Text Contrast on Links
+**Learning:** Brand colors often fail WCAG text contrast on links against light backgrounds.
+**Action:** Apply a high-contrast text color (e.g., `--text-color`) and use the brand color for a styled underline (`text-decoration-color`, `text-decoration-thickness`, `text-underline-offset`) to preserve both accessibility and brand identity.
