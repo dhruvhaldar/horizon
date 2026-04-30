@@ -26,11 +26,12 @@ async def add_security_headers(request, call_next):
     response = await call_next(request)
     # Security: Defense in depth - inject standard security headers to prevent
     # clickjacking (X-Frame-Options), MIME sniffing (X-Content-Type-Options),
-    # and enforce strict HTTPS (HSTS).
+    # enforce strict HTTPS (HSTS), and Content Security Policy (CSP).
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
     return response
 
 def validate_finite(obj: Any) -> Any:
