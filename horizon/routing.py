@@ -165,7 +165,10 @@ def job_shop_cpm(jobs: dict[str, dict]):
             critical_path.append(node)
 
     # Sort critical path by EST to represent chronological order
-    critical_path.sort(key=lambda x: est[x])
+    # ⚡ Bolt: Use the dictionary's .get method as the sort key instead of a lambda
+    # function. This bypasses Python function call overhead and improves sorting
+    # speed significantly.
+    critical_path.sort(key=est.get)
 
     # ⚡ Bolt: Use .copy() and .pop() to remove system nodes from the final output.
     # Copying a dictionary and popping two known keys at C-speed is roughly 20x
