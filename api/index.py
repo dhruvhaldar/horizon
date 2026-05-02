@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Dict, Optional, Any, Tuple
 import os
 import math
@@ -84,7 +84,8 @@ class TSPRequest(SafeBaseModel):
 
 class JobDetails(SafeBaseModel):
     duration: float
-    dependencies: List[str] = []
+    # Security: Prevent DoS by capping the dependencies list to the maximum possible jobs (100)
+    dependencies: List[str] = Field(default=[], max_length=100)
 
 class JobShopRequest(SafeBaseModel):
     jobs: Dict[str, JobDetails]
