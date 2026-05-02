@@ -173,14 +173,27 @@ function toggleInv() {
 
 function switchInv(type) {
     const toggle = document.getElementById('inv-toggle');
+    const labelEoq = document.getElementById('label-eoq');
+    const labelCont = document.getElementById('label-cont');
+
     if (type === 'eoq') {
         toggle.checked = false;
         document.getElementById('inv-eoq-inputs').style.display = 'flex';
         document.getElementById('inv-cont-inputs').style.display = 'none';
+
+        // UX Enhancement: Dim inactive labels for clarity
+        if (labelEoq) labelEoq.style.opacity = '1';
+        if (labelCont) labelCont.style.opacity = '0.5';
+        toggle.setAttribute('aria-label', 'Toggle between EOQ and Continuous Review models. Currently EOQ is active.');
     } else {
         toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
         document.getElementById('inv-cont-inputs').style.display = 'flex';
+
+        // UX Enhancement: Dim inactive labels for clarity
+        if (labelEoq) labelEoq.style.opacity = '0.5';
+        if (labelCont) labelCont.style.opacity = '1';
+        toggle.setAttribute('aria-label', 'Toggle between EOQ and Continuous Review models. Currently Continuous Review is active.');
     }
 }
 

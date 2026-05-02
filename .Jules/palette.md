@@ -80,3 +80,6 @@
 ## 2025-02-23 - Improve WCAG Text Contrast on Links
 **Learning:** Brand colors often fail WCAG text contrast on links against light backgrounds.
 **Action:** Apply a high-contrast text color (e.g., `--text-color`) and use the brand color for a styled underline (`text-decoration-color`, `text-decoration-thickness`, `text-underline-offset`) to preserve both accessibility and brand identity.
+## 2026-10-26 - Visual and ARIA states for Custom Toggles
+**Learning:** Custom toggle switches (like the EOQ / R,Q inventory selector) can leave screen readers without context of what mode is currently active if relying only on visually positioned labels. Furthermore, if the inactive label isn't visually dimmed, sighted users may be slightly confused as to which state is active.
+**Action:** When implementing custom UI toggle switches that transition between distinct modes, use CSS to visually dim the inactive text labels and dynamically update the switch's `aria-label` via JavaScript to explicitly announce the currently active mode for screen reader users. Also ensure `aria-controls` is set if the toggle shows/hides specific content sections.
