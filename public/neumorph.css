@@ -122,7 +122,8 @@ header.panel {
 }
 
 textarea.inset {
-    resize: vertical;
+    resize: none;
+    overflow-y: hidden;
 }
 
 .helper-text {

@@ -83,3 +83,7 @@
 ## 2026-10-26 - Visual and ARIA states for Custom Toggles
 **Learning:** Custom toggle switches (like the EOQ / R,Q inventory selector) can leave screen readers without context of what mode is currently active if relying only on visually positioned labels. Furthermore, if the inactive label isn't visually dimmed, sighted users may be slightly confused as to which state is active.
 **Action:** When implementing custom UI toggle switches that transition between distinct modes, use CSS to visually dim the inactive text labels and dynamically update the switch's `aria-label` via JavaScript to explicitly announce the currently active mode for screen reader users. Also ensure `aria-controls` is set if the toggle shows/hides specific content sections.
+
+## 2026-10-27 - Multi-line Input UX
+**Learning:** Overriding the 'Enter' key in multi-line inputs (like `<textarea>`) to submit forms causes severe UX friction, as users naturally expect 'Enter' to insert a newline. Expecting users to hold 'Shift' to get a newline is an anti-pattern. Furthermore, when textareas are used, manual resizing often looks unpolished and native scrollbars can clash with the design system.
+**Action:** When implementing global keyboard submission shortcuts, always allow natural newlines in `<textarea>` elements and require an explicit modifier (like `Ctrl+Enter` or `Cmd+Enter`) to trigger submission from within them. Additionally, implement JS-based auto-resizing (`scrollHeight`) and hide scrollbars/manual resizing via CSS to provide a clean, expanding text editor experience.

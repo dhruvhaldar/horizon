@@ -451,8 +451,9 @@ document.addEventListener('input', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const target = e.target;
-        // Don't intercept Enter in textareas if Shift is pressed (allow newlines)
-        if (target.tagName === 'TEXTAREA' && e.shiftKey) return;
+
+        // UX Enhancement: Allow natural newlines in textareas. Require Ctrl/Cmd+Enter to submit.
+        if (target.tagName === 'TEXTAREA' && !e.ctrlKey && !e.metaKey) return;
 
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
             e.preventDefault(); // Prevent default form submission or newline
@@ -473,3 +474,15 @@ document.addEventListener('keydown', (e) => {
 
 // Initial draw
 switchInv('eoq');
+
+// UX Enhancement: Auto-resize textareas to match content height
+function autoResizeTextarea(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+}
+document.querySelectorAll('textarea').forEach(autoResizeTextarea);
+document.addEventListener('input', (e) => {
+    if (e.target.tagName === 'TEXTAREA') {
+        autoResizeTextarea(e.target);
+    }
+});
