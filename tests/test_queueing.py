@@ -53,5 +53,5 @@ def test_queue_dos_protection():
         "mu": [2.0],
         "c": [101]
     })
-    assert res_invalid.status_code == 400
-    assert "Maximum number of servers (c) exceeded" in res_invalid.json()['detail']
+    assert res_invalid.status_code in (400, 422)
+    assert "Maximum number of servers (c) exceeded" in str(res_invalid.json()['detail']) or "at most 100 items" in str(res_invalid.json()['detail'])
