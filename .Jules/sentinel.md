@@ -72,3 +72,8 @@
 **Vulnerability:** The `mmc_queue` function in `horizon/queueing.py` did not validate that the `arrival_rate` (lambda) was strictly greater than zero. When a zero arrival rate was passed, the calculation for `wq` (`lq / arrival_rate`) caused a `ZeroDivisionError`, which propagated up as an unhandled 500 Internal Server Error.
 **Learning:** Mathematical formulations often have strict parameter constraints. Relying on downstream logic to handle physical constraints can lead to raw exceptions like `ZeroDivisionError` propagating back up through the API layer unhandled, degrading system stability and potentially leaking stack traces.
 **Prevention:** Always validate physical or logical lower bounds for mathematical operations (like divisors) directly at the algorithm's entry point or the API boundary to return sanitized, user-facing 400 Bad Request errors.
+
+## 2026-05-05 - [CRITICAL] DoS via Unbounded Nested Pydantic Arrays
+**Vulnerability:** The API accepted complex nested data structures like `p: List[List[float]]`. While a `Field(max_length=100)` was added, it only constrained the *outer* list. An attacker could still supply a massive inner array (e.g. `[[1.0] * 30000]`), bypassing the outer constraint and causing severe Application-Level Denial of Service (DoS) due to memory exhaustion and algorithmic explosion during validation.
+**Learning:** Pydantic's `Field(max_length=X)` strictly applies to the immediate container it modifies. It does not cascade into nested generic types.
+**Prevention:** When using Pydantic to validate nested arrays, you must explicitly constrain the inner type as well (e.g., using `List[conlist(float, max_length=X)]` or `Annotated` types) to fully secure the endpoint against memory exhaustion.

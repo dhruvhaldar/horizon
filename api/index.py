@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, conlist
+from typing import Annotated
 from typing import List, Dict, Optional, Any, Tuple
 import os
 import math
@@ -68,10 +69,10 @@ class SafeBaseModel(BaseModel):
     model_config = {"allow_inf_nan": False}
 
 class JacksonRequest(SafeBaseModel):
-    gamma: List[float]
-    p: List[List[float]]
-    mu: List[float]
-    c: Optional[List[int]] = None
+    gamma: List[float] = Field(max_length=100)
+    p: List[conlist(float, max_length=100)] = Field(max_length=100)
+    mu: List[float] = Field(max_length=100)
+    c: Optional[List[int]] = Field(default=None, max_length=100)
 
 class EOQRequest(SafeBaseModel):
     demand_rate: float
@@ -94,8 +95,8 @@ class ContinuousReviewRequest(SafeBaseModel):
     service_level: float = 0.95
 
 class TSPRequest(SafeBaseModel):
-    nodes: List[str]
-    edges: List[Tuple[str, str, float]]
+    nodes: List[str] = Field(max_length=100)
+    edges: List[Tuple[str, str, float]] = Field(max_length=500)
 
 class JobDetails(SafeBaseModel):
     duration: float
@@ -103,7 +104,7 @@ class JobDetails(SafeBaseModel):
     dependencies: List[str] = Field(default=[], max_length=100)
 
 class JobShopRequest(SafeBaseModel):
-    jobs: Dict[str, JobDetails]
+    jobs: Dict[str, JobDetails] = Field(max_length=100)
 
 @app.get("/api/health")
 def health_check():

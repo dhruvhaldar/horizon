@@ -44,8 +44,8 @@ def test_tsp_dos_protection():
         "nodes": [str(i) for i in range(101)],
         "edges": []
     })
-    assert res.status_code == 400
-    assert "Graph too large" in res.json()["detail"]
+    assert res.status_code in (400, 422)
+    assert "Graph too large" in str(res.json()["detail"]) or "at most 100 items" in str(res.json()["detail"])
 
     # Test excessive edges
     res = client.post("/api/route/tsp", json={
@@ -57,13 +57,13 @@ def test_tsp_dos_protection():
         "nodes": ["A", "B"],
         "edges": [[str(i), "B", 1] for i in range(501)]
     })
-    assert res2.status_code == 400
-    assert "Graph too large" in res2.json()["detail"]
+    assert res2.status_code in (400, 422)
+    assert "Graph too large" in str(res2.json()["detail"]) or "at most 500 items" in str(res2.json()["detail"])
 
 def test_jobshop_dos_protection():
     client = TestClient(app)
     # Test excessive jobs
     jobs = {f"Job{i}": {"duration": 1, "dependencies": []} for i in range(101)}
     res = client.post("/api/route/jobshop", json={"jobs": jobs})
-    assert res.status_code == 400
-    assert "Too many jobs" in res.json()["detail"]
+    assert res.status_code in (400, 422)
+    assert "Too many jobs" in str(res.json()["detail"]) or "at most 100 items" in str(res.json()["detail"])
