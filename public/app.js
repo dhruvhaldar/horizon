@@ -1,5 +1,15 @@
 const API_BASE = '/api';
 
+// UX Enhancement: Global screen reader announcer
+function announce(message) {
+    const announcer = document.getElementById('sr-announcer');
+    if (announcer) {
+        // Clear and re-set to ensure the screen reader announces repeated messages
+        announcer.textContent = '';
+        setTimeout(() => { announcer.textContent = message; }, 50);
+    }
+}
+
 // Helper to format validation errors from FastAPI
 function formatError(detail) {
     if (Array.isArray(detail)) {
@@ -29,6 +39,7 @@ async function withLoading(btnElement, asyncFunc) {
         }
         if (!isValid) {
             if (firstInvalid) firstInvalid.reportValidity();
+            announce("Validation failed. Please check highlighted inputs.");
             return;
         }
     }
@@ -74,9 +85,11 @@ async function solveQueue() {
 
         document.getElementById('queue-results').innerText = JSON.stringify(data, null, 2);
         drawQueueGraph(gamma, p);
+        announce("Queueing network calculation complete.");
     } catch (e) {
         document.getElementById('queue-results').innerText = `❌ Error: ${e.message}`;
         d3.select("#queue-graph").selectAll("*").remove();
+        announce(`Error calculating queueing network: ${e.message}`);
     }
 }
 
@@ -213,8 +226,10 @@ async function solveEOQ() {
 
         document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, 0, demand);
+        announce("EOQ calculation complete.");
     } catch (e) {
         document.getElementById('inventory-results').innerText = `❌ Error: ${e.message}`;
+        announce(`Error calculating EOQ: ${e.message}`);
         if (invChart) {
             invChart.destroy();
             invChart = null;
@@ -245,8 +260,10 @@ async function solveContinuous() {
 
         document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, data.R, demand);
+        announce("Continuous review calculation complete.");
     } catch (e) {
         document.getElementById('inventory-results').innerText = `❌ Error: ${e.message}`;
+        announce(`Error calculating continuous review: ${e.message}`);
         if (invChart) {
             invChart.destroy();
             invChart = null;
@@ -344,9 +361,11 @@ async function solveTSP() {
 
         document.getElementById('routing-results').innerText = JSON.stringify(data, null, 2);
         drawRoutingGraph(nodes, edges, data.path);
+        announce("Route optimization complete.");
     } catch (e) {
         document.getElementById('routing-results').innerText = `❌ Error: ${e.message}`;
         d3.select("#routing-graph").selectAll("*").remove();
+        announce(`Error optimizing route: ${e.message}`);
     }
 }
 

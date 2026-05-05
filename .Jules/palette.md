@@ -87,3 +87,7 @@
 ## 2026-10-27 - Multi-line Input UX
 **Learning:** Overriding the 'Enter' key in multi-line inputs (like `<textarea>`) to submit forms causes severe UX friction, as users naturally expect 'Enter' to insert a newline. Expecting users to hold 'Shift' to get a newline is an anti-pattern. Furthermore, when textareas are used, manual resizing often looks unpolished and native scrollbars can clash with the design system.
 **Action:** When implementing global keyboard submission shortcuts, always allow natural newlines in `<textarea>` elements and require an explicit modifier (like `Ctrl+Enter` or `Cmd+Enter`) to trigger submission from within them. Additionally, implement JS-based auto-resizing (`scrollHeight`) and hide scrollbars/manual resizing via CSS to provide a clean, expanding text editor experience.
+
+## 2026-10-28 - ARIA Live on Verbose Data Containers
+**Learning:** Adding `aria-live="polite"` directly to containers that receive large payloads of raw JSON or verbose text forces screen readers to immediately and endlessly read out the entire payload, which is an extremely poor and overwhelming user experience.
+**Action:** Remove `aria-live` from containers displaying verbose raw data. Instead, use a dedicated, visually hidden, global announcer (`<div id="sr-announcer" class="sr-only" aria-live="polite"></div>`) to announce a succinct success/error message (e.g., "Calculation complete"), allowing the user to navigate to the results container and explore the data at their own pace.
