@@ -38,7 +38,10 @@ async function withLoading(btnElement, asyncFunc) {
             }
         }
         if (!isValid) {
-            if (firstInvalid) firstInvalid.reportValidity();
+            if (firstInvalid) {
+                firstInvalid.focus();
+                firstInvalid.reportValidity();
+            }
             announce("Validation failed. Please check highlighted inputs.");
             return;
         }

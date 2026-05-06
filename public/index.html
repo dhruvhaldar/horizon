@@ -33,7 +33,7 @@
             </p>
         </header>
 
-        <main id="main-content" class="grid">
+        <main id="main-content" class="grid" tabindex="-1">
             <!-- Queueing Module -->
             <section class="panel" id="queueing-module" aria-labelledby="queueing-heading">
                 <h2 id="queueing-heading">Queueing Networks</h2>
@@ -65,14 +65,14 @@
                 <h2 id="inventory-heading">Inventory Optimization</h2>
                 <p class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
                 <div class="toggle-wrapper">
-                    <span id="label-eoq" class="switch-label" onclick="switchInv('eoq')" style="cursor: pointer; transition: opacity 0.3s ease; opacity: 1;">EOQ</span>
+                    <span id="label-eoq" class="switch-label" aria-hidden="true" onclick="switchInv('eoq')" style="cursor: pointer; transition: opacity 0.3s ease; opacity: 1;">EOQ</span>
                     <label class="switch">
                         <input type="checkbox" id="inv-toggle" class="togglesw" aria-label="Toggle between EOQ and Continuous Review models. Currently EOQ is active." aria-controls="inv-eoq-inputs inv-cont-inputs" role="switch" onchange="toggleInv()">
                         <div class="indicator left"></div>
                         <div class="indicator right"></div>
                         <div class="button-knob"></div>
                     </label>
-                    <span id="label-cont" class="switch-label" style="margin-left: 1rem; cursor: pointer; transition: opacity 0.3s ease; opacity: 0.5;" onclick="switchInv('continuous')">(R, Q)</span>
+                    <span id="label-cont" class="switch-label" aria-hidden="true" style="margin-left: 1rem; cursor: pointer; transition: opacity 0.3s ease; opacity: 0.5;" onclick="switchInv('continuous')">(R, Q)</span>
                 </div>
 
                 <div id="inv-eoq-inputs">
