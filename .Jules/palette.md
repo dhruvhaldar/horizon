@@ -91,3 +91,7 @@
 ## 2026-10-28 - ARIA Live on Verbose Data Containers
 **Learning:** Adding `aria-live="polite"` directly to containers that receive large payloads of raw JSON or verbose text forces screen readers to immediately and endlessly read out the entire payload, which is an extremely poor and overwhelming user experience.
 **Action:** Remove `aria-live` from containers displaying verbose raw data. Instead, use a dedicated, visually hidden, global announcer (`<div id="sr-announcer" class="sr-only" aria-live="polite"></div>`) to announce a succinct success/error message (e.g., "Calculation complete"), allowing the user to navigate to the results container and explore the data at their own pace.
+
+## 2026-10-29 - Programmatic Focus Outline Suppression
+**Learning:** HTML5 "skip to main content" links typically target a main container (like `<main id="main-content" tabindex="-1">`) to shift programmatic focus. However, some browsers render a large, unseemly focus ring around the entire main content area when it receives this programmatic focus, which breaks the visual design and can confuse sighted users who use keyboard navigation.
+**Action:** Always add `style="outline: none;"` (or a corresponding CSS rule) to the programmatic focus target of a skip link to suppress this visual artifact, while preserving the functional accessibility of shifting the logical focus for screen readers and keyboard navigation.
