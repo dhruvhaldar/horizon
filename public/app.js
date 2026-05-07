@@ -47,14 +47,14 @@ async function withLoading(btnElement, asyncFunc) {
         }
     }
 
-    const originalText = btnElement.innerText;
+    const originalText = btnElement.textContent;
     btnElement.disabled = true;
-    btnElement.innerText = "⏳ Calculating...";
+    btnElement.textContent = "⏳ Calculating...";
     btnElement.setAttribute('aria-busy', 'true');
     try {
         await asyncFunc();
     } finally {
-        btnElement.innerText = originalText;
+        btnElement.textContent = originalText;
         btnElement.disabled = false;
         btnElement.removeAttribute('aria-busy');
 
@@ -86,11 +86,11 @@ async function solveQueue() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error solving queue');
 
-        document.getElementById('queue-results').innerText = JSON.stringify(data, null, 2);
+        document.getElementById('queue-results').textContent = JSON.stringify(data, null, 2);
         drawQueueGraph(gamma, p);
         announce("Queueing network calculation complete.");
     } catch (e) {
-        document.getElementById('queue-results').innerText = `❌ Error: ${e.message}`;
+        document.getElementById('queue-results').textContent = `❌ Error: ${e.message}`;
         d3.select("#queue-graph").selectAll("*").remove();
         announce(`Error calculating queueing network: ${e.message}`);
     }
@@ -227,11 +227,11 @@ async function solveEOQ() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating EOQ');
 
-        document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
+        document.getElementById('inventory-results').textContent = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, 0, demand);
         announce("EOQ calculation complete.");
     } catch (e) {
-        document.getElementById('inventory-results').innerText = `❌ Error: ${e.message}`;
+        document.getElementById('inventory-results').textContent = `❌ Error: ${e.message}`;
         announce(`Error calculating EOQ: ${e.message}`);
         if (invChart) {
             invChart.destroy();
@@ -261,11 +261,11 @@ async function solveContinuous() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating (R, Q)');
 
-        document.getElementById('inventory-results').innerText = JSON.stringify(data, null, 2);
+        document.getElementById('inventory-results').textContent = JSON.stringify(data, null, 2);
         drawInventoryChart(data.Q, data.R, demand);
         announce("Continuous review calculation complete.");
     } catch (e) {
-        document.getElementById('inventory-results').innerText = `❌ Error: ${e.message}`;
+        document.getElementById('inventory-results').textContent = `❌ Error: ${e.message}`;
         announce(`Error calculating continuous review: ${e.message}`);
         if (invChart) {
             invChart.destroy();
@@ -362,11 +362,11 @@ async function solveTSP() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating TSP');
 
-        document.getElementById('routing-results').innerText = JSON.stringify(data, null, 2);
+        document.getElementById('routing-results').textContent = JSON.stringify(data, null, 2);
         drawRoutingGraph(nodes, edges, data.path);
         announce("Route optimization complete.");
     } catch (e) {
-        document.getElementById('routing-results').innerText = `❌ Error: ${e.message}`;
+        document.getElementById('routing-results').textContent = `❌ Error: ${e.message}`;
         d3.select("#routing-graph").selectAll("*").remove();
         announce(`Error optimizing route: ${e.message}`);
     }
@@ -459,8 +459,8 @@ document.addEventListener('input', (e) => {
         const staleContainers = panel.querySelectorAll('.results, .viz-container');
         staleContainers.forEach(container => {
             // Only dim if it has actual data, not default/error states
-            if (container.classList.contains('results') && container.innerText.includes('Results will appear here...')) return;
-            if (container.innerText.includes('❌ Error:')) return;
+            if (container.classList.contains('results') && container.textContent.includes('Results will appear here...')) return;
+            if (container.textContent.includes('❌ Error:')) return;
 
             container.style.opacity = '0.5';
             container.style.filter = 'grayscale(100%)';
