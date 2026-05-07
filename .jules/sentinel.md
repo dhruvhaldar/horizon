@@ -11,3 +11,10 @@
 **Vulnerability:** The `/api/route/jobshop` endpoint enforced a maximum limit of 100 jobs at the endpoint validation layer. However, the `JobDetails` Pydantic model did not enforce a length limit on its `dependencies: List[str]` attribute. An attacker could submit a single job with millions of elements in its dependencies array, bypassing the top-level limit and causing the backend Critical Path Method algorithm to hang indefinitely (22+ seconds) during O(N) internal dependency resolution lookups, leading to an application Denial of Service.
 **Learning:** Validation limits placed only on top-level structures (like the outer dictionary keys) are insufficient if inner/nested array attributes are left unbounded. Pydantic models will eagerly parse these massive inner arrays, bypassing endpoint-level size constraints and exposing inner loops to O(N) or O(N^2) algorithmic explosion.
 **Prevention:** Always define explicit length bounds on nested lists and sequences within Pydantic models (e.g., using `Field(max_length=100)`) to enforce Defense in Depth, especially when those sequences represent inputs to mathematical algorithms or graph traversals.
+## 2025-05-18 - String DoS Prevention via Pydantic Constraints
+
+**Vulnerability:** Memory DoS via unbounded string inputs.
+
+**Learning:** Unbounded strings in Pydantic models (like `List[str]` or `Dict[str, Any]`) can lead to Memory DoS or slow parsing attacks by malicious actors.
+
+**Prevention:** Apply `pydantic.constr(max_length=50)` or `Annotated[str, Field(max_length=50)]` to constrain string lengths inside Pydantic collections (`List`, `Tuple`, `Dict`). Using `constr` guarantees constraint enforcement across different versions of Pydantic.
