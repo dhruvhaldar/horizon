@@ -86,11 +86,15 @@ async function solveQueue() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error solving queue');
 
-        document.getElementById('queue-results').textContent = JSON.stringify(data, null, 2);
+        const resultsEl = document.getElementById('queue-results');
+        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.removeAttribute('aria-invalid');
         drawQueueGraph(gamma, p);
         announce("Queueing network calculation complete.");
     } catch (e) {
-        document.getElementById('queue-results').textContent = `❌ Error: ${e.message}`;
+        const resultsEl = document.getElementById('queue-results');
+        resultsEl.textContent = `❌ Error: ${e.message}`;
+        resultsEl.setAttribute('aria-invalid', 'true');
         d3.select("#queue-graph").selectAll("*").remove();
         announce(`Error calculating queueing network: ${e.message}`);
     }
@@ -227,11 +231,15 @@ async function solveEOQ() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating EOQ');
 
-        document.getElementById('inventory-results').textContent = JSON.stringify(data, null, 2);
+        const resultsEl = document.getElementById('inventory-results');
+        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.removeAttribute('aria-invalid');
         drawInventoryChart(data.Q, 0, demand);
         announce("EOQ calculation complete.");
     } catch (e) {
-        document.getElementById('inventory-results').textContent = `❌ Error: ${e.message}`;
+        const resultsEl = document.getElementById('inventory-results');
+        resultsEl.textContent = `❌ Error: ${e.message}`;
+        resultsEl.setAttribute('aria-invalid', 'true');
         announce(`Error calculating EOQ: ${e.message}`);
         if (invChart) {
             invChart.destroy();
@@ -261,11 +269,15 @@ async function solveContinuous() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating (R, Q)');
 
-        document.getElementById('inventory-results').textContent = JSON.stringify(data, null, 2);
+        const resultsEl = document.getElementById('inventory-results');
+        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.removeAttribute('aria-invalid');
         drawInventoryChart(data.Q, data.R, demand);
         announce("Continuous review calculation complete.");
     } catch (e) {
-        document.getElementById('inventory-results').textContent = `❌ Error: ${e.message}`;
+        const resultsEl = document.getElementById('inventory-results');
+        resultsEl.textContent = `❌ Error: ${e.message}`;
+        resultsEl.setAttribute('aria-invalid', 'true');
         announce(`Error calculating continuous review: ${e.message}`);
         if (invChart) {
             invChart.destroy();
@@ -362,11 +374,15 @@ async function solveTSP() {
         const data = await res.json();
         if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating TSP');
 
-        document.getElementById('routing-results').textContent = JSON.stringify(data, null, 2);
+        const resultsEl = document.getElementById('routing-results');
+        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.removeAttribute('aria-invalid');
         drawRoutingGraph(nodes, edges, data.path);
         announce("Route optimization complete.");
     } catch (e) {
-        document.getElementById('routing-results').textContent = `❌ Error: ${e.message}`;
+        const resultsEl = document.getElementById('routing-results');
+        resultsEl.textContent = `❌ Error: ${e.message}`;
+        resultsEl.setAttribute('aria-invalid', 'true');
         d3.select("#routing-graph").selectAll("*").remove();
         announce(`Error optimizing route: ${e.message}`);
     }
@@ -456,6 +472,12 @@ document.addEventListener('input', (e) => {
     // UX Enhancement: Dim stale data when inputs change
     const panel = e.target.closest('.panel');
     if (panel) {
+        // Clear aggressive error styling as soon as user attempts a correction
+        const resultBox = panel.querySelector('.results');
+        if (resultBox && resultBox.hasAttribute('aria-invalid')) {
+            resultBox.removeAttribute('aria-invalid');
+        }
+
         const staleContainers = panel.querySelectorAll('.results, .viz-container');
         staleContainers.forEach(container => {
             // Only dim if it has actual data, not default/error states
