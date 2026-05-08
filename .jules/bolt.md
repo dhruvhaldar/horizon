@@ -7,3 +7,6 @@
 ## 2024-05-26 - Avoid `innerText` in frequent DOM operations
 **Learning:** `innerText` computes the visible text content of an element by evaluating CSS layout, which triggers costly layout thrashing / reflows. When used inside high-frequency listeners like global `input` event listeners (e.g., checking states for stale data dimming), it causes significant UI freezing and delays.
 **Action:** Replace `innerText` with `textContent` when retrieving or updating DOM text if you don't explicitly need CSS visibility validation. `textContent` simply reads the raw text nodes from the DOM tree, bypassing layout calculation entirely and yielding ~2.5x speedups in frequent operations.
+## 2024-05-27 - Using GZipMiddleware in FastAPI
+**Learning:** Large JSON payloads and static assets (HTML/JS/CSS) can consume massive amounts of bandwidth over standard network connections, where I/O is a larger bottleneck than CPU for typical text transfers.
+**Action:** Always inject `GZipMiddleware` with an appropriate minimum size threshold (e.g., `minimum_size=1000`) into FastAPI applications. This can reduce payload size by 80-90% for large lists or matrices, yielding significant network speedups.
