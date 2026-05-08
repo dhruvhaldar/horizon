@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel, Field, conlist
 from typing import Annotated
 from pydantic import constr
@@ -22,6 +23,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ⚡ Bolt: Add GZip response compression to significantly reduce network transfer
+# time and bandwidth for large JSON payloads and static assets (HTML/JS/CSS).
+# For large graphs or matrices, this can compress the payload by 80-90%.
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
 
 @app.middleware("http")
 async def add_security_headers(request, call_next):
