@@ -95,3 +95,7 @@
 ## 2026-10-29 - Programmatic Focus Outline Suppression
 **Learning:** HTML5 "skip to main content" links typically target a main container (like `<main id="main-content" tabindex="-1">`) to shift programmatic focus. However, some browsers render a large, unseemly focus ring around the entire main content area when it receives this programmatic focus, which breaks the visual design and can confuse sighted users who use keyboard navigation.
 **Action:** Always add `style="outline: none;"` (or a corresponding CSS rule) to the programmatic focus target of a skip link to suppress this visual artifact, while preserving the functional accessibility of shifting the logical focus for screen readers and keyboard navigation.
+
+## 2024-05-08 - Visual Feedback for Stale API Errors
+**Learning:** Displaying API errors as text in a results container is functional, but lacks visual emphasis. Furthermore, when users begin correcting the erroneous inputs, leaving the aggressive error styling fully active creates a hostile UX, as it feels like the system is still shouting at them before they've had a chance to resubmit.
+**Action:** Apply `aria-invalid="true"` to result containers to leverage existing error CSS (e.g., red dashed outlines) for high visibility on failure. Crucially, remove this attribute dynamically on the first `input` event within the same panel. This instantly clears the "red error" border as soon as the user attempts a correction, rewarding their action with immediate, calming visual feedback.
