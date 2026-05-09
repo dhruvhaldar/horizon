@@ -10,3 +10,6 @@
 ## 2024-05-27 - Using GZipMiddleware in FastAPI
 **Learning:** Large JSON payloads and static assets (HTML/JS/CSS) can consume massive amounts of bandwidth over standard network connections, where I/O is a larger bottleneck than CPU for typical text transfers.
 **Action:** Always inject `GZipMiddleware` with an appropriate minimum size threshold (e.g., `minimum_size=1000`) into FastAPI applications. This can reduce payload size by 80-90% for large lists or matrices, yielding significant network speedups.
+## 2026-05-09 - Early Return in High-Frequency DOM Iterations
+**Learning:** In high-frequency frontend event listeners (like global `input` handlers applying UI dimming), iterating over `querySelectorAll` results and performing redundant DOM reads (`textContent`) and string operations on elements that are *already* dimmed is an unnecessary performance bottleneck.
+**Action:** When applying stateful UI effects in loops during high-frequency events, always add an early return or `continue` block (e.g., `if (el.style.opacity === '0.5') return;`) to bypass expensive checks once the desired state has been achieved.
