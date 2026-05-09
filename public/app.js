@@ -480,6 +480,10 @@ document.addEventListener('input', (e) => {
 
         const staleContainers = panel.querySelectorAll('.results, .viz-container');
         staleContainers.forEach(container => {
+            // ⚡ Bolt: Early return if already dimmed to bypass expensive DOM reads
+            // and string operations on every keystroke during high-frequency input events.
+            if (container.style.opacity === '0.5') return;
+
             // Only dim if it has actual data, not default/error states
             if (container.classList.contains('results') && container.textContent.includes('Results will appear here...')) return;
             if (container.textContent.includes('❌ Error:')) return;
