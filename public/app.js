@@ -13,7 +13,14 @@ function announce(message) {
 // Helper to format validation errors from FastAPI
 function formatError(detail) {
     if (Array.isArray(detail)) {
-        return detail.map(err => err.msg).join(', ');
+        return detail.map(err => {
+            let field = '';
+            if (err.loc && err.loc.length > 1) {
+                // loc is usually ["body", "field_name", ...]
+                field = `${err.loc[1]}: `;
+            }
+            return `• ${field}${err.msg}`;
+        }).join('\n');
     }
     return detail;
 }
@@ -518,6 +525,16 @@ document.addEventListener('keydown', (e) => {
 
 // Initial draw
 switchInv('eoq');
+
+// UX Enhancement: Prevent accidental data mutation via scroll wheel on number inputs
+document.addEventListener('wheel', (e) => {
+    if (document.activeElement && document.activeElement.type === 'number') {
+        // Prevent default scrolling which alters the number input value
+        e.preventDefault();
+        // Blur the input to restore normal page scrolling
+        document.activeElement.blur();
+    }
+}, { passive: false });
 
 // UX Enhancement: Auto-resize textareas to match content height
 function autoResizeTextarea(textarea) {
