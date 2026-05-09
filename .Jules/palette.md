@@ -99,3 +99,7 @@
 ## 2024-05-08 - Visual Feedback for Stale API Errors
 **Learning:** Displaying API errors as text in a results container is functional, but lacks visual emphasis. Furthermore, when users begin correcting the erroneous inputs, leaving the aggressive error styling fully active creates a hostile UX, as it feels like the system is still shouting at them before they've had a chance to resubmit.
 **Action:** Apply `aria-invalid="true"` to result containers to leverage existing error CSS (e.g., red dashed outlines) for high visibility on failure. Crucially, remove this attribute dynamically on the first `input` event within the same panel. This instantly clears the "red error" border as soon as the user attempts a correction, rewarding their action with immediate, calming visual feedback.
+
+## 2026-10-30 - Prevent Accidental Number Input Mutation on Scroll
+**Learning:** Browsers natively intercept scroll wheel events to increment/decrement `<input type="number">` elements when they are focused. This creates a severe UX hazard: a user might focus an input, type a value, and then use their mouse wheel intending to scroll down the page, accidentally changing the input value without noticing before clicking submit.
+**Action:** Always add a global `wheel` event listener (with `passive: false`) to pages containing `<input type="number">` that checks if the `document.activeElement` is a number input. If so, call `e.preventDefault()` to stop the value change, and `.blur()` the input to restore normal page scrolling.
