@@ -103,3 +103,7 @@
 ## 2026-10-30 - Prevent Accidental Number Input Mutation on Scroll
 **Learning:** Browsers natively intercept scroll wheel events to increment/decrement `<input type="number">` elements when they are focused. This creates a severe UX hazard: a user might focus an input, type a value, and then use their mouse wheel intending to scroll down the page, accidentally changing the input value without noticing before clicking submit.
 **Action:** Always add a global `wheel` event listener (with `passive: false`) to pages containing `<input type="number">` that checks if the `document.activeElement` is a number input. If so, call `e.preventDefault()` to stop the value change, and `.blur()` the input to restore normal page scrolling.
+
+## 2026-10-31 - Persistent Inline Error Feedback
+**Learning:** Native browser form validation tooltips disappear quickly, leaving no persistent visual indicator of the *specific* error message on the input element itself. While adding `aria-invalid="true"` provides a CSS hook for styling, users still need explicit text to understand *why* the input is invalid.
+**Action:** When manually checking validity in async workflows, dynamically inject an explicit `<div class="error-feedback" aria-live="polite">` below the invalid input, populating it with the native `input.validationMessage`. Use a global `input` event listener to seamlessly remove or update this text as the user corrects their entry.

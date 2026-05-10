@@ -35,12 +35,21 @@ async function withLoading(btnElement, asyncFunc) {
         for (let input of inputs) {
             // Only validate if the element is not visually hidden (like toggles) and is currently displayed
             if (input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)) {
+                let errorDiv = input.parentNode.querySelector('.error-feedback');
                 if (!input.checkValidity()) {
                     isValid = false;
                     input.setAttribute('aria-invalid', 'true');
+                    if (!errorDiv) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-feedback';
+                        errorDiv.setAttribute('aria-live', 'polite');
+                        input.parentNode.appendChild(errorDiv);
+                    }
+                    errorDiv.textContent = input.validationMessage;
                     if (!firstInvalid) firstInvalid = input;
                 } else {
                     input.removeAttribute('aria-invalid');
+                    if (errorDiv) errorDiv.remove();
                 }
             }
         }
@@ -471,8 +480,12 @@ function drawRoutingGraph(nodesList, edges, path) {
 // UX Enhancement: Clear inline validation styling dynamically on input
 document.addEventListener('input', (e) => {
     if (e.target.hasAttribute('aria-invalid')) {
+        const errorDiv = e.target.parentNode.querySelector('.error-feedback');
         if (e.target.checkValidity()) {
             e.target.removeAttribute('aria-invalid');
+            if (errorDiv) errorDiv.remove();
+        } else if (errorDiv) {
+            errorDiv.textContent = e.target.validationMessage;
         }
     }
 
