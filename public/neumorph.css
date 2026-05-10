@@ -110,6 +110,26 @@ header.panel {
     outline: 2px solid hsl(350, 80%, 60%);
 }
 
+.error-feedback {
+    color: hsl(350, 80%, 60%);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.2rem;
+    padding-left: 0.5rem;
+    animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .input-group {
     display: flex;
     flex-direction: column;
