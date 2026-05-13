@@ -26,6 +26,7 @@ def test_queueing_module(page_with_app: Page):
 
     # Verify the results contain expected JSON
     result_text = result_locator.inner_text()
+    result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
     data = json.loads(result_text)
 
     # Check if data contains nodes and expected calculations
@@ -59,6 +60,7 @@ def test_inventory_eoq(page_with_app: Page):
     expect(result_locator).not_to_have_text("Results will appear here...")
 
     result_text = result_locator.inner_text()
+    result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
     data = json.loads(result_text)
 
     assert "Q" in data
@@ -91,6 +93,7 @@ def test_inventory_continuous_review(page_with_app: Page):
     expect(result_locator).not_to_have_text("Results will appear here...")
 
     result_text = result_locator.inner_text()
+    result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
     data = json.loads(result_text)
 
     assert "Q" in data
@@ -115,6 +118,7 @@ def test_routing_module(page_with_app: Page):
     expect(result_locator).not_to_have_text("Results will appear here...")
 
     result_text = result_locator.inner_text()
+    result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
     data = json.loads(result_text)
 
     assert "path" in data
