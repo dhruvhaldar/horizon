@@ -564,3 +564,40 @@ document.addEventListener('input', (e) => {
         autoResizeTextarea(e.target);
     }
 });
+
+// UX Enhancement: Add copy button to results container
+document.querySelectorAll('.results').forEach(container => {
+    container.style.position = 'relative';
+
+    const observer = new MutationObserver(() => {
+        if (container.querySelector('.copy-btn')) return;
+        const text = container.textContent;
+        if (text.includes('Results will appear here...') || text.includes('❌ Error:')) return;
+
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn btn';
+        btn.innerHTML = '📋 Copy';
+        btn.setAttribute('aria-label', 'Copy results to clipboard');
+        btn.style.position = 'absolute';
+        btn.style.top = '0.5rem';
+        btn.style.right = '0.5rem';
+        btn.style.padding = '0.25rem 0.5rem';
+        btn.style.fontSize = '0.8rem';
+
+        btn.onclick = () => {
+            const clone = container.cloneNode(true);
+            const copyBtn = clone.querySelector('.copy-btn');
+            if (copyBtn) copyBtn.remove();
+            navigator.clipboard.writeText(clone.textContent.trim()).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '✅ Copied';
+                announce('Results copied to clipboard');
+                setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+            });
+        };
+
+        container.appendChild(btn);
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
+});
