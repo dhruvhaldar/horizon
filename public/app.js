@@ -64,6 +64,7 @@ async function withLoading(btnElement, asyncFunc) {
     }
 
     const originalText = btnElement.textContent;
+    const wasFocused = document.activeElement === btnElement;
     btnElement.disabled = true;
     btnElement.textContent = "⏳ Calculating...";
     btnElement.setAttribute('aria-busy', 'true');
@@ -73,6 +74,11 @@ async function withLoading(btnElement, asyncFunc) {
         btnElement.textContent = originalText;
         btnElement.disabled = false;
         btnElement.removeAttribute('aria-busy');
+
+        // UX Enhancement: Restore keyboard focus if it was lost due to disabling the button
+        if (wasFocused) {
+            btnElement.focus();
+        }
 
         // UX Enhancement: Restore data visibility after calculation
         const panel = btnElement.closest('.panel');

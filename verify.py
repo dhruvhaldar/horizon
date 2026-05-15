@@ -16,7 +16,7 @@ def verify_frontend():
             page.goto("http://localhost:8001")
 
             # Wait for some elements to be visible
-            page.wait_for_selector("h1:has-text('Horizon Command Center')")
+            page.wait_for_selector("h1:has-text('HORIZON')")
 
             # Since the API is on 8000 and the frontend is just calling /api, it might fail unless we mock or the proxy is set up.
             # In index.html, API_BASE = '/api' which means it'll try to hit localhost:8001/api, which 404s.

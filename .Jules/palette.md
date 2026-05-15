@@ -107,3 +107,7 @@
 ## 2026-10-31 - Persistent Inline Error Feedback
 **Learning:** Native browser form validation tooltips disappear quickly, leaving no persistent visual indicator of the *specific* error message on the input element itself. While adding `aria-invalid="true"` provides a CSS hook for styling, users still need explicit text to understand *why* the input is invalid.
 **Action:** When manually checking validity in async workflows, dynamically inject an explicit `<div class="error-feedback" aria-live="polite">` below the invalid input, populating it with the native `input.validationMessage`. Use a global `input` event listener to seamlessly remove or update this text as the user corrects their entry.
+
+## 2026-05-15 - Disabled Button Focus Loss
+**Learning:** When a focused element (like a submit or calculate button) is dynamically disabled via JavaScript (e.g., `btnElement.disabled = true` during an async loading state), the browser immediately drops the keyboard focus, defaulting it back to the `<body>`. When the button is re-enabled after the operation, the focus remains lost, completely disrupting the page flow for keyboard and screen reader users.
+**Action:** Always save the `document.activeElement` state before disabling an interactive element, and explicitly call `.focus()` on it when re-enabling it in the `finally` block to preserve the user's place in the document structure.
