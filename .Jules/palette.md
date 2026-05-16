@@ -111,3 +111,11 @@
 ## 2026-05-15 - Disabled Button Focus Loss
 **Learning:** When a focused element (like a submit or calculate button) is dynamically disabled via JavaScript (e.g., `btnElement.disabled = true` during an async loading state), the browser immediately drops the keyboard focus, defaulting it back to the `<body>`. When the button is re-enabled after the operation, the focus remains lost, completely disrupting the page flow for keyboard and screen reader users.
 **Action:** Always save the `document.activeElement` state before disabling an interactive element, and explicitly call `.focus()` on it when re-enabling it in the `finally` block to preserve the user's place in the document structure.
+
+## 2026-11-01 - Smooth Scrolling for Skip Links
+**Learning:** "Skip to main content" links that perform instantaneous page jumps can disorient users by immediately snapping the viewport down. This removes spatial context of where they are on the page relative to where they were.
+**Action:** Always add `scroll-behavior: smooth` to the `html` element (with a `@media (prefers-reduced-motion: reduce)` fallback) so that anchor jumps, like skip links, animate smoothly and maintain user spatial awareness.
+
+## 2026-11-01 - Prevent Accidental Selection on Tactile UI
+**Learning:** In "app-like" interfaces (especially Neumorphic designs), interactive elements like custom toggle labels or calculation buttons are frequently double-clicked or tapped rapidly. Without text selection prevention, these rapid interactions cause the text inside the button or label to become highlighted (selected), which immediately ruins the tactile illusion and makes it feel like a standard document rather than an app.
+**Action:** Apply `user-select: none` (and `-webkit-user-select: none`) to highly interactive custom elements like `.btn` and `.switch-label` to preserve the native app feel and prevent accidental, distracting text highlighting.

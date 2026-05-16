@@ -1,3 +1,13 @@
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
 :root {
     --bg-color: hsl(220, 30%, 94%);
     --btn-bg: hsl(220, 29%, 20%);
@@ -167,6 +177,8 @@ textarea.inset {
 
 /* Buttons (Tactile - State-Based Gradient) */
 .btn {
+    user-select: none;
+    -webkit-user-select: none;
     background: var(--btn-default-gradient);
     border: none;
     border-radius: 20px;
@@ -206,6 +218,8 @@ textarea.inset {
 }
 
 .tabs .btn {
+    user-select: none;
+    -webkit-user-select: none;
     flex: 1;
 }
 
@@ -422,11 +436,15 @@ textarea.inset {
 }
 
 .btn {
+    user-select: none;
+    -webkit-user-select: none;
     width: 100%;
     box-sizing: border-box;
 }
 
 .switch-label {
+    user-select: none;
+    -webkit-user-select: none;
     margin-right: 1rem;
     font-weight: bold;
     color: var(--text-color);
