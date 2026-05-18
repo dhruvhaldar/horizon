@@ -111,3 +111,7 @@
 ## 2026-05-15 - Disabled Button Focus Loss
 **Learning:** When a focused element (like a submit or calculate button) is dynamically disabled via JavaScript (e.g., `btnElement.disabled = true` during an async loading state), the browser immediately drops the keyboard focus, defaulting it back to the `<body>`. When the button is re-enabled after the operation, the focus remains lost, completely disrupting the page flow for keyboard and screen reader users.
 **Action:** Always save the `document.activeElement` state before disabling an interactive element, and explicitly call `.focus()` on it when re-enabling it in the `finally` block to preserve the user's place in the document structure.
+
+## 2026-11-01 - User-Select on Tactile UI Elements
+**Learning:** In app-like or tactile UIs (like Neumorphic designs), interactive elements such as custom buttons and toggle switch labels can be tapped or double-clicked rapidly. Without `user-select: none`, this rapid interaction causes the browser to highlight the text, which breaks the illusion of a physical, tactile control and creates a distracting, unpolished UX.
+**Action:** Apply `user-select: none` and `-webkit-user-select: none` to interactive custom elements like `.btn` and `.switch-label` to prevent text highlighting during rapid user interactions, maintaining a smooth, app-like feel.

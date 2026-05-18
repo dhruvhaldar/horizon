@@ -178,6 +178,8 @@ textarea.inset {
     box-shadow: 8px 8px 16px var(--shadow-dark),
                 -8px -8px 16px var(--shadow-light);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .btn:hover {
@@ -431,6 +433,8 @@ textarea.inset {
     font-weight: bold;
     color: var(--text-color);
     white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 footer {
