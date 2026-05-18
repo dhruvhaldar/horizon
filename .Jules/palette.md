@@ -111,3 +111,7 @@
 ## 2026-05-15 - Disabled Button Focus Loss
 **Learning:** When a focused element (like a submit or calculate button) is dynamically disabled via JavaScript (e.g., `btnElement.disabled = true` during an async loading state), the browser immediately drops the keyboard focus, defaulting it back to the `<body>`. When the button is re-enabled after the operation, the focus remains lost, completely disrupting the page flow for keyboard and screen reader users.
 **Action:** Always save the `document.activeElement` state before disabling an interactive element, and explicitly call `.focus()` on it when re-enabling it in the `finally` block to preserve the user's place in the document structure.
+
+## 2026-11-01 - Smooth Scrolling & Spatial Awareness
+**Learning:** Adding `scroll-behavior: smooth` to the `html` tag provides excellent spatial context for sighted users when navigating via anchor links (like "skip to main content"), helping them understand where they are on the page. However, this same motion can cause discomfort or vestibular issues for some users.
+**Action:** Always wrap smooth scrolling directives or provide an explicit fallback using `@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }` to respect OS-level accessibility preferences while delivering an enhanced UX for others.
