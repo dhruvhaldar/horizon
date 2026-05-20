@@ -43,12 +43,16 @@ async function withLoading(btnElement, asyncFunc) {
                         errorDiv = document.createElement('div');
                         errorDiv.className = 'error-feedback';
                         errorDiv.setAttribute('aria-live', 'polite');
+                        // Assign a unique ID for aria-errormessage association
+                        errorDiv.id = `error-${input.id || Math.random().toString(36).substring(2, 9)}`;
                         input.parentNode.appendChild(errorDiv);
                     }
                     errorDiv.textContent = input.validationMessage;
+                    input.setAttribute('aria-errormessage', errorDiv.id);
                     if (!firstInvalid) firstInvalid = input;
                 } else {
                     input.removeAttribute('aria-invalid');
+                    input.removeAttribute('aria-errormessage');
                     if (errorDiv) errorDiv.remove();
                 }
             }
@@ -489,6 +493,7 @@ document.addEventListener('input', (e) => {
         const errorDiv = e.target.parentNode.querySelector('.error-feedback');
         if (e.target.checkValidity()) {
             e.target.removeAttribute('aria-invalid');
+            e.target.removeAttribute('aria-errormessage');
             if (errorDiv) errorDiv.remove();
         } else if (errorDiv) {
             errorDiv.textContent = e.target.validationMessage;

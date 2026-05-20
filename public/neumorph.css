@@ -148,6 +148,11 @@ header.panel {
 .input-group label {
     font-size: 0.9rem;
     font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.input-group:focus-within label {
+    color: var(--highlight);
 }
 
 textarea.inset {
