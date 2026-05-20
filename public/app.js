@@ -32,27 +32,34 @@ async function withLoading(btnElement, asyncFunc) {
         const inputs = container.querySelectorAll('input, textarea');
         let isValid = true;
         let firstInvalid = null;
-        for (let input of inputs) {
-            // Only validate if the element is not visually hidden (like toggles) and is currently displayed
-            if (input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)) {
-                let errorDiv = input.parentNode.querySelector('.error-feedback');
-                if (!input.checkValidity()) {
-                    isValid = false;
-                    input.setAttribute('aria-invalid', 'true');
-                    if (!errorDiv) {
-                        errorDiv = document.createElement('div');
-                        errorDiv.className = 'error-feedback';
-                        errorDiv.setAttribute('aria-live', 'polite');
-                        input.parentNode.appendChild(errorDiv);
-                    }
-                    errorDiv.textContent = input.validationMessage;
-                    if (!firstInvalid) firstInvalid = input;
-                } else {
-                    input.removeAttribute('aria-invalid');
-                    if (errorDiv) errorDiv.remove();
+
+        // ⚡ Bolt: Separate DOM reads from DOM writes to prevent layout thrashing.
+        // Reading offsetWidth/offsetHeight and then writing to the DOM (adding/removing error divs)
+        // inside the same loop forces synchronous layout recalculations for every input.
+        // By pre-filtering visible inputs, we batch the layout reads and eliminate layout thrashing.
+        const visibleInputs = Array.from(inputs).filter(input =>
+            input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)
+        );
+
+        for (let input of visibleInputs) {
+            let errorDiv = input.parentNode.querySelector('.error-feedback');
+            if (!input.checkValidity()) {
+                isValid = false;
+                input.setAttribute('aria-invalid', 'true');
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-feedback';
+                    errorDiv.setAttribute('aria-live', 'polite');
+                    input.parentNode.appendChild(errorDiv);
                 }
+                errorDiv.textContent = input.validationMessage;
+                if (!firstInvalid) firstInvalid = input;
+            } else {
+                input.removeAttribute('aria-invalid');
+                if (errorDiv) errorDiv.remove();
             }
         }
+
         if (!isValid) {
             if (firstInvalid) {
                 firstInvalid.focus();
