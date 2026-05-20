@@ -115,3 +115,11 @@
 ## 2026-11-01 - User-Select on Tactile UI Elements
 **Learning:** In app-like or tactile UIs (like Neumorphic designs), interactive elements such as custom buttons and toggle switch labels can be tapped or double-clicked rapidly. Without `user-select: none`, this rapid interaction causes the browser to highlight the text, which breaks the illusion of a physical, tactile control and creates a distracting, unpolished UX.
 **Action:** Apply `user-select: none` and `-webkit-user-select: none` to interactive custom elements like `.btn` and `.switch-label` to prevent text highlighting during rapid user interactions, maintaining a smooth, app-like feel.
+
+## 2026-05-20 - Visual Label Focus Connection
+**Learning:** In forms or input-heavy layouts, visually disconnecting the active state of an input from its associated label can make it harder for sighted users to track which field they are currently editing, especially when multiple similar inputs exist.
+**Action:** Use CSS pseudo-classes like `:focus-within` on the container (e.g., `.input-group:focus-within label`) to subtly change the label's color (e.g., to the highlight color) when its associated input receives focus. This provides a clear, delightful, and immediate visual connection.
+
+## 2026-05-20 - Persistent Screen Reader Error Context with aria-errormessage
+**Learning:** While `aria-invalid="true"` informs screen reader users that an input is invalid, and a global announcer might state that "validation failed", users returning to the specific invalid field later will only hear that it is "invalid" without any specific context as to *why*. If the error text is dynamically injected, it needs to be explicitly linked.
+**Action:** When dynamically injecting error message text elements (`<div class="error-feedback">`), ensure the element has a unique `id`. Then, set `aria-errormessage="[id]"` on the invalid `<input>`. This guarantees screen readers will announce the specific validation text whenever the invalid field receives focus. Remember to dynamically remove `aria-errormessage` when the field becomes valid again.
