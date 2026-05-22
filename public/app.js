@@ -30,13 +30,19 @@ async function withLoading(btnElement, asyncFunc) {
     const container = btnElement.closest('.panel');
     if (container) {
         const inputs = container.querySelectorAll('input, textarea');
+
+        // ⚡ Bolt: Batch DOM layout reads (offsetWidth/offsetHeight) before performing DOM writes
+        // inside the validation loop. Interleaving reads and writes causes synchronous layout
+        // thrashing. Filtering the visible inputs upfront bypasses O(N) recalculation overhead.
+        const visibleInputs = Array.from(inputs).filter(input =>
+            input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)
+        );
+
         let isValid = true;
         let firstInvalid = null;
-        for (let input of inputs) {
-            // Only validate if the element is not visually hidden (like toggles) and is currently displayed
-            if (input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)) {
-                let errorDiv = input.parentNode.querySelector('.error-feedback');
-                if (!input.checkValidity()) {
+        for (let input of visibleInputs) {
+            let errorDiv = input.parentNode.querySelector('.error-feedback');
+            if (!input.checkValidity()) {
                     isValid = false;
                     input.setAttribute('aria-invalid', 'true');
                     if (!errorDiv) {
@@ -49,12 +55,11 @@ async function withLoading(btnElement, asyncFunc) {
                     }
                     errorDiv.textContent = input.validationMessage;
                     input.setAttribute('aria-errormessage', errorDiv.id);
-                    if (!firstInvalid) firstInvalid = input;
-                } else {
-                    input.removeAttribute('aria-invalid');
-                    input.removeAttribute('aria-errormessage');
-                    if (errorDiv) errorDiv.remove();
-                }
+                if (!firstInvalid) firstInvalid = input;
+            } else {
+                input.removeAttribute('aria-invalid');
+                input.removeAttribute('aria-errormessage');
+                if (errorDiv) errorDiv.remove();
             }
         }
         if (!isValid) {

@@ -19,3 +19,6 @@
 ## 2026-05-18 - Fast path for single-server queues (M/M/1)
 **Learning:** General-purpose numeric solvers (like M/M/c queues) often use iterative loops to accumulate terms based on inputs. However, base cases (like c=1) occur very frequently and are mathematically much simpler.
 **Action:** When writing general-purpose numeric solvers (like M/M/c queues) that use iterative loops to accumulate terms, explicitly check for and short-circuit the most common base cases (e.g., $c=1$ for single-server queues) using their simplified algebraic representations to bypass loop overhead and save execution time.
+## 2026-05-21 - Fix layout thrashing by batching DOM reads
+**Learning:** Interleaving DOM layout reads (like `offsetWidth`, `offsetHeight`, `clientHeight`) with DOM writes (like `setAttribute`, `appendChild`, or modifying `classList`) inside a loop causes synchronous forced layout recalculations (layout thrashing), creating O(N) overhead.
+**Action:** Always batch DOM layout reads before performing any DOM writes (e.g., filter visible inputs into a separate array before executing validation/DOM mutation loops) to bypass O(N) recalculation overhead.
