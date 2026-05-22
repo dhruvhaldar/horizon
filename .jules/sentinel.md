@@ -18,3 +18,7 @@
 **Learning:** Unbounded strings in Pydantic models (like `List[str]` or `Dict[str, Any]`) can lead to Memory DoS or slow parsing attacks by malicious actors.
 
 **Prevention:** Apply `pydantic.constr(max_length=50)` or `Annotated[str, Field(max_length=50)]` to constrain string lengths inside Pydantic collections (`List`, `Tuple`, `Dict`). Using `constr` guarantees constraint enforcement across different versions of Pydantic.
+## 2025-05-24 - DoS via Internal Node Namespace Collision in Graph Algorithms
+**Vulnerability:** The `/api/route/jobshop` endpoint accepted any valid string as a job ID. However, the underlying `job_shop_cpm` algorithm internally used the hardcoded strings 'START' and 'END' to represent dummy boundary nodes for Kahn's topological sort. An attacker could supply jobs named 'START' or 'END', overwriting the internal system nodes. This corrupted the graph edges and `in_degree` counts, forcing an infinite cycle detection loop and causing the backend to crash with a `ValueError`, which could potentially be unhandled leading to a 500 Internal Server Error.
+**Learning:** When algorithms implement internal graph structures (like adjacency lists or NetworkX graphs) using string-based node identifiers, user-supplied node IDs share the exact same namespace as internal system nodes.
+**Prevention:** Always validate user-provided node or entity IDs against a blacklist of reserved internal keywords (like 'START', 'END', 'SOURCE', 'SINK') before processing, or namespace internal nodes using specialized types or prefixes that users cannot provide.

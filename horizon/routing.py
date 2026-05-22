@@ -75,6 +75,11 @@ def job_shop_cpm(jobs: dict[str, dict]):
     jobs: dict where keys are job IDs and values are dicts containing 'duration' and 'dependencies'.
     e.g., {'A': {'duration': 5, 'dependencies': []}, 'B': {'duration': 3, 'dependencies': ['A']}}
     """
+    # Security: Prevent user-supplied jobs from overwriting internal system nodes ('START', 'END')
+    # used by Kahn's algorithm. Overwriting these nodes causes unintended cycle errors.
+    if 'START' in jobs or 'END' in jobs:
+        raise ValueError("Job IDs cannot be 'START' or 'END'. These are reserved for system use.")
+
     # ⚡ Bolt: Replace NetworkX graph with a pure Python native implementation using
     # adjacency lists and Kahn's Algorithm for topological sorting. This entirely bypasses
     # NetworkX's instantiation, validation, and object wrapping overhead. For 100 runs
