@@ -599,6 +599,7 @@ document.querySelectorAll('.results').forEach(container => {
         btn.style.right = '0.5rem';
         btn.style.padding = '0.25rem 0.5rem';
         btn.style.fontSize = '0.8rem';
+        btn.style.width = 'auto';
 
         btn.onclick = () => {
             const clone = container.cloneNode(true);
