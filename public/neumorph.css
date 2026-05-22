@@ -160,6 +160,22 @@ textarea.inset {
     overflow-y: hidden;
 }
 
+
+kbd {
+    background-color: var(--bg-color);
+    border-radius: 6px;
+    padding: 0.15rem 0.4rem;
+    font-family: var(--font-family);
+    font-size: 0.9em;
+    font-weight: 700;
+    color: var(--text-color);
+    box-shadow: 3px 3px 6px var(--shadow-dark),
+                -3px -3px 6px var(--shadow-light);
+    display: inline-block;
+    line-height: 1;
+    margin: 0 0.1rem;
+}
+
 .helper-text {
     font-size: 0.75rem;
     color: var(--text-color);

@@ -127,3 +127,7 @@
 ## 2026-11-02 - Absolutely Positioned Button Resizing
 **Learning:** In this project's UI, the global `.btn` CSS class explicitly defines `width: 100%` and `box-sizing: border-box`. When dynamically injecting utility buttons (like a "Copy" button) into data containers using absolute positioning (`position: absolute`), the button inherits this 100% width, causing it to stretch awkwardly across the entire parent container instead of sizing to its content.
 **Action:** When dynamically injecting absolute-positioned utility buttons that use the global `.btn` class, always explicitly set `style.width = 'auto'` on the injected element to override the inherited full width and ensure it renders neatly as a small, content-sized control.
+
+## 2026-05-22 - Visual Affordance for Keyboard Shortcuts
+**Learning:** Using basic bold text (`<strong>`) for keyboard shortcut hints (like "Enter" to calculate) doesn't clearly convey that they are interactive key presses, especially in a tactile, neumorphic UI design.
+**Action:** Always use semantic `<kbd>` tags and style them to look like physical keys (e.g., using drop shadows and rounded borders) to provide strong visual affordance that matches the application's physical aesthetic.
