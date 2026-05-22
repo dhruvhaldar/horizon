@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon: OR Workbench</title>
     <link rel="stylesheet" href="neumorph.css">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- ⚡ Bolt: Add `defer` attribute to external D3.js and Chart.js scripts.
+         This prevents these large scripts from blocking the main thread during HTML parsing,
+         significantly improving the First Contentful Paint (FCP) and initial load performance. -->
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script>
         window.MathJax = {
             tex: {
