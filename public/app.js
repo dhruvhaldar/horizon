@@ -549,6 +549,9 @@ document.addEventListener('keydown', (e) => {
                 const btns = Array.from(container.querySelectorAll('.btn'));
                 const btn = btns.find(b => b.offsetWidth > 0 || b.offsetHeight > 0);
                 if (btn && !btn.disabled) {
+                    // UX Enhancement: Add tactile visual feedback for keyboard shortcuts
+                    btn.classList.add('active');
+                    setTimeout(() => btn.classList.remove('active'), 150);
                     btn.click();
                 }
             }
