@@ -559,15 +559,18 @@ document.addEventListener('keydown', (e) => {
 // Initial draw
 switchInv('eoq');
 
-// UX Enhancement: Prevent accidental data mutation via scroll wheel on number inputs
-document.addEventListener('wheel', (e) => {
-    if (document.activeElement && document.activeElement.type === 'number') {
+// ⚡ Bolt: Attach the non-passive `wheel` event listener locally to number inputs
+// rather than globally on `document`. A global non-passive wheel listener blocks
+// the browser's main thread on every scroll action across the entire page,
+// disabling native 60fps scroll optimizations and causing jank.
+document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('wheel', (e) => {
         // Prevent default scrolling which alters the number input value
         e.preventDefault();
         // Blur the input to restore normal page scrolling
-        document.activeElement.blur();
-    }
-}, { passive: false });
+        input.blur();
+    }, { passive: false });
+});
 
 // UX Enhancement: Auto-resize textareas to match content height
 function autoResizeTextarea(textarea) {
