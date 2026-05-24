@@ -624,3 +624,10 @@ document.querySelectorAll('.results').forEach(container => {
 
     observer.observe(container, { childList: true, subtree: true });
 });
+
+// UX Enhancement: Detect macOS and update keyboard shortcut hints
+if (navigator.userAgent.includes('Mac')) {
+    document.querySelectorAll('.os-modifier').forEach(el => {
+        el.textContent = '⌘ Cmd';
+    });
+}
