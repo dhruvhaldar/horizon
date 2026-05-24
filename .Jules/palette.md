@@ -131,3 +131,7 @@
 ## 2026-05-22 - Visual Affordance for Keyboard Shortcuts
 **Learning:** Using basic bold text (`<strong>`) for keyboard shortcut hints (like "Enter" to calculate) doesn't clearly convey that they are interactive key presses, especially in a tactile, neumorphic UI design.
 **Action:** Always use semantic `<kbd>` tags and style them to look like physical keys (e.g., using drop shadows and rounded borders) to provide strong visual affordance that matches the application's physical aesthetic.
+
+## 2026-11-03 - OS-Specific Keyboard Shortcut Hints
+**Learning:** Hardcoding "Ctrl" for keyboard shortcuts in UI hints creates cognitive friction for macOS users, who naturally expect to use the Command (⌘) key for standard application shortcuts. Displaying the incorrect modifier key makes the app feel unpolished and less native.
+**Action:** Always wrap modifier key texts in an identifying class (e.g., `<kbd class="os-modifier">Ctrl</kbd>`) and use a simple JavaScript snippet (`navigator.userAgent.includes('Mac')`) to dynamically update the text to "⌘ Cmd" for macOS users on load.
