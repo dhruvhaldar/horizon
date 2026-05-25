@@ -157,10 +157,16 @@ function drawQueueGraph(gamma, p) {
         }
     }
 
+    // ⚡ Bolt: Stop the automatic simulation and run it statically.
+    // This pre-computes the layout in memory and renders the final state instantly,
+    // avoiding hundreds of expensive DOM updates (layout thrashing) during the animation.
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).id(d => d.id).distance(100))
         .force("charge", d3.forceManyBody().strength(-400))
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .stop();
+
+    simulation.tick(300);
 
     const svg = container.append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
@@ -187,7 +193,13 @@ function drawQueueGraph(gamma, p) {
         .join("path")
         .attr("class", "link")
         .attr("stroke", "#ff6b35")
-        .attr("marker-end", "url(#arrow)");
+        .attr("marker-end", "url(#arrow)")
+        .attr("d", d => {
+            const dx = d.target.x - d.source.x,
+                  dy = d.target.y - d.source.y,
+                  dr = Math.sqrt(dx * dx + dy * dy);
+            return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+        });
 
     const node = svg.append("g")
         .attr("class", "node")
@@ -203,15 +215,7 @@ function drawQueueGraph(gamma, p) {
         .attr("dy", 5)
         .text(d => d.isExternal ? "In" : d.id);
 
-    simulation.on("tick", () => {
-        link.attr("d", d => {
-            const dx = d.target.x - d.source.x,
-                  dy = d.target.y - d.source.y,
-                  dr = Math.sqrt(dx * dx + dy * dy);
-            return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
-        });
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
-    });
+    node.attr("transform", d => `translate(${d.x},${d.y})`);
 }
 
 // Inventory
@@ -448,10 +452,16 @@ function drawRoutingGraph(nodesList, edges, path) {
         });
     }
 
+    // ⚡ Bolt: Stop the automatic simulation and run it statically.
+    // This pre-computes the layout in memory and renders the final state instantly,
+    // avoiding hundreds of expensive DOM updates (layout thrashing) during the animation.
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(links).id(d => d.id).distance(100))
         .force("charge", d3.forceManyBody().strength(-300))
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .stop();
+
+    simulation.tick(300);
 
     const svg = container.append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
@@ -465,7 +475,11 @@ function drawRoutingGraph(nodesList, edges, path) {
         .join("line")
         .attr("class", "link")
         .attr("stroke", d => d.isPath ? "#e74c3c" : "#334155")
-        .attr("stroke-width", d => d.isPath ? 3 : 1);
+        .attr("stroke-width", d => d.isPath ? 3 : 1)
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
 
     const node = svg.append("g")
         .attr("class", "node")
@@ -481,15 +495,7 @@ function drawRoutingGraph(nodesList, edges, path) {
         .attr("dy", 4)
         .text(d => d.id);
 
-    simulation.on("tick", () => {
-        link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
-
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
-    });
+    node.attr("transform", d => `translate(${d.x},${d.y})`);
 }
 
 // UX Enhancement: Clear inline validation styling dynamically on input
