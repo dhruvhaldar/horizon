@@ -4,3 +4,6 @@
 ## 2026-05-23 - Tactile Feedback for Keyboard Shortcuts
 **Learning:** Keyboard shortcut users miss out on `:active` pseudo-class feedback in tactile (Neumorphic) UIs, making interactions feel disconnected compared to pointer users.
 **Action:** Always programmatically apply the `.active` CSS state to elements when triggering them via keyboard shortcuts (and remove it after a short delay, e.g., 150ms) to bridge the tactile feedback gap.
+## 2026-05-25 - Maintain Focus During Async Actions
+**Learning:** Dynamically setting the native `disabled` attribute on an active button drops screen reader and keyboard focus, dropping users back to the `<body>` element.
+**Action:** Use `aria-disabled="true"` instead of `disabled=true` for loading states to maintain keyboard context, and update CSS selectors to target `[aria-disabled="true"]`.

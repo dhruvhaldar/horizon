@@ -26,6 +26,8 @@ function formatError(detail) {
 }
 
 async function withLoading(btnElement, asyncFunc) {
+    if (btnElement.getAttribute('aria-disabled') === 'true') return;
+
     // UX Enhancement: Trigger native HTML5 validation on visible inputs before async operations
     const container = btnElement.closest('.panel');
     if (container) {
@@ -74,14 +76,14 @@ async function withLoading(btnElement, asyncFunc) {
 
     const originalText = btnElement.textContent;
     const wasFocused = document.activeElement === btnElement;
-    btnElement.disabled = true;
+    btnElement.setAttribute('aria-disabled', 'true');
     btnElement.textContent = "⏳ Calculating...";
     btnElement.setAttribute('aria-busy', 'true');
     try {
         await asyncFunc();
     } finally {
         btnElement.textContent = originalText;
-        btnElement.disabled = false;
+        btnElement.removeAttribute('aria-disabled');
         btnElement.removeAttribute('aria-busy');
 
         // UX Enhancement: Restore keyboard focus if it was lost due to disabling the button
@@ -554,7 +556,7 @@ document.addEventListener('keydown', (e) => {
                 // Find the visible primary action button within this container
                 const btns = Array.from(container.querySelectorAll('.btn'));
                 const btn = btns.find(b => b.offsetWidth > 0 || b.offsetHeight > 0);
-                if (btn && !btn.disabled) {
+                if (btn && !btn.disabled && btn.getAttribute('aria-disabled') !== 'true') {
                     // UX Enhancement: Add tactile visual feedback for keyboard shortcuts
                     btn.classList.add('active');
                     setTimeout(() => btn.classList.remove('active'), 150);
