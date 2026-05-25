@@ -5,3 +5,7 @@
 ## 2026-05-23 - [Global Non-Passive Event Listeners]
 **Learning:** Attaching a non-passive event listener like `wheel` or `touchstart` globally to the `document` blocks the browser's main thread on every scroll action across the entire page, disabling native 60fps scrolling optimizations and causing significant jank.
 **Action:** Always attach non-passive event listeners locally to the specific elements that require them (e.g., specific `input` fields) instead of the global `document` or `window`.
+
+## 2026-05-25 - [Static D3.js Forced Graphs]
+**Learning:** Animating D3.js force-directed graphs via `simulation.on("tick", ...)` causes severe synchronous DOM layout thrashing, as the browser must recalculate styles and layout on every animation frame for every node and link. For graphs where only the final steady-state layout is needed, this is unnecessary overhead.
+**Action:** Always stop the automatic animation (`simulation.stop()`), manually advance the physics simulation in-memory (`simulation.tick(300)`), and apply the final `x` and `y` coordinates directly during element creation to bypass layout thrashing.
