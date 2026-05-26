@@ -1,5 +1,29 @@
 const API_BASE = '/api';
 
+// ⚡ Bolt: Cache deterministic API call results using a Map.
+// Mathematical solvers return identical outputs for identical inputs.
+// Caching the JSON response eliminates redundant network requests and
+// backend recalculations, reducing latency to 0ms for repeated queries.
+const apiCache = new Map();
+
+async function fetchWithCache(endpoint, bodyObj, errorMsg) {
+    const cacheKey = endpoint + JSON.stringify(bodyObj);
+    if (apiCache.has(cacheKey)) {
+        return apiCache.get(cacheKey);
+    }
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyObj)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(formatError(data.detail) || errorMsg);
+
+    // Only cache successful deterministic results
+    apiCache.set(cacheKey, data);
+    return data;
+}
+
 // UX Enhancement: Global screen reader announcer
 function announce(message) {
     const announcer = document.getElementById('sr-announcer');
@@ -111,13 +135,7 @@ async function solveQueue() {
     const p = pStr ? pStr.split('\n').map(row => row.split(',').map(Number)) : [];
 
     try {
-        const res = await fetch(`${API_BASE}/queue`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gamma, p, mu, c: mu.map(() => 1) })
-        });
-        const data = await res.json();
-        if(!res.ok) throw new Error(formatError(data.detail) || 'Error solving queue');
+        const data = await fetchWithCache('/queue', { gamma, p, mu, c: mu.map(() => 1) }, 'Error solving queue');
 
         const resultsEl = document.getElementById('queue-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
@@ -260,13 +278,7 @@ async function solveEOQ() {
     const hold = Number(document.getElementById('i-hold').value);
 
     try {
-        const res = await fetch(`${API_BASE}/inventory/eoq`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ demand_rate: demand, order_cost: order, holding_cost: hold })
-        });
-        const data = await res.json();
-        if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating EOQ');
+        const data = await fetchWithCache('/inventory/eoq', { demand_rate: demand, order_cost: order, holding_cost: hold }, 'Error calculating EOQ');
 
         const resultsEl = document.getElementById('inventory-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
@@ -295,16 +307,10 @@ async function solveContinuous() {
     const lt_std = Number(document.getElementById('ic-lt-std').value);
 
     try {
-        const res = await fetch(`${API_BASE}/inventory/continuous`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                demand_rate: demand, order_cost: order, holding_cost: hold,
-                lead_time_mean: lt_mean, lead_time_std: lt_std
-            })
-        });
-        const data = await res.json();
-        if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating (R, Q)');
+        const data = await fetchWithCache('/inventory/continuous', {
+            demand_rate: demand, order_cost: order, holding_cost: hold,
+            lead_time_mean: lt_mean, lead_time_std: lt_std
+        }, 'Error calculating (R, Q)');
 
         const resultsEl = document.getElementById('inventory-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
@@ -403,13 +409,7 @@ async function solveTSP() {
     });
 
     try {
-        const res = await fetch(`${API_BASE}/route/tsp`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nodes, edges })
-        });
-        const data = await res.json();
-        if(!res.ok) throw new Error(formatError(data.detail) || 'Error calculating TSP');
+        const data = await fetchWithCache('/route/tsp', { nodes, edges }, 'Error calculating TSP');
 
         const resultsEl = document.getElementById('routing-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
