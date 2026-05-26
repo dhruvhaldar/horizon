@@ -68,6 +68,12 @@ async function withLoading(btnElement, asyncFunc) {
             if (firstInvalid) {
                 firstInvalid.focus();
                 firstInvalid.reportValidity();
+
+                // UX Enhancement: Tactile physical feedback for errors
+                // Remove class, force reflow, and re-add to ensure animation replays
+                firstInvalid.classList.remove('shake');
+                void firstInvalid.offsetWidth;
+                firstInvalid.classList.add('shake');
             }
             announce("Validation failed. Please check highlighted inputs.");
             return;
@@ -502,6 +508,9 @@ function drawRoutingGraph(nodesList, edges, path) {
 
 // UX Enhancement: Clear inline validation styling dynamically on input
 document.addEventListener('input', (e) => {
+    // Clear shake animation so it can be retriggered later
+    e.target.classList.remove('shake');
+
     if (e.target.hasAttribute('aria-invalid')) {
         const errorDiv = e.target.parentNode.querySelector('.error-feedback');
         if (e.target.checkValidity()) {
