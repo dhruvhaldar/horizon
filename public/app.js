@@ -597,7 +597,17 @@ function autoResizeTextarea(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
 }
-document.querySelectorAll('textarea').forEach(autoResizeTextarea);
+
+// ⚡ Bolt: Batch DOM layout reads and writes during initialization to prevent
+// O(N) synchronous layout thrashing (forced reflows).
+const textareas = document.querySelectorAll('textarea');
+// Phase 1: Write (reset all)
+textareas.forEach(t => t.style.height = 'auto');
+// Phase 2: Read (measure all without triggering reflows between measurements)
+const heights = Array.from(textareas).map(t => t.scrollHeight);
+// Phase 3: Write (apply final heights)
+textareas.forEach((t, i) => t.style.height = heights[i] + 'px');
+
 document.addEventListener('input', (e) => {
     if (e.target.tagName === 'TEXTAREA') {
         autoResizeTextarea(e.target);
