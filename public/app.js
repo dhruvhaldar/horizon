@@ -90,7 +90,8 @@ async function withLoading(btnElement, asyncFunc) {
         }
         if (!isValid) {
             if (firstInvalid) {
-                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus({ preventScroll: true });
                 firstInvalid.reportValidity();
 
                 // UX Enhancement: Tactile physical feedback for errors

@@ -7,3 +7,7 @@
 ## 2026-05-25 - Maintain Focus During Async Actions
 **Learning:** Dynamically setting the native `disabled` attribute on an active button drops screen reader and keyboard focus, dropping users back to the `<body>` element.
 **Action:** Use `aria-disabled="true"` instead of `disabled=true` for loading states to maintain keyboard context, and update CSS selectors to target `[aria-disabled="true"]`.
+
+## 2026-05-28 - Prevent Abrupt Page Jumps During Focus
+**Learning:** When focusing an element during custom validation, calling `element.focus()` can cause the browser to jump abruptly to the element, creating a disorienting experience. By combining `element.scrollIntoView({ behavior: 'smooth', block: 'center' })` with `element.focus({ preventScroll: true })`, we can smoothly bring the element into view before focusing it.
+**Action:** Always use smooth scrolling and prevent default focus scrolling when navigating to invalid inputs.
