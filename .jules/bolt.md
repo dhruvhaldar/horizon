@@ -12,3 +12,7 @@
 ## 2024-05-26 - Deterministic API Caching
 **Learning:** Mathematical solvers in this application act as pure functions. Identical inputs always yield identical outputs. Relying solely on the backend to re-calculate these results incurs unnecessary network latency and CPU overhead.
 **Action:** Implemented a client-side `apiCache` (using a JavaScript Map) to memoize JSON responses based on serialized request payloads. This reduces redundant network requests to 0 and brings calculation latency to 0ms for repeated queries.
+
+## 2026-05-28 - [DOM Initialization Layout Thrashing]
+**Learning:** When initializing auto-resizing elements (like multiple textareas) on page load, a simple `forEach` loop that sets `style.height = 'auto'` and immediately reads `scrollHeight` interleaves DOM writes and reads. This forces the browser to synchronously recalculate the entire page layout on every iteration, causing O(N) layout thrashing and slowing down First Contentful Paint.
+**Action:** Always batch DOM initialization into distinct phases to bypass forced reflows: 1. Write (reset all), 2. Read (measure all), 3. Write (apply all final states).
