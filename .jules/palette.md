@@ -11,3 +11,7 @@
 ## 2026-05-28 - Prevent Abrupt Page Jumps During Focus
 **Learning:** When focusing an element during custom validation, calling `element.focus()` can cause the browser to jump abruptly to the element, creating a disorienting experience. By combining `element.scrollIntoView({ behavior: 'smooth', block: 'center' })` with `element.focus({ preventScroll: true })`, we can smoothly bring the element into view before focusing it.
 **Action:** Always use smooth scrolling and prevent default focus scrolling when navigating to invalid inputs.
+
+## 2026-05-29 - Avoid title Attributes for Critical Form Constraints
+**Learning:** The application heavily used native `title` attributes on form inputs to store critical constraints (e.g., "Must be > gamma") and formatting rules. This pattern creates a severe UX and accessibility issue because native tooltips are invisible to mobile touch users, inconsistent for keyboard users, and cause double-speak for screen readers when paired with `aria-describedby`.
+**Action:** Always place critical input constraints directly within visible `.helper-text` elements linked via `aria-describedby`, and avoid redundant `title` attributes on form inputs to ensure universal access and better design clarity.
