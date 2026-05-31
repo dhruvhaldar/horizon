@@ -111,16 +111,16 @@ header.panel {
 }
 
 .inset[aria-invalid="true"] {
-    outline: 2px dashed hsl(350, 80%, 60%);
+    outline: 2px dashed hsl(350, 70%, 42%);
     outline-offset: 2px;
 }
 
 .inset[aria-invalid="true"]:focus-visible {
-    outline: 2px solid hsl(350, 80%, 60%);
+    outline: 2px solid hsl(350, 70%, 42%);
 }
 
 .error-feedback {
-    color: hsl(350, 80%, 60%);
+    color: hsl(350, 70%, 42%);
     font-size: 0.8rem;
     font-weight: 500;
     margin-top: 0.2rem;

@@ -15,3 +15,7 @@
 ## 2026-05-29 - Avoid title Attributes for Critical Form Constraints
 **Learning:** The application heavily used native `title` attributes on form inputs to store critical constraints (e.g., "Must be > gamma") and formatting rules. This pattern creates a severe UX and accessibility issue because native tooltips are invisible to mobile touch users, inconsistent for keyboard users, and cause double-speak for screen readers when paired with `aria-describedby`.
 **Action:** Always place critical input constraints directly within visible `.helper-text` elements linked via `aria-describedby`, and avoid redundant `title` attributes on form inputs to ensure universal access and better design clarity.
+
+## 2026-05-31 - Static aria-label for Native Switches
+**Learning:** Dynamically updating the `aria-label` of a `role="switch"` (checkbox) element to reflect its current state is redundant and an accessibility anti-pattern. Screen readers natively announce the state (checked/unchecked). Modifying the label dynamically while focused causes inconsistent double-speak or is dropped entirely by some screen readers.
+**Action:** Use a static, descriptive `aria-label` for the switch's purpose, and trust the native `checked` attribute to convey state.
