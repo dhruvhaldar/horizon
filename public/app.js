@@ -266,7 +266,6 @@ function switchInv(type) {
         // UX Enhancement: Dim inactive labels for clarity
         if (labelEoq) labelEoq.style.opacity = '1';
         if (labelCont) labelCont.style.opacity = '0.5';
-        toggle.setAttribute('aria-label', 'Toggle between EOQ and Continuous Review models. Currently EOQ is active.');
     } else {
         toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
@@ -275,7 +274,6 @@ function switchInv(type) {
         // UX Enhancement: Dim inactive labels for clarity
         if (labelEoq) labelEoq.style.opacity = '0.5';
         if (labelCont) labelCont.style.opacity = '1';
-        toggle.setAttribute('aria-label', 'Toggle between EOQ and Continuous Review models. Currently Continuous Review is active.');
     }
 }
 
