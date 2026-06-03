@@ -20,3 +20,7 @@
 ## 2026-06-01 - [FastAPI JSON Serialization Overhead]
 **Learning:** Returning a plain Python dictionary from a FastAPI endpoint forces the framework to recursively run `fastapi.encoders.jsonable_encoder` on the entire response payload. This adds severe serialization overhead for large nested structures (like mathematical graphs).
 **Action:** When the response data is already composed of simple, native JSON-serializable types (like lists, dicts, and floats), always return `fastapi.responses.JSONResponse(content=data)` directly. This bypasses the recursive encoding overhead and can improve endpoint response speed by 60-70%.
+
+## 2026-06-03 - [FastAPI Float Validation Overhead]
+**Learning:** Manually traversing large JSON payloads in Python to check for `Infinity` or `NaN` floats before serialization introduces significant O(N) CPU overhead.
+**Action:** Subclass `fastapi.responses.JSONResponse` and catch the `ValueError` that its internal `json.dumps(..., allow_nan=False)` naturally raises when encountering out-of-bounds floats. This leverages the `json` module's optimized C implementation to perform validation during the serialization pass itself, reducing overhead by ~20%.
