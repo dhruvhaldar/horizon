@@ -152,7 +152,7 @@ header.panel {
 }
 
 .input-group:focus-within label {
-    color: var(--highlight);
+    color: hsl(22, 90%, 38%);
 }
 
 textarea.inset {
@@ -179,7 +179,7 @@ kbd {
 .helper-text {
     font-size: 0.75rem;
     color: var(--text-color);
-    opacity: 0.7;
+    opacity: 0.85;
     margin-top: -0.4rem;
     display: block;
 }
@@ -271,7 +271,7 @@ kbd {
 .viz-container:empty::before {
     content: "Visualization will appear here...";
     color: var(--text-color);
-    opacity: 0.5;
+    opacity: 0.75;
     font-weight: 500;
     font-size: 1.1rem;
     text-align: center;
@@ -524,8 +524,8 @@ footer a:focus-visible {
     position: absolute;
     top: -40px;
     left: 0;
-    background: var(--highlight);
-    color: white;
+    background: var(--text-color);
+    color: var(--bg-color);
     padding: 8px;
     z-index: 100;
     transition: top 0.3s;
