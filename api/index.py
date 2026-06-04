@@ -44,36 +44,17 @@ async def add_security_headers(request, call_next):
     response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
     return response
 
-def validate_finite(obj: Any) -> Any:
-    """Security: Prevent 500 errors by rejecting Inf/NaN outputs before JSON serialization."""
-    # ⚡ Bolt: Inline leaf-node validation for floats and use exact type matching to
-    # bypass function call overhead. For highly nested API payloads, this 'unrolled'
-    # validation reduces processing time by roughly ~3x compared to recursively calling
-    # the function for every individual scalar value.
-    # ⚡ Bolt: Use `not math.isfinite(x)` instead of `math.isinf(x) or math.isnan(x)`.
-    # This reduces the number of C-level function calls by half for valid values,
-    # decreasing validation overhead by roughly ~20%.
-    t = type(obj)
-    if t is float:
-        if not math.isfinite(obj):
+class SafeJSONResponse(JSONResponse):
+    """
+    ⚡ Bolt: Subclass JSONResponse to catch NaN/Infinity validation errors during
+    C-level json.dumps() serialization. This bypasses the need to recursively traverse
+    large nested payloads in Python, significantly improving endpoint response times.
+    """
+    def render(self, content: Any) -> bytes:
+        try:
+            return super().render(content)
+        except ValueError:
             raise ValueError("Mathematical result is out of bounds (Infinity/NaN)")
-    elif t is dict:
-        for v in obj.values():
-            vt = type(v)
-            if vt is float:
-                if not math.isfinite(v):
-                    raise ValueError("Mathematical result is out of bounds (Infinity/NaN)")
-            elif vt is dict or vt is list or vt is tuple:
-                validate_finite(v)
-    elif t is list or t is tuple:
-        for v in obj:
-            vt = type(v)
-            if vt is float:
-                if not math.isfinite(v):
-                    raise ValueError("Mathematical result is out of bounds (Infinity/NaN)")
-            elif vt is dict or vt is list or vt is tuple:
-                validate_finite(v)
-    return obj
 
 class SafeBaseModel(BaseModel):
     # Security: Reject 'NaN' and 'Infinity' string representations in float fields
@@ -155,13 +136,13 @@ def solve_queue(req: JacksonRequest):
 
     try:
         res = jackson_network(req.gamma, req.p, req.mu, req.c)
-        # ⚡ Bolt: Return JSONResponse directly instead of a plain dict.
+        # ⚡ Bolt: Return SafeJSONResponse directly instead of a plain dict.
         # Returning a dict forces FastAPI to recursively run `jsonable_encoder`
         # on the entire response payload, which is extremely slow for large
         # nested structures (like graph nodes). Since our data types are already
-        # simple (floats/dicts/lists), wrapping in JSONResponse bypasses this
-        # overhead and improves serialization speed by roughly 60-70%.
-        return JSONResponse(content=validate_finite(res))
+        # simple (floats/dicts/lists), wrapping in SafeJSONResponse bypasses this
+        # overhead and validates Inf/NaN at C-speed, improving serialization speed.
+        return SafeJSONResponse(content=res)
     except ValueError as e:
         # Security: Catch specific validation errors instead of generic Exception to prevent leaking stack traces or internal details
         raise HTTPException(status_code=400, detail=str(e))
@@ -176,8 +157,8 @@ def solve_eoq(req: EOQRequest):
         raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")
     try:
         res = eoq(req.demand_rate, req.order_cost, req.holding_cost)
-        # ⚡ Bolt: Use JSONResponse to bypass recursive jsonable_encoder overhead.
-        return JSONResponse(content=validate_finite(res))
+        # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
+        return SafeJSONResponse(content=res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -185,8 +166,8 @@ def solve_eoq(req: EOQRequest):
 def solve_newsvendor(req: NewsvendorRequest):
     try:
         res = newsvendor(req.selling_price, req.cost, req.salvage_value, req.demand_mean, req.demand_std)
-        # ⚡ Bolt: Use JSONResponse to bypass recursive jsonable_encoder overhead.
-        return JSONResponse(content=validate_finite(res))
+        # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
+        return SafeJSONResponse(content=res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -200,8 +181,8 @@ def solve_continuous(req: ContinuousReviewRequest):
         raise HTTPException(status_code=400, detail="Service level must be between 0 and 1 (exclusive).")
     try:
         res = continuous_review(req.demand_rate, req.order_cost, req.holding_cost, req.lead_time_mean, req.lead_time_std, req.service_level)
-        # ⚡ Bolt: Use JSONResponse to bypass recursive jsonable_encoder overhead.
-        return JSONResponse(content=validate_finite(res))
+        # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
+        return SafeJSONResponse(content=res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -220,8 +201,8 @@ def solve_tsp(req: TSPRequest):
 
     try:
         res = tsp_approx(req.nodes, req.edges)
-        # ⚡ Bolt: Use JSONResponse to bypass recursive jsonable_encoder overhead.
-        return JSONResponse(content=validate_finite(res))
+        # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
+        return SafeJSONResponse(content=res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -239,8 +220,8 @@ def solve_jobshop(req: JobShopRequest):
         # rather than performing O(N) Python iterations and method calls.
         jobs_dict = req.model_dump()['jobs']
         res = job_shop_cpm(jobs_dict)
-        # ⚡ Bolt: Use JSONResponse to bypass recursive jsonable_encoder overhead.
-        return JSONResponse(content=validate_finite(res))
+        # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
+        return SafeJSONResponse(content=res)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
