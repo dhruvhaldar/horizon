@@ -19,3 +19,7 @@
 ## 2026-05-31 - Static aria-label for Native Switches
 **Learning:** Dynamically updating the `aria-label` of a `role="switch"` (checkbox) element to reflect its current state is redundant and an accessibility anti-pattern. Screen readers natively announce the state (checked/unchecked). Modifying the label dynamically while focused causes inconsistent double-speak or is dropped entirely by some screen readers.
 **Action:** Use a static, descriptive `aria-label` for the switch's purpose, and trust the native `checked` attribute to convey state.
+
+## 2026-06-04 - Opacity causes WCAG contrast failures
+**Learning:** Using low CSS opacity values (like 0.5 or 0.7) to create visual hierarchy for disabled inputs, inactive toggle labels, empty states, or helper text can inadvertently cause the text color to blend with the background and fail WCAG AA contrast ratios (4.5:1).
+**Action:** Always verify color contrast of elements with reduced opacity by calculating the blended color against the background. Use higher opacity values (e.g., 0.75 or 0.85) to ensure text remains readable.
