@@ -87,7 +87,9 @@ class ContinuousReviewRequest(SafeBaseModel):
     lead_time_std: float
     service_level: float = 0.95
 
-NodeStr = constr(max_length=50)
+# Security: Enforce strict alphanumeric patterns for node IDs to prevent logic injection,
+# log injection, or downstream XSS payload staging.
+NodeStr = constr(max_length=50, pattern=r"^[a-zA-Z0-9_\- ]+$")
 
 class TSPRequest(SafeBaseModel):
     nodes: List[NodeStr] = Field(max_length=100)
