@@ -498,7 +498,7 @@ footer a:focus-visible {
 }
 
 .btn:disabled, .btn[aria-disabled="true"] {
-    opacity: 0.6;
+    opacity: 0.75;
     cursor: not-allowed;
     background: var(--btn-default-gradient);
     color: var(--text-color);
