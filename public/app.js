@@ -24,6 +24,20 @@ async function fetchWithCache(endpoint, bodyObj, errorMsg) {
     return data;
 }
 
+// UX Enhancement: Improve error message clarity with actionable steps
+function getCustomError(input) {
+    if (input.validity.valueMissing) {
+        const label = document.querySelector(`label[for="${input.id}"]`);
+        if (label) {
+            // Extract label text and remove math notations, asterisks, and colons
+            const text = label.textContent.replace(/\s*\(.*?\)/g, '').replace(/[\*:]/g, '').trim();
+            return `${text} is a required field.`;
+        }
+        return "This field is required.";
+    }
+    return input.validationMessage;
+}
+
 // UX Enhancement: Global screen reader announcer
 function announce(message) {
     const announcer = document.getElementById('sr-announcer');
@@ -79,7 +93,7 @@ async function withLoading(btnElement, asyncFunc) {
                         errorDiv.id = `error-${input.id || Math.random().toString(36).substring(2, 9)}`;
                         input.parentNode.appendChild(errorDiv);
                     }
-                    errorDiv.textContent = input.validationMessage;
+                    errorDiv.textContent = getCustomError(input);
                     input.setAttribute('aria-errormessage', errorDiv.id);
                 if (!firstInvalid) firstInvalid = input;
             } else {
@@ -517,7 +531,7 @@ document.addEventListener('input', (e) => {
             e.target.removeAttribute('aria-errormessage');
             if (errorDiv) errorDiv.remove();
         } else if (errorDiv) {
-            errorDiv.textContent = e.target.validationMessage;
+            errorDiv.textContent = getCustomError(e.target);
         }
     }
 
