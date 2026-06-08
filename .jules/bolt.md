@@ -28,3 +28,7 @@
 ## 2026-06-03 - [NumPy Array Instantiation Overhead]
 **Learning:** Using `np.array()` to parse large nested Python lists (like a 2D matrix payload from an API) incurs massive overhead because NumPy must dynamically infer both the shape and the type of the elements by recursively traversing the Python objects.
 **Action:** Always use `np.fromiter` with a specified `dtype` and `count` to stream elements into memory via C-level iterators. For 2D matrices, flatten the Python list using `itertools.chain.from_iterable()` before passing it to `np.fromiter`, then `.reshape()` the result. This bypasses the Python type-checking overhead and is ~40% faster for matrix instantiation.
+
+## 2026-06-04 - [NetworkX is_connected Overhead]
+**Learning:** Using `nx.is_connected(G)` to check graph connectivity before running `nx.floyd_warshall_numpy(G)` is redundant and slow. `nx.is_connected` performs an O(V+E) BFS/DFS traversal in pure Python. However, `floyd_warshall_numpy` computes the shortest paths and inherently identifies disconnected components by returning `inf` values for unreachable nodes.
+**Action:** Remove `nx.is_connected(G)` and instead compute the distance matrix first using `nx.floyd_warshall_numpy(G)`, then check for connectivity at C-speed using `np.isinf(matrix).any()`.
