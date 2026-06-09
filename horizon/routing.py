@@ -25,10 +25,6 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # For a robust approach on an arbitrary graph, we first compute all-pairs shortest paths
     # to create a complete metric graph, then run TSP on it.
 
-    # Check if the graph is connected
-    if not nx.is_connected(G):
-        raise ValueError("Graph is not connected, TSP has no solution.")
-
     nodes_list = list(G.nodes())
 
     # ⚡ Bolt: Use floyd_warshall_numpy instead of all_pairs_dijkstra_path_length
@@ -36,6 +32,13 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # much faster using optimized C/NumPy operations, reducing TSP setup time
     # significantly for larger graphs.
     path_lengths = nx.floyd_warshall_numpy(G)
+
+    # ⚡ Bolt: Check for disconnected components using the computed NumPy matrix
+    # instead of `nx.is_connected(G)`. The latter performs an O(V+E) Python traversal.
+    # `np.isinf().any()` checks the matrix for infinite path lengths at C-speed natively.
+    import numpy as np
+    if np.isinf(path_lengths).any():
+        raise ValueError("Graph is not connected, TSP has no solution.")
 
     # ⚡ Bolt: Use nx.from_numpy_array to construct the metric closure graph directly
     # from the NumPy distance matrix. This bypasses the severe Python overhead of
