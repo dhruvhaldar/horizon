@@ -257,6 +257,9 @@ function drawQueueGraph(gamma, p) {
         .text(d => d.isExternal ? "In" : d.id);
 
     node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+    // UX Enhancement: Add dynamic ARIA label to graph container
+    document.getElementById('queue-graph').setAttribute('aria-label', `Queueing Network Graph showing ${nodes.length} nodes and ${links.length} connections.`);
 }
 
 // Inventory
@@ -264,10 +267,10 @@ let invChart = null;
 
 function toggleInv() {
     const isChecked = document.getElementById('inv-toggle').checked;
-    switchInv(isChecked ? 'continuous' : 'eoq');
+    switchInv(isChecked ? 'continuous' : 'eoq', true);
 }
 
-function switchInv(type) {
+function switchInv(type, userInitiated = false) {
     const toggle = document.getElementById('inv-toggle');
     const labelEoq = document.getElementById('label-eoq');
     const labelCont = document.getElementById('label-cont');
@@ -280,6 +283,10 @@ function switchInv(type) {
         // UX Enhancement: Dim inactive labels for clarity
         if (labelEoq) labelEoq.style.opacity = '1';
         if (labelCont) labelCont.style.opacity = '0.75';
+
+        if (userInitiated) {
+            announce("Switched to EOQ Model");
+        }
     } else {
         toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
@@ -288,6 +295,10 @@ function switchInv(type) {
         // UX Enhancement: Dim inactive labels for clarity
         if (labelEoq) labelEoq.style.opacity = '0.75';
         if (labelCont) labelCont.style.opacity = '1';
+
+        if (userInitiated) {
+            announce("Switched to Continuous Review Model");
+        }
     }
 }
 
@@ -416,6 +427,13 @@ function drawInventoryChart(Q, R, demand) {
             }
         }
     });
+
+    // UX Enhancement: Add dynamic ARIA label to chart container
+    if (R > 0) {
+        viz.setAttribute('aria-label', `Inventory Optimization Chart showing Order Quantity (Q) of ${Q.toFixed(2)} and Reorder Point (R) of ${R.toFixed(2)}`);
+    } else {
+        viz.setAttribute('aria-label', `Inventory Optimization Chart showing Economic Order Quantity (Q) of ${Q.toFixed(2)}`);
+    }
 }
 
 // Routing
@@ -517,6 +535,10 @@ function drawRoutingGraph(nodesList, edges, path) {
         .text(d => d.id);
 
     node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+    // UX Enhancement: Add dynamic ARIA label to graph container
+    const pathText = path && path.length > 0 ? ` with optimal route of ${path.length - 1} steps` : '';
+    document.getElementById('routing-graph').setAttribute('aria-label', `Transport Routing Graph showing ${nodes.length} nodes and ${links.length} possible connections${pathText}.`);
 }
 
 // UX Enhancement: Clear inline validation styling dynamically on input

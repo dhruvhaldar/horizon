@@ -12,3 +12,7 @@
 ## 2026-06-07 - Contextual Error Messages
 **Learning:** The native HTML5 validation message for missing values ("Please fill out this field.") is generic and lacks context, which can be frustrating for screen reader users or users scanning a dense form.
 **Action:** Created a custom error message builder (`getCustomError`) that queries the associated label (`<label for="input-id">`), cleans the text to remove symbols or math notation, and provides a clear, actionable validation message (e.g., "Demand Rate is a required field.").
+
+## 2026-06-09 - Accessible Chart and Toggle States
+**Learning:** Visual-only updates (like charts and toggle switches) leave screen reader users without context. For example, a switch changing from EOQ to (R, Q) or a newly generated routing graph visually indicates success, but without explicit updates, the change is invisible to assistive technologies.
+**Action:** Always dynamically update `aria-label`s on chart containers to summarize the generated data (e.g., number of nodes/connections, Q/R values). For interactive elements like toggle switches that don't trigger full-page reloads or obvious focus shifts, use an `aria-live` region (like an `announce()` function) to explicitly state the new active setting when toggled by a user.
