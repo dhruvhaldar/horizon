@@ -99,6 +99,17 @@ header.panel {
     box-sizing: border-box;
     font-family: monospace;
     font-size: 1rem;
+    transition: box-shadow 0.3s ease, outline 0.2s ease;
+}
+
+.inset:hover {
+    box-shadow: inset 12px 12px 24px var(--shadow-dark),
+                inset -12px -12px 24px var(--shadow-light);
+}
+
+.inset::placeholder {
+    color: var(--text-color);
+    opacity: 0.75;
 }
 
 .inset:focus {
