@@ -23,3 +23,6 @@
 ## 2026-06-04 - Opacity causes WCAG contrast failures
 **Learning:** Using low CSS opacity values (like 0.5 or 0.7) to create visual hierarchy for disabled inputs, inactive toggle labels, empty states, or helper text can inadvertently cause the text color to blend with the background and fail WCAG AA contrast ratios (4.5:1).
 **Action:** Always verify color contrast of elements with reduced opacity by calculating the blended color against the background. Use higher opacity values (e.g., 0.75 or 0.85) to ensure text remains readable.
+## 2026-06-10 - Add interactive hover states to Neumorphic inputs
+**Learning:** Neumorphic design heavily relies on shadows to indicate depth and interactability. Without a hover state, `.inset` elements (like text inputs) feel static compared to buttons, reducing discoverability. Additionally, placeholder text needs sufficient opacity to meet contrast guidelines.
+**Action:** Always include subtle inset shadow transitions on hover for inputs in Neumorphic UIs to improve tactile feel. Use `opacity: 0.75` for placeholders to ensure accessibility while maintaining the design language.
