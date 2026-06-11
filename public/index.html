@@ -55,7 +55,7 @@
                     <div class="input-group">
                         <label for="q-p">Routing Matrix ($P$) <span aria-hidden="true" title="Required">*</span>:</label>
                         <span id="help-q-p" class="helper-text">Probability of moving from node $i$ to node $j$. Sum of each row should be $\le 1$.</span>
-                        <textarea id="q-p" aria-describedby="help-q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5\n0, 0" spellcheck="false" autocomplete="off" required>0, 0.5&#10;0, 0</textarea>
+                        <textarea id="q-p" aria-describedby="help-q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5&#10;0, 0" spellcheck="false" autocomplete="off" required>0, 0.5&#10;0, 0</textarea>
                     </div>
                     <button class="btn" onclick="withLoading(this, solveQueue)" aria-controls="queue-results queue-graph" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
