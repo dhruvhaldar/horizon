@@ -26,3 +26,10 @@
 ## 2026-06-10 - Add interactive hover states to Neumorphic inputs
 **Learning:** Neumorphic design heavily relies on shadows to indicate depth and interactability. Without a hover state, `.inset` elements (like text inputs) feel static compared to buttons, reducing discoverability. Additionally, placeholder text needs sufficient opacity to meet contrast guidelines.
 **Action:** Always include subtle inset shadow transitions on hover for inputs in Neumorphic UIs to improve tactile feel. Use `opacity: 0.75` for placeholders to ensure accessibility while maintaining the design language.
+## 2026-06-12 - Map Enter Key for Custom Switches
+**Learning:** Keyboard users expect custom toggle switches to respond to the `Enter` key (similar to buttons), but native checkboxes only respond to `Space`. If a global `Enter` keydown handler prevents default and submits the nearest form, keyboard users cannot toggle the switch at all.
+**Action:** When overriding the global `Enter` key behavior on inputs, explicitly check if the target is a checkbox and toggle its `checked` state while dispatching a `change` event to align with keyboard user expectations.
+
+## 2026-06-12 - Map Enter Key for Custom Switches
+**Learning:** Keyboard users expect custom toggle switches to respond to the `Enter` key (similar to buttons), but native checkboxes only respond to `Space`. If a global `Enter` keydown handler prevents default and submits the nearest form, keyboard users cannot toggle the switch at all.
+**Action:** When overriding the global `Enter` key behavior on inputs, explicitly check if the target is a checkbox and toggle its `checked` state while dispatching a `change` event to align with keyboard user expectations.
