@@ -592,6 +592,12 @@ document.addEventListener('keydown', (e) => {
         if (target.tagName === 'TEXTAREA' && !e.ctrlKey && !e.metaKey) return;
 
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            if (target.type === 'checkbox') {
+                e.preventDefault();
+                target.checked = !target.checked;
+                target.dispatchEvent(new Event('change'));
+                return;
+            }
             e.preventDefault(); // Prevent default form submission or newline
 
             // Find the closest logical container (.calc-group or .panel)
