@@ -168,6 +168,7 @@ async function solveQueue() {
         resultsEl.textContent = `❌ Error: ${e.message}`;
         resultsEl.setAttribute('aria-invalid', 'true');
         d3.select("#queue-graph").selectAll("*").remove();
+        document.getElementById('queue-graph').setAttribute('aria-label', 'Queueing Network Graph (Empty: Run network solver to generate graph)');
         announce(`Error calculating queueing network: ${e.message}`);
     }
 }
@@ -325,7 +326,10 @@ async function solveEOQ() {
             invChart = null;
         }
         const viz = document.getElementById('inventory-viz');
-        if (viz) viz.innerHTML = '';
+        if (viz) {
+            viz.innerHTML = '';
+            viz.setAttribute('aria-label', 'Inventory Optimization Chart (Empty: Calculate inventory policy to generate chart)');
+        }
     }
 }
 
@@ -357,7 +361,10 @@ async function solveContinuous() {
             invChart = null;
         }
         const viz = document.getElementById('inventory-viz');
-        if (viz) viz.innerHTML = '';
+        if (viz) {
+            viz.innerHTML = '';
+            viz.setAttribute('aria-label', 'Inventory Optimization Chart (Empty: Calculate inventory policy to generate chart)');
+        }
     }
 }
 
@@ -458,6 +465,7 @@ async function solveTSP() {
         resultsEl.textContent = `❌ Error: ${e.message}`;
         resultsEl.setAttribute('aria-invalid', 'true');
         d3.select("#routing-graph").selectAll("*").remove();
+        document.getElementById('routing-graph').setAttribute('aria-label', 'Transport Routing Graph (Empty: Optimize route to generate map)');
         announce(`Error optimizing route: ${e.message}`);
     }
 }

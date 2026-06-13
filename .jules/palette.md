@@ -1,9 +1,11 @@
 ## 2026-05-06 - Auto-focus Invalid Inputs and Toggle A11y
 **Learning:** During custom async validation, calling `reportValidity()` without explicit focus leaves keyboard and screen reader users stranded, requiring manual navigation back to the invalid field. Also, custom switch components using external labels and dynamic `aria-label` attributes on the actual checkbox element can result in redundant screen reader announcements if the external text labels are not hidden with `aria-hidden="true"`. Finally, HTML5 skip-links require the target container (like `<main>`) to have `tabindex="-1"` to properly shift programmatic focus in modern browsers.
 **Action:** Always auto-focus elements using `.focus()` immediately before calling `.reportValidity()` on invalid inputs in custom workflows. Use `aria-hidden="true"` on visual labels adjacent to custom toggles when the toggle itself has a comprehensive `aria-label`. Always add `tabindex="-1"` to skip-to-content target elements.
+
 ## 2026-05-23 - Tactile Feedback for Keyboard Shortcuts
 **Learning:** Keyboard shortcut users miss out on `:active` pseudo-class feedback in tactile (Neumorphic) UIs, making interactions feel disconnected compared to pointer users.
 **Action:** Always programmatically apply the `.active` CSS state to elements when triggering them via keyboard shortcuts (and remove it after a short delay, e.g., 150ms) to bridge the tactile feedback gap.
+
 ## 2026-05-25 - Maintain Focus During Async Actions
 **Learning:** Dynamically setting the native `disabled` attribute on an active button drops screen reader and keyboard focus, dropping users back to the `<body>` element.
 **Action:** Use `aria-disabled="true"` instead of `disabled=true` for loading states to maintain keyboard context, and update CSS selectors to target `[aria-disabled="true"]`.
@@ -23,13 +25,15 @@
 ## 2026-06-04 - Opacity causes WCAG contrast failures
 **Learning:** Using low CSS opacity values (like 0.5 or 0.7) to create visual hierarchy for disabled inputs, inactive toggle labels, empty states, or helper text can inadvertently cause the text color to blend with the background and fail WCAG AA contrast ratios (4.5:1).
 **Action:** Always verify color contrast of elements with reduced opacity by calculating the blended color against the background. Use higher opacity values (e.g., 0.75 or 0.85) to ensure text remains readable.
+
 ## 2026-06-10 - Add interactive hover states to Neumorphic inputs
 **Learning:** Neumorphic design heavily relies on shadows to indicate depth and interactability. Without a hover state, `.inset` elements (like text inputs) feel static compared to buttons, reducing discoverability. Additionally, placeholder text needs sufficient opacity to meet contrast guidelines.
 **Action:** Always include subtle inset shadow transitions on hover for inputs in Neumorphic UIs to improve tactile feel. Use `opacity: 0.75` for placeholders to ensure accessibility while maintaining the design language.
-## 2026-06-12 - Map Enter Key for Custom Switches
-**Learning:** Keyboard users expect custom toggle switches to respond to the `Enter` key (similar to buttons), but native checkboxes only respond to `Space`. If a global `Enter` keydown handler prevents default and submits the nearest form, keyboard users cannot toggle the switch at all.
-**Action:** When overriding the global `Enter` key behavior on inputs, explicitly check if the target is a checkbox and toggle its `checked` state while dispatching a `change` event to align with keyboard user expectations.
 
 ## 2026-06-12 - Map Enter Key for Custom Switches
 **Learning:** Keyboard users expect custom toggle switches to respond to the `Enter` key (similar to buttons), but native checkboxes only respond to `Space`. If a global `Enter` keydown handler prevents default and submits the nearest form, keyboard users cannot toggle the switch at all.
 **Action:** When overriding the global `Enter` key behavior on inputs, explicitly check if the target is a checkbox and toggle its `checked` state while dispatching a `change` event to align with keyboard user expectations.
+
+## 2026-06-13 - Align visual empty states with ARIA labels
+**Learning:** `aria-label` completely overrides visual `::before` pseudo-element text on elements with `role="img"`, meaning screen reader users miss out on crucial context like "Run network solver to generate graph" that sighted users see.
+**Action:** When a container uses `role="img"` and has an empty state, duplicate the empty-state instruction inside its static `aria-label` until it is dynamically replaced by actual content. Fortunately, when dynamic content is loaded, the application already updates the `aria-label` explicitly using `setAttribute`, meaning the empty state label correctly disappears.
