@@ -32,3 +32,7 @@
 ## 2026-06-04 - [NetworkX is_connected Overhead]
 **Learning:** Using `nx.is_connected(G)` to check graph connectivity before running `nx.floyd_warshall_numpy(G)` is redundant and slow. `nx.is_connected` performs an O(V+E) BFS/DFS traversal in pure Python. However, `floyd_warshall_numpy` computes the shortest paths and inherently identifies disconnected components by returning `inf` values for unreachable nodes.
 **Action:** Remove `nx.is_connected(G)` and instead compute the distance matrix first using `nx.floyd_warshall_numpy(G)`, then check for connectivity at C-speed using `np.isinf(matrix).any()`.
+
+## 2026-06-13 - [FastAPI Inline Module Imports]
+**Learning:** Calling module imports (like `from fastapi.responses import FileResponse`) inside an endpoint function executes Python's import machinery (checking `sys.modules`, dictionary lookups) on every single request. While cached, this introduces unnecessary per-request overhead for frequently accessed endpoints like the root (`/`).
+**Action:** Always place standard imports in the global scope at the top of the file to ensure they are parsed only once during application startup, maximizing endpoint throughput.

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field, conlist
 from typing import Annotated
 from pydantic import constr
@@ -234,7 +234,10 @@ public_dir = os.path.join(base_dir, "public")
 
 @app.get("/")
 async def serve_index():
-    from fastapi.responses import FileResponse
+    # ⚡ Bolt: Removed inline FileResponse import.
+    # Calling module imports inside an endpoint function executes the import machinery
+    # (checking sys.modules, dictionary lookups) on every single request. Moving standard
+    # imports to the global scope ensures they are only parsed once during application startup.
     return FileResponse(os.path.join(public_dir, "index.html"))
 
 if os.path.exists(public_dir):
