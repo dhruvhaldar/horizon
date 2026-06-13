@@ -60,7 +60,7 @@
                     <button class="btn" onclick="withLoading(this, solveQueue)" aria-controls="queue-results queue-graph" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
                 <div class="results inset" id="queue-results">Results will appear here...</div>
-                <div id="queue-graph" class="viz-container inset" role="img" aria-label="Queueing Network Graph"></div>
+                <div id="queue-graph" class="viz-container inset" role="img" aria-label="Queueing Network Graph (Empty: Run network solver to generate graph)"></div>
             </section>
 
             <!-- Inventory Module -->
@@ -131,7 +131,7 @@
                 </div>
 
                 <div class="results inset" id="inventory-results">Results will appear here...</div>
-                <div id="inventory-viz" class="viz-container inset" role="img" aria-label="Inventory Optimization Chart"></div>
+                <div id="inventory-viz" class="viz-container inset" role="img" aria-label="Inventory Optimization Chart (Empty: Calculate inventory policy to generate chart)"></div>
             </section>
 
             <!-- Routing Module -->
@@ -150,7 +150,7 @@
                 </div>
                 <button class="btn" onclick="withLoading(this, solveTSP)" aria-controls="routing-results routing-graph" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
                 <div class="results inset" id="routing-results">Results will appear here...</div>
-                <div id="routing-graph" class="viz-container inset" role="img" aria-label="Transport Routing Graph"></div>
+                <div id="routing-graph" class="viz-container inset" role="img" aria-label="Transport Routing Graph (Empty: Optimize route to generate map)"></div>
             </section>
         </main>
 
