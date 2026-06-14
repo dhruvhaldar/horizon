@@ -32,6 +32,14 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 @app.middleware("http")
+async def limit_upload_size(request, call_next):
+    # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
+    content_length = request.headers.get("content-length")
+    if content_length and int(content_length) > 2_000_000: # 2MB limit
+        return JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."})
+    return await call_next(request)
+
+@app.middleware("http")
 async def add_security_headers(request, call_next):
     response = await call_next(request)
     # Security: Defense in depth - inject standard security headers to prevent
