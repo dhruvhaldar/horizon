@@ -94,12 +94,18 @@ async function withLoading(btnElement, asyncFunc) {
                         input.parentNode.appendChild(errorDiv);
                     }
                     errorDiv.textContent = getCustomError(input);
-                    input.setAttribute('aria-errormessage', errorDiv.id);
+                    const existingDescribedBy = input.getAttribute('aria-describedby') || '';
+                    if (!existingDescribedBy.includes(errorDiv.id)) {
+                        input.setAttribute('aria-describedby', `${existingDescribedBy} ${errorDiv.id}`.trim());
+                    }
                 if (!firstInvalid) firstInvalid = input;
             } else {
                 input.removeAttribute('aria-invalid');
-                input.removeAttribute('aria-errormessage');
-                if (errorDiv) errorDiv.remove();
+                if (errorDiv) {
+                    const existingDescribedBy = input.getAttribute('aria-describedby') || '';
+                    input.setAttribute('aria-describedby', existingDescribedBy.replace(errorDiv.id, '').trim());
+                    errorDiv.remove();
+                }
             }
         }
         if (!isValid) {
@@ -558,8 +564,11 @@ document.addEventListener('input', (e) => {
         const errorDiv = e.target.parentNode.querySelector('.error-feedback');
         if (e.target.checkValidity()) {
             e.target.removeAttribute('aria-invalid');
-            e.target.removeAttribute('aria-errormessage');
-            if (errorDiv) errorDiv.remove();
+            if (errorDiv) {
+                const existingDescribedBy = e.target.getAttribute('aria-describedby') || '';
+                e.target.setAttribute('aria-describedby', existingDescribedBy.replace(errorDiv.id, '').trim());
+                errorDiv.remove();
+            }
         } else if (errorDiv) {
             errorDiv.textContent = getCustomError(e.target);
         }

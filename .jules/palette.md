@@ -37,3 +37,7 @@
 ## 2026-06-13 - Align visual empty states with ARIA labels
 **Learning:** `aria-label` completely overrides visual `::before` pseudo-element text on elements with `role="img"`, meaning screen reader users miss out on crucial context like "Run network solver to generate graph" that sighted users see.
 **Action:** When a container uses `role="img"` and has an empty state, duplicate the empty-state instruction inside its static `aria-label` until it is dynamically replaced by actual content. Fortunately, when dynamic content is loaded, the application already updates the `aria-label` explicitly using `setAttribute`, meaning the empty state label correctly disappears.
+
+## 2026-06-14 - Fallback aria-errormessage to aria-describedby
+**Learning:** The `aria-errormessage` attribute has limited support across different screen readers, meaning users may not hear the inline validation error when focusing an invalid input. In contrast, appending the error message ID to the existing `aria-describedby` string is widely supported and ensures the error is read immediately after the input's description.
+**Action:** Instead of relying on `aria-errormessage`, always append dynamically generated error message IDs to the input's `aria-describedby` attribute (and remove them when valid) for robust screen reader support.
