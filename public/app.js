@@ -220,7 +220,8 @@ function drawQueueGraph(gamma, p) {
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
-        .style("height", "100%");
+        .style("height", "100%")
+        .attr("aria-hidden", "true");
 
     // Arrow marker
     svg.append("defs").append("marker")
@@ -378,7 +379,7 @@ function drawInventoryChart(Q, R, demand) {
     const viz = document.getElementById('inventory-viz');
     let canvas = document.getElementById('inventory-chart');
     if (!canvas) {
-        viz.innerHTML = '<canvas id="inventory-chart" role="img" aria-label="Line chart showing inventory levels and reorder points over time">Your browser does not support the canvas element. This chart displays inventory levels over time.</canvas>';
+        viz.innerHTML = '<canvas id="inventory-chart" aria-hidden="true">Your browser does not support the canvas element. This chart displays inventory levels over time.</canvas>';
         canvas = document.getElementById('inventory-chart');
     }
     const ctx = canvas.getContext('2d');
@@ -443,9 +444,9 @@ function drawInventoryChart(Q, R, demand) {
 
     // UX Enhancement: Add dynamic ARIA label to chart container
     if (R > 0) {
-        viz.setAttribute('aria-label', `Inventory Optimization Chart showing Order Quantity (Q) of ${Q.toFixed(2)} and Reorder Point (R) of ${R.toFixed(2)}`);
+        viz.setAttribute('aria-label', `Line chart showing inventory levels and reorder points over time. Order Quantity (Q) of ${Q.toFixed(2)} and Reorder Point (R) of ${R.toFixed(2)}`);
     } else {
-        viz.setAttribute('aria-label', `Inventory Optimization Chart showing Economic Order Quantity (Q) of ${Q.toFixed(2)}`);
+        viz.setAttribute('aria-label', `Line chart showing inventory levels over time. Economic Order Quantity (Q) of ${Q.toFixed(2)}`);
     }
 }
 
@@ -520,7 +521,8 @@ function drawRoutingGraph(nodesList, edges, path) {
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
-        .style("height", "100%");
+        .style("height", "100%")
+        .attr("aria-hidden", "true");
 
     const link = svg.append("g")
         .selectAll("line")
