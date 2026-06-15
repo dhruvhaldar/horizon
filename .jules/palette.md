@@ -41,3 +41,7 @@
 ## 2026-06-14 - Fallback aria-errormessage to aria-describedby
 **Learning:** The `aria-errormessage` attribute has limited support across different screen readers, meaning users may not hear the inline validation error when focusing an invalid input. In contrast, appending the error message ID to the existing `aria-describedby` string is widely supported and ensures the error is read immediately after the input's description.
 **Action:** Instead of relying on `aria-errormessage`, always append dynamically generated error message IDs to the input's `aria-describedby` attribute (and remove them when valid) for robust screen reader support.
+
+## 2026-06-15 - Prevent A11y Double-Speak on Viz Containers
+**Learning:** When using visual containers like D3.js or Chart.js where a parent container has `role="img"` and a dynamic `aria-label`, inserting focusable child nodes or children with redundant roles causes screen readers to double-speak or lose focus context. Furthermore, custom parent containers are not focusable by default, so users relying on keyboards miss out on the descriptive aria-labels.
+**Action:** Always add `tabindex="0"` to the outer wrapper element when it is responsible for the component's `aria-label`, and explicitly add `aria-hidden="true"` to inner dynamically generated SVG/Canvas elements to establish a single source of truth for the screen reader.
