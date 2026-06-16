@@ -181,10 +181,14 @@ async function solveQueue() {
 
 function drawQueueGraph(gamma, p) {
     const container = d3.select("#queue-graph");
-    container.selectAll("*").remove();
 
+    // ⚡ Bolt: Read dimensions before mutating the DOM to utilize cached layout.
+    // Interleaving DOM reads (getBoundingClientRect) immediately after DOM writes
+    // (selectAll.remove) forces synchronous layout recalculation (layout thrashing).
     const width = container.node().getBoundingClientRect().width;
     const height = container.node().getBoundingClientRect().height;
+
+    container.selectAll("*").remove();
 
     const nodes = gamma.map((_, i) => ({ id: `Node ${i}`, index: i }));
     const links = [];
@@ -479,10 +483,14 @@ async function solveTSP() {
 
 function drawRoutingGraph(nodesList, edges, path) {
     const container = d3.select("#routing-graph");
-    container.selectAll("*").remove();
 
+    // ⚡ Bolt: Read dimensions before mutating the DOM to utilize cached layout.
+    // Interleaving DOM reads (getBoundingClientRect) immediately after DOM writes
+    // (selectAll.remove) forces synchronous layout recalculation (layout thrashing).
     const width = container.node().getBoundingClientRect().width;
     const height = container.node().getBoundingClientRect().height;
+
+    container.selectAll("*").remove();
 
     const nodes = nodesList.map(id => ({ id }));
 

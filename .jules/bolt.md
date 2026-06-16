@@ -36,3 +36,7 @@
 ## 2026-06-13 - [FastAPI Inline Module Imports]
 **Learning:** Calling module imports (like `from fastapi.responses import FileResponse`) inside an endpoint function executes Python's import machinery (checking `sys.modules`, dictionary lookups) on every single request. While cached, this introduces unnecessary per-request overhead for frequently accessed endpoints like the root (`/`).
 **Action:** Always place standard imports in the global scope at the top of the file to ensure they are parsed only once during application startup, maximizing endpoint throughput.
+
+## 2026-06-15 - [Visualization Container Layout Thrashing]
+**Learning:** Interleaving DOM writes (like clearing a D3 container via `selectAll("*").remove()`) immediately followed by DOM layout reads (like `getBoundingClientRect()`) forces the browser to synchronously recalculate layout. When updating visualizations, always measure container dimensions *before* clearing or mutating the container to utilize the browser's cached layout and bypass the reflow penalty.
+**Action:** Always place DOM layout reads (`offsetWidth`, `getBoundingClientRect()`) before DOM writes within functions handling DOM updates.
