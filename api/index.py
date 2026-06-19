@@ -34,6 +34,8 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 @app.middleware("http")
 async def limit_upload_size(request, call_next):
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
+    if "chunked" in request.headers.get("transfer-encoding", "").lower():
+        return JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."})
     content_length = request.headers.get("content-length")
     if content_length and int(content_length) > 2_000_000: # 2MB limit
         return JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."})
