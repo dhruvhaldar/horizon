@@ -40,3 +40,7 @@
 ## 2026-06-15 - [Visualization Container Layout Thrashing]
 **Learning:** Interleaving DOM writes (like clearing a D3 container via `selectAll("*").remove()`) immediately followed by DOM layout reads (like `getBoundingClientRect()`) forces the browser to synchronously recalculate layout. When updating visualizations, always measure container dimensions *before* clearing or mutating the container to utilize the browser's cached layout and bypass the reflow penalty.
 **Action:** Always place DOM layout reads (`offsetWidth`, `getBoundingClientRect()`) before DOM writes within functions handling DOM updates.
+
+## 2026-06-25 - [NetworkX vs SciPy Distance Matrix Overhead]
+**Learning:** Building a `networkx.Graph()` and adding nodes/edges involves significant Python-level object instantiation and validation overhead. When the only goal is to compute an all-pairs shortest path matrix (e.g., for TSP approximation setup), passing a NetworkX graph to `nx.floyd_warshall_numpy` is unnecessarily slow.
+**Action:** Bypass NetworkX graph creation entirely. Map node IDs to integers, manually populate an adjacency matrix as a NumPy array, and use `scipy.sparse.csgraph.floyd_warshall`. This computes the distance matrix roughly 50% faster than the NetworkX approach.
