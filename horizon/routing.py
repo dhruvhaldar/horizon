@@ -33,7 +33,10 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
             A[i, j] = w
             A[j, i] = w
 
-    path_lengths = csgraph.floyd_warshall(A, directed=False)
+    try:
+        path_lengths = csgraph.floyd_warshall(A, directed=False)
+    except csgraph.NegativeCycleError:
+        raise ValueError("Graph contains a negative weight cycle.")
 
     # ⚡ Bolt: Check for disconnected components using the computed NumPy matrix
     # instead of `nx.is_connected(G)`. The latter performs an O(V+E) Python traversal.
