@@ -45,3 +45,7 @@
 ## 2026-06-15 - Prevent A11y Double-Speak on Viz Containers
 **Learning:** When using visual containers like D3.js or Chart.js where a parent container has `role="img"` and a dynamic `aria-label`, inserting focusable child nodes or children with redundant roles causes screen readers to double-speak or lose focus context. Furthermore, custom parent containers are not focusable by default, so users relying on keyboards miss out on the descriptive aria-labels.
 **Action:** Always add `tabindex="0"` to the outer wrapper element when it is responsible for the component's `aria-label`, and explicitly add `aria-hidden="true"` to inner dynamically generated SVG/Canvas elements to establish a single source of truth for the screen reader.
+
+## 2026-06-20 - Programmatic Context for Stale Visual States
+**Learning:** The application visually dims `.results` and `.viz-container` elements to indicate to sighted users that the data is stale when inputs change. However, visual-only opacity changes leave screen reader users unaware that the current content they are interacting with is no longer up to date with the inputs.
+**Action:** When applying visual stale states (like dimming or grayscale) to visualization containers, always prepend a text warning (e.g., `"Out of date: "`) to their dynamic `aria-label` to provide equivalent programmatic context, and ensure the warning is cleared when the data is refreshed or state is restored.
