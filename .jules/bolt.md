@@ -44,3 +44,7 @@
 ## 2026-06-25 - [NetworkX vs SciPy Distance Matrix Overhead]
 **Learning:** Building a `networkx.Graph()` and adding nodes/edges involves significant Python-level object instantiation and validation overhead. When the only goal is to compute an all-pairs shortest path matrix (e.g., for TSP approximation setup), passing a NetworkX graph to `nx.floyd_warshall_numpy` is unnecessarily slow.
 **Action:** Bypass NetworkX graph creation entirely. Map node IDs to integers, manually populate an adjacency matrix as a NumPy array, and use `scipy.sparse.csgraph.floyd_warshall`. This computes the distance matrix roughly 50% faster than the NetworkX approach.
+
+## 2026-06-22 - NetworkX `nx.from_numpy_array` Overhead for Dense Graphs
+**Learning:** While `nx.from_numpy_array` is faster than using nested python loops to build graphs, it still introduces massive overhead for dense graphs (like metric closures) because it iterates over the entire `N x N` matrix.
+**Action:** When building dense undirected graphs from symmetric NumPy matrices, extract the upper triangle indices using `np.triu_indices` and manually zip the edges into `G.add_edges_from`. This avoids iterating over non-edges/duplicate edges and constructs the graph >2x faster.
