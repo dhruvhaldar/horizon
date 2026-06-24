@@ -739,3 +739,10 @@ if (navigator.userAgent.includes('Mac')) {
         el.textContent = '⌘ Cmd';
     });
 }
+
+// UX Enhancement: Auto-select input text on focus to allow quick overwriting
+document.querySelectorAll('input.inset, textarea.inset').forEach(el => {
+    el.addEventListener('focus', function() {
+        this.select();
+    });
+});
