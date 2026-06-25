@@ -508,7 +508,7 @@ footer a:focus-visible {
     border-radius: 2px;
 }
 
-.btn:disabled, .btn[aria-disabled="true"] {
+.btn:disabled, .btn[aria-disabled="true"], .btn[aria-busy="true"] {
     opacity: 0.75;
     cursor: not-allowed;
     background: var(--btn-default-gradient);
