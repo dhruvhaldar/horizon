@@ -170,10 +170,16 @@ async function solveQueue() {
     try {
         const data = await fetchWithCache('/queue', { gamma, p, mu, c: mu.map(() => 1) }, 'Error solving queue');
 
+        // ⚡ Bolt: Prevent Layout Thrashing.
+        // Call the graph drawing function BEFORE writing the JSON string to the DOM.
+        // The drawing functions read container dimensions (e.g., getBoundingClientRect).
+        // If we write to the DOM first, the layout becomes dirty, and reading dimensions
+        // forces the browser to synchronously recalculate the entire page layout.
+        drawQueueGraph(gamma, p);
+
         const resultsEl = document.getElementById('queue-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
-        drawQueueGraph(gamma, p);
         announce("Queueing network calculation complete.");
     } catch (e) {
         const resultsEl = document.getElementById('queue-results');
@@ -328,10 +334,14 @@ async function solveEOQ() {
     try {
         const data = await fetchWithCache('/inventory/eoq', { demand_rate: demand, order_cost: order, holding_cost: hold }, 'Error calculating EOQ');
 
+        // ⚡ Bolt: Prevent Layout Thrashing.
+        // Call the chart rendering function BEFORE writing to the DOM to avoid forcing
+        // a synchronous layout recalculation when Chart.js reads container dimensions.
+        drawInventoryChart(data.Q, 0, demand);
+
         const resultsEl = document.getElementById('inventory-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
-        drawInventoryChart(data.Q, 0, demand);
         announce("EOQ calculation complete.");
     } catch (e) {
         const resultsEl = document.getElementById('inventory-results');
@@ -363,10 +373,12 @@ async function solveContinuous() {
             lead_time_mean: lt_mean, lead_time_std: lt_std
         }, 'Error calculating (R, Q)');
 
+        // ⚡ Bolt: Prevent Layout Thrashing by batching DOM reads before DOM writes.
+        drawInventoryChart(data.Q, data.R, demand);
+
         const resultsEl = document.getElementById('inventory-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
-        drawInventoryChart(data.Q, data.R, demand);
         announce("Continuous review calculation complete.");
     } catch (e) {
         const resultsEl = document.getElementById('inventory-results');
@@ -472,10 +484,15 @@ async function solveTSP() {
     try {
         const data = await fetchWithCache('/route/tsp', { nodes, edges }, 'Error calculating TSP');
 
+        // ⚡ Bolt: Prevent Layout Thrashing.
+        // drawRoutingGraph calls getBoundingClientRect(), which is a DOM read.
+        // Calling it before resultsEl.textContent (a DOM write) batches reads and writes,
+        // avoiding an expensive synchronous forced reflow.
+        drawRoutingGraph(nodes, edges, data.path);
+
         const resultsEl = document.getElementById('routing-results');
         resultsEl.textContent = JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
-        drawRoutingGraph(nodes, edges, data.path);
         announce("Route optimization complete.");
     } catch (e) {
         const resultsEl = document.getElementById('routing-results');
