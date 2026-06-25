@@ -48,3 +48,7 @@
 ## 2026-06-22 - NetworkX `nx.from_numpy_array` Overhead for Dense Graphs
 **Learning:** While `nx.from_numpy_array` is faster than using nested python loops to build graphs, it still introduces massive overhead for dense graphs (like metric closures) because it iterates over the entire `N x N` matrix.
 **Action:** When building dense undirected graphs from symmetric NumPy matrices, extract the upper triangle indices using `np.triu_indices` and manually zip the edges into `G.add_edges_from`. This avoids iterating over non-edges/duplicate edges and constructs the graph >2x faster.
+
+## 2026-06-25 - [Layout Thrashing from Execution Order]
+**Learning:** Even if a function correctly batches its own DOM reads before writes (e.g., measuring a container before drawing a graph), calling it immediately *after* another DOM write (e.g., updating a results text element) still forces a synchronous layout recalculation. The browser's layout state is dirtied by the preceding text update, defeating the optimization inside the drawing function.
+**Action:** Always consider the broader execution context. Swap the execution order to batch all DOM reads (the graph measurement) *before* any DOM writes (updating the results text and drawing the graph elements).
