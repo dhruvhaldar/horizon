@@ -53,3 +53,7 @@
 ## 2026-06-25 - Share Disabled Styles with aria-busy
 **Learning:** When using `aria-busy="true"` to signify a loading or processing state on interactive elements (like buttons), failing to explicitly map CSS disabled visual styles (such as `opacity: 0.75` and `cursor: not-allowed`) to the `[aria-busy="true"]` selector leaves sighted users without visual feedback, potentially leading to double-clicks, even though screen readers are correctly informed.
 **Action:** Always extend existing CSS disabled selectors (e.g., `.btn:disabled, .btn[aria-disabled="true"]`) to include `.btn[aria-busy="true"]` to maintain visual consistency and feedback during async operations.
+
+## 2026-06-30 - Avoid duplicate validation UI with reportValidity()
+**Learning:** When implementing custom inline validation UIs (like Neumorphic `.error-feedback` messages), calling `reportValidity()` triggers the browser's native error bubble. This creates duplicate error messages that visually clash with the custom UI, resulting in a poor UX.
+**Action:** Remove `reportValidity()` when a custom inline error message is already being displayed. Rely on `.focus()` and `aria-invalid` to maintain accessibility while keeping the visual presentation clean and consistent.
