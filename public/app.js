@@ -7,14 +7,20 @@ const API_BASE = '/api';
 const apiCache = new Map();
 
 async function fetchWithCache(endpoint, bodyObj, errorMsg) {
-    const cacheKey = endpoint + JSON.stringify(bodyObj);
+    // ⚡ Bolt: Prevent redundant JSON serialization.
+    // JSON.stringify is synchronous and blocks the main thread. Caching its
+    // output prevents O(N) serialization overhead for large payloads (like
+    // 1000-node graph edges) by reusing the string for both cache key generation
+    // and the HTTP request body.
+    const bodyStr = JSON.stringify(bodyObj);
+    const cacheKey = endpoint + bodyStr;
     if (apiCache.has(cacheKey)) {
         return apiCache.get(cacheKey);
     }
     const res = await fetch(`${API_BASE}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyObj)
+        body: bodyStr
     });
     const data = await res.json();
     if (!res.ok) throw new Error(formatError(data.detail) || errorMsg);
