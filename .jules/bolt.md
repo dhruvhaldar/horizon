@@ -52,3 +52,6 @@
 ## 2026-06-25 - [Layout Thrashing from Execution Order]
 **Learning:** Even if a function correctly batches its own DOM reads before writes (e.g., measuring a container before drawing a graph), calling it immediately *after* another DOM write (e.g., updating a results text element) still forces a synchronous layout recalculation. The browser's layout state is dirtied by the preceding text update, defeating the optimization inside the drawing function.
 **Action:** Always consider the broader execution context. Swap the execution order to batch all DOM reads (the graph measurement) *before* any DOM writes (updating the results text and drawing the graph elements).
+## 2026-06-27 - [JSON.stringify Redundancy Overhead]
+**Learning:** Calling `JSON.stringify(bodyObj)` multiple times for the same large payload (once to generate a client-side cache key, and again for the HTTP `fetch` body) introduces significant redundant O(N) serialization overhead that blocks the browser main thread.
+**Action:** Always cache the output of `JSON.stringify` into a variable (`bodyStr`) if it needs to be reused across multiple operations like cache key generation and network requests.
