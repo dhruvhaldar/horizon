@@ -560,3 +560,28 @@ footer a:focus-visible {
         animation: shake-horizontal 0.4s cubic-bezier(.36,.07,.19,.97) both;
     }
 }
+
+/* UX Enhancement: Async loading spinner */
+.spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+    vertical-align: text-bottom;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 0s;
+        border-right-color: currentColor;
+        opacity: 0.7;
+    }
+}

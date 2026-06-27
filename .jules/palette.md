@@ -57,3 +57,7 @@
 ## 2026-06-30 - Avoid duplicate validation UI with reportValidity()
 **Learning:** When implementing custom inline validation UIs (like Neumorphic `.error-feedback` messages), calling `reportValidity()` triggers the browser's native error bubble. This creates duplicate error messages that visually clash with the custom UI, resulting in a poor UX.
 **Action:** Remove `reportValidity()` when a custom inline error message is already being displayed. Rely on `.focus()` and `aria-invalid` to maintain accessibility while keeping the visual presentation clean and consistent.
+
+## 2026-07-05 - Dynamic CSS Spinners Over Static Text for Async Feedback
+**Learning:** Using a static text string like "⏳ Calculating..." provides weak visual feedback during potentially long asynchronous operations. It requires the user to read the text to understand the state. A dynamic, animating CSS spinner provides immediate, universal, non-verbal feedback that a process is actively running, significantly improving the perceived responsiveness of the application.
+**Action:** Always prefer using an animating visual indicator (like a CSS spinner) over static text or emojis when indicating a loading or processing state, ensuring it is wrapped in an `aria-hidden="true"` element and respects `prefers-reduced-motion` for accessibility.

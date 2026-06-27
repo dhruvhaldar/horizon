@@ -133,7 +133,7 @@ async function withLoading(btnElement, asyncFunc) {
     const originalText = btnElement.textContent;
     const wasFocused = document.activeElement === btnElement;
     btnElement.setAttribute('aria-disabled', 'true');
-    btnElement.textContent = "⏳ Calculating...";
+    btnElement.innerHTML = '<span class="spinner" aria-hidden="true"></span> Calculating...';
     btnElement.setAttribute('aria-busy', 'true');
     try {
         await asyncFunc();
