@@ -49,13 +49,15 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # creating an O(N^2) list of edge tuples using nested list comprehensions,
     # building the complete graph natively at C-speed.
     # ⚡ Bolt Update: Even `nx.from_numpy_array` has significant overhead. By extracting
-    # the upper triangle of the symmetric distance matrix natively in NumPy and bulk-adding
-    # via `add_edges_from`, we can construct the dense metric graph >2x faster.
+    # the upper triangle of the symmetric distance matrix natively in NumPy, converting
+    # to native Python lists at C-speed using `.tolist()`, and bulk-adding via
+    # `add_weighted_edges_from`, we bypass massive NumPy scalar boxing and Python dictionary
+    # instantiation overheads, constructing the dense metric graph significantly faster.
     metric_G = nx.Graph()
     metric_G.add_nodes_from(range(n))
     rows, cols = np.triu_indices(n, k=1)
     weights = path_lengths[rows, cols]
-    metric_G.add_edges_from(zip(rows, cols, [{'weight': float(w)} for w in weights]))
+    metric_G.add_weighted_edges_from(zip(rows.tolist(), cols.tolist(), weights.tolist()))
 
     # ⚡ Bolt: Do not run nx.relabel_nodes before TSP. NetworkX modifies labels in O(V+E),
     # which introduces significant O(N^2) overhead for dense graphs and makes all subsequent
