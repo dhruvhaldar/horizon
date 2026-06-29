@@ -55,3 +55,7 @@
 ## 2026-06-27 - [JSON.stringify Redundancy Overhead]
 **Learning:** Calling `JSON.stringify(bodyObj)` multiple times for the same large payload (once to generate a client-side cache key, and again for the HTTP `fetch` body) introduces significant redundant O(N) serialization overhead that blocks the browser main thread.
 **Action:** Always cache the output of `JSON.stringify` into a variable (`bodyStr`) if it needs to be reused across multiple operations like cache key generation and network requests.
+
+## 2026-06-28 - [NetworkX add_edges_from Overhead with Comprehensions]
+**Learning:** Constructing dense graphs in NetworkX using `G.add_edges_from()` with inline dictionary comprehensions for edge attributes (e.g., `[{'weight': float(w)} for w in weights]`) and NumPy array iteration introduces massive Python dictionary instantiation and NumPy scalar boxing overheads.
+**Action:** Always use `G.add_weighted_edges_from(zip(u.tolist(), v.tolist(), w.tolist()))` when constructing dense symmetric graphs from NumPy matrices. Converting to native Python lists at C-speed via `.tolist()` bypasses the boxing overhead and constructs the graph significantly faster.
