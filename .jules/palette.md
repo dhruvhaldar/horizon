@@ -61,3 +61,7 @@
 ## 2026-07-05 - Dynamic CSS Spinners Over Static Text for Async Feedback
 **Learning:** Using a static text string like "⏳ Calculating..." provides weak visual feedback during potentially long asynchronous operations. It requires the user to read the text to understand the state. A dynamic, animating CSS spinner provides immediate, universal, non-verbal feedback that a process is actively running, significantly improving the perceived responsiveness of the application.
 **Action:** Always prefer using an animating visual indicator (like a CSS spinner) over static text or emojis when indicating a loading or processing state, ensuring it is wrapped in an `aria-hidden="true"` element and respects `prefers-reduced-motion` for accessibility.
+
+## 2026-07-06 - Hide Native Spin Buttons for Number Inputs
+**Learning:** Browser-native spin buttons on `input[type="number"]` visually clash with highly stylized custom designs like Neumorphism. Additionally, when we intentionally prevent default scroll events on these inputs to avoid accidental data mutation, leaving the spin buttons visible creates a disjointed UX where the input looks like it has native increment behavior but acts differently.
+**Action:** Visually hide the native spin buttons using `-webkit-appearance: none` and `-moz-appearance: textfield` on `input[type="number"]` to ensure a clean, consistent custom interface while still maintaining the semantic and mobile keyboard benefits of the `number` type.
