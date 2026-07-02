@@ -150,6 +150,7 @@ async function withLoading(btnElement, asyncFunc) {
         // UX Enhancement: Restore data visibility after calculation
         const panel = btnElement.closest('.panel');
         if (panel) {
+            panel.dataset.stale = 'false'; // ⚡ Bolt: Reset stale flag
             const staleContainers = panel.querySelectorAll('.results, .viz-container');
             staleContainers.forEach(el => {
                 el.style.opacity = '';
@@ -620,6 +621,11 @@ document.addEventListener('input', (e) => {
         if (resultBox && resultBox.hasAttribute('aria-invalid')) {
             resultBox.removeAttribute('aria-invalid');
         }
+
+        // ⚡ Bolt: Early return if panel is already marked stale to bypass O(N) DOM
+        // traversal (querySelectorAll) on every keystroke during high-frequency input events.
+        if (panel.dataset.stale === 'true') return;
+        panel.dataset.stale = 'true';
 
         const staleContainers = panel.querySelectorAll('.results, .viz-container');
         staleContainers.forEach(container => {
