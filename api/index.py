@@ -5,9 +5,10 @@ from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field, conlist
 from typing import Annotated
 from pydantic import constr
-from typing import List, Dict, Optional, Any, Tuple
 import os
 import math
+import logging
+from typing import List, Dict, Optional, Any, Tuple
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -48,7 +49,15 @@ async def limit_upload_size(request, call_next):
 
 @app.middleware("http")
 async def add_security_headers(request, call_next):
-    response = await call_next(request)
+    try:
+        response = await call_next(request)
+    except Exception as e:
+        logging.error(f"Unhandled exception in request: {e}", exc_info=True)
+        # Security: Catch unhandled exceptions at the middleware level to prevent
+        # them from bubbling up and bypassing the application of security headers,
+        # which could expose stack traces or leave 500 error responses unprotected.
+        response = JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+
     # Security: Defense in depth - inject standard security headers to prevent
     # clickjacking (X-Frame-Options), MIME sniffing (X-Content-Type-Options),
     # enforce strict HTTPS (HSTS), and Content Security Policy (CSP).
