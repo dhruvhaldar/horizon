@@ -59,3 +59,7 @@
 ## 2026-06-28 - [NetworkX add_edges_from Overhead with Comprehensions]
 **Learning:** Constructing dense graphs in NetworkX using `G.add_edges_from()` with inline dictionary comprehensions for edge attributes (e.g., `[{'weight': float(w)} for w in weights]`) and NumPy array iteration introduces massive Python dictionary instantiation and NumPy scalar boxing overheads.
 **Action:** Always use `G.add_weighted_edges_from(zip(u.tolist(), v.tolist(), w.tolist()))` when constructing dense symmetric graphs from NumPy matrices. Converting to native Python lists at C-speed via `.tolist()` bypasses the boxing overhead and constructs the graph significantly faster.
+
+## 2026-07-02 - [O(N) DOM Traversal Overhead in Global Input Listeners]
+**Learning:** Executing `querySelectorAll` inside a global `input` event listener forces the browser to perform O(N) DOM traversal on every single keystroke. This redundant querying during high-frequency input events blocks the main thread and introduces perceptible input lag.
+**Action:** When applying visual state changes (like dimming stale data) during `input` events, use an early return flag (e.g., a `data-*` attribute on the parent container) to bypass `querySelectorAll` and subsequent DOM operations entirely once the state has already been applied.
