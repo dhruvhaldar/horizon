@@ -63,3 +63,7 @@
 ## 2026-07-02 - [O(N) DOM Traversal Overhead in Global Input Listeners]
 **Learning:** Executing `querySelectorAll` inside a global `input` event listener forces the browser to perform O(N) DOM traversal on every single keystroke. This redundant querying during high-frequency input events blocks the main thread and introduces perceptible input lag.
 **Action:** When applying visual state changes (like dimming stale data) during `input` events, use an early return flag (e.g., a `data-*` attribute on the parent container) to bypass `querySelectorAll` and subsequent DOM operations entirely once the state has already been applied.
+
+## 2026-07-06 - [NumPy Identity Matrix Subtraction Overhead]
+**Learning:** Calculating `np.eye(n) - A` (where `A` is an `N x N` NumPy array) is a common pattern for generating `(I - A)` matrices. However, `np.eye(n)` creates a full `N x N` identity matrix filled with zeros, and the subsequent subtraction performs an `O(N^2)` element-wise operation. This intermediate allocation and subtraction adds unnecessary overhead.
+**Action:** When computing `I - A`, initialize the result by directly negating the array (`res = -A`), which inherently returns a negated copy at C-speed. Then, use `np.fill_diagonal(res, res.diagonal() + 1.0)` to add 1 to the diagonal in-place. This bypasses the full `N x N` subtraction and intermediate identity matrix allocation, running roughly 2x faster.

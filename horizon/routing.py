@@ -1,4 +1,6 @@
 import networkx as nx
+import numpy as np
+from scipy.sparse import csgraph
 
 def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     """
@@ -13,9 +15,6 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     for u, v, _ in edges:
         if u not in nodes_set or v not in nodes_set:
             raise ValueError(f"Edge references undefined node: {u if u not in nodes_set else v}")
-
-    import numpy as np
-    from scipy.sparse import csgraph
 
     # ⚡ Bolt: Bypass NetworkX entirely for the initial shortest-path setup.
     # Building a NetworkX Graph() and adding nodes/edges involves significant
