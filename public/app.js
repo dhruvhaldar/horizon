@@ -307,7 +307,8 @@ function switchInv(type, userInitiated = false) {
 
     if (type === 'eoq') {
         toggle.checked = false;
-        document.getElementById('inv-eoq-inputs').style.display = 'flex';
+        const eoqInputs = document.getElementById('inv-eoq-inputs');
+        eoqInputs.style.display = 'flex';
         document.getElementById('inv-cont-inputs').style.display = 'none';
 
         // UX Enhancement: Dim inactive labels for clarity
@@ -316,11 +317,15 @@ function switchInv(type, userInitiated = false) {
 
         if (userInitiated) {
             announce("Switched to EOQ Model");
+            // UX Enhancement: Auto-focus the first visible input when switching models
+            const firstInput = eoqInputs.querySelector('input');
+            if (firstInput) firstInput.focus();
         }
     } else {
         toggle.checked = true;
         document.getElementById('inv-eoq-inputs').style.display = 'none';
-        document.getElementById('inv-cont-inputs').style.display = 'flex';
+        const contInputs = document.getElementById('inv-cont-inputs');
+        contInputs.style.display = 'flex';
 
         // UX Enhancement: Dim inactive labels for clarity
         if (labelEoq) labelEoq.style.opacity = '0.75';
@@ -328,6 +333,9 @@ function switchInv(type, userInitiated = false) {
 
         if (userInitiated) {
             announce("Switched to Continuous Review Model");
+            // UX Enhancement: Auto-focus the first visible input when switching models
+            const firstInput = contInputs.querySelector('input');
+            if (firstInput) firstInput.focus();
         }
     }
 }

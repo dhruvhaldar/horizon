@@ -65,3 +65,7 @@
 ## 2026-07-06 - Hide Native Spin Buttons for Number Inputs
 **Learning:** Browser-native spin buttons on `input[type="number"]` visually clash with highly stylized custom designs like Neumorphism. Additionally, when we intentionally prevent default scroll events on these inputs to avoid accidental data mutation, leaving the spin buttons visible creates a disjointed UX where the input looks like it has native increment behavior but acts differently.
 **Action:** Visually hide the native spin buttons using `-webkit-appearance: none` and `-moz-appearance: textfield` on `input[type="number"]` to ensure a clean, consistent custom interface while still maintaining the semantic and mobile keyboard benefits of the `number` type.
+
+## 2026-07-03 - Focus Management on Tab Switches
+**Learning:** When toggling between multi-step sections or forms (like EOQ vs Continuous Review models), simply changing `display: none` to `display: flex` breaks keyboard navigation flow. Users are forced to manually Tab past the toggle switch again to reach the newly revealed inputs.
+**Action:** When a UI interaction completely replaces a section of the form with new inputs, automatically call `.focus()` on the first visible input field of the new section. This keeps keyboard users and screen readers directly engaged with the new context they just activated.
