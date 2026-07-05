@@ -69,3 +69,7 @@
 ## 2026-07-03 - Focus Management on Tab Switches
 **Learning:** When toggling between multi-step sections or forms (like EOQ vs Continuous Review models), simply changing `display: none` to `display: flex` breaks keyboard navigation flow. Users are forced to manually Tab past the toggle switch again to reach the newly revealed inputs.
 **Action:** When a UI interaction completely replaces a section of the form with new inputs, automatically call `.focus()` on the first visible input field of the new section. This keeps keyboard users and screen readers directly engaged with the new context they just activated.
+
+## 2026-07-08 - Disable Interactive Elements on Stale Data
+**Learning:** While visualizing stale data by dimming results (`opacity: 0.75` and `grayscale`) works for indicating an outdated state, leaving associated interactive elements (like a "Copy" button) enabled creates a poor UX. Users might inadvertently copy or interact with inaccurate data.
+**Action:** Always disable associated interactive elements (e.g., using `disabled=true`, `aria-disabled="true"`, and updating the text) when their visual context becomes stale, preventing users from acting on invalid data while explicitly conveying the element's state.

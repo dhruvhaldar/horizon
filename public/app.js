@@ -655,6 +655,18 @@ document.addEventListener('input', (e) => {
                     container.setAttribute('aria-label', 'Out of date: ' + currentLabel);
                 }
             }
+
+            // UX Enhancement: Disable copy button on stale data to prevent copying inaccurate results
+            if (container.classList.contains('results')) {
+                const copyBtn = container.querySelector('.copy-btn');
+                if (copyBtn && !copyBtn.disabled) {
+                    copyBtn.setAttribute('aria-disabled', 'true');
+                    copyBtn.disabled = true;
+                    copyBtn.setAttribute('title', 'Results are out of date. Recalculate to copy.');
+                    copyBtn.innerHTML = '⏳ Stale';
+                    copyBtn.style.cursor = 'not-allowed';
+                }
+            }
         });
     }
 });
