@@ -710,9 +710,17 @@ document.querySelectorAll('input[type="number"]').forEach(input => {
 });
 
 // UX Enhancement: Auto-resize textareas to match content height
+// ⚡ Bolt: Defers the resize logic into the browser's natural render cycle using requestAnimationFrame.
+// Setting height='auto' and reading scrollHeight synchronously blocks the main thread with a forced
+// layout recalculation (reflow) on every single keystroke. Deferring this eliminates input lag.
 function autoResizeTextarea(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
+    if (textarea.dataset.resizing) return;
+    textarea.dataset.resizing = 'true';
+    requestAnimationFrame(() => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+        textarea.dataset.resizing = '';
+    });
 }
 
 // ⚡ Bolt: Batch DOM layout reads and writes during initialization to prevent

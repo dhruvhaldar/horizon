@@ -67,3 +67,6 @@
 ## 2026-07-06 - [NumPy Identity Matrix Subtraction Overhead]
 **Learning:** Calculating `np.eye(n) - A` (where `A` is an `N x N` NumPy array) is a common pattern for generating `(I - A)` matrices. However, `np.eye(n)` creates a full `N x N` identity matrix filled with zeros, and the subsequent subtraction performs an `O(N^2)` element-wise operation. This intermediate allocation and subtraction adds unnecessary overhead.
 **Action:** When computing `I - A`, initialize the result by directly negating the array (`res = -A`), which inherently returns a negated copy at C-speed. Then, use `np.fill_diagonal(res, res.diagonal() + 1.0)` to add 1 to the diagonal in-place. This bypasses the full `N x N` subtraction and intermediate identity matrix allocation, running roughly 2x faster.
+## 2026-07-05 - [Defers textarea resizing with requestAnimationFrame]
+**Learning:** Setting height='auto' and reading scrollHeight synchronously blocks the main thread with a forced layout recalculation (reflow) on every single keystroke. This causes input lag for textareas.
+**Action:** Defer the resize logic into the browser's natural render cycle using `requestAnimationFrame`. This eliminates input lag by preventing synchronous reflows on every keystroke.
