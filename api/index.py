@@ -7,8 +7,10 @@ from typing import Annotated
 from pydantic import constr
 import os
 import math
+import time
 import logging
 from typing import List, Dict, Optional, Any, Tuple
+from collections import defaultdict
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -31,6 +33,36 @@ app.add_middleware(
 # For large graphs or matrices, this can compress the payload by 80-90%.
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
+
+# In-memory rate limiting dictionary to prevent Compute/Memory DoS attacks
+_request_counts = defaultdict(list)
+
+@app.middleware("http")
+async def rate_limit_middleware(request, call_next):
+    # Security: Use X-Forwarded-For to handle requests behind a reverse proxy/load balancer
+    forwarded_for = request.headers.get("x-forwarded-for")
+    if forwarded_for:
+        client_ip = forwarded_for.split(",")[0].strip()
+    elif request.client and request.client.host:
+        client_ip = request.client.host
+    else:
+        client_ip = "unknown"
+
+    now = time.time()
+
+    # Security: Prune old requests and limit to 100 requests per minute per IP
+    _request_counts[client_ip] = [t for t in _request_counts[client_ip] if now - t < 60]
+
+    if len(_request_counts[client_ip]) >= 100:
+        return JSONResponse(status_code=429, content={"detail": "Too many requests. Please try again later."})
+
+    _request_counts[client_ip].append(now)
+
+    # Security: Prevent memory DoS from the tracking dictionary itself
+    if len(_request_counts) > 10000:
+        _request_counts.clear()
+
+    return await call_next(request)
 
 @app.middleware("http")
 async def limit_upload_size(request, call_next):
