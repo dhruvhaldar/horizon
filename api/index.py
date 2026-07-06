@@ -129,7 +129,14 @@ class JobShopRequest(SafeBaseModel):
     jobs: Dict[NodeStr, JobDetails] = Field(max_length=100)
 
 @app.get("/api/health")
-def health_check():
+async def health_check():
+    # ⚡ Bolt: Define ultra-fast CPU-bound endpoints as `async def`.
+    # In FastAPI, standard `def` endpoints are executed in an external threadpool
+    # (via `run_in_threadpool`) to avoid blocking the async event loop. For
+    # microsecond-level O(1) tasks (like health checks or simple inventory math),
+    # the overhead of acquiring a thread and context switching is far greater than
+    # the execution time itself. Bypassing the threadpool maximizes throughput and reduces latency.
+    # Note: Computationally heavy endpoints must remain `def` to avoid blocking the event loop.
     return {"status": "ok"}
 
 @app.post("/api/queue")
@@ -178,7 +185,7 @@ def solve_queue(req: JacksonRequest):
         raise HTTPException(status_code=400, detail="Singular matrix")
 
 @app.post("/api/inventory/eoq")
-def solve_eoq(req: EOQRequest):
+async def solve_eoq(req: EOQRequest):
     # Security: Prevent ZeroDivisionError and 500 error leaks by validating physical limits.
     if req.demand_rate <= 0 or req.order_cost <= 0 or req.holding_cost <= 0:
         raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")
@@ -190,7 +197,7 @@ def solve_eoq(req: EOQRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/inventory/newsvendor")
-def solve_newsvendor(req: NewsvendorRequest):
+async def solve_newsvendor(req: NewsvendorRequest):
     try:
         res = newsvendor(req.selling_price, req.cost, req.salvage_value, req.demand_mean, req.demand_std)
         # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
@@ -199,7 +206,7 @@ def solve_newsvendor(req: NewsvendorRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/inventory/continuous")
-def solve_continuous(req: ContinuousReviewRequest):
+async def solve_continuous(req: ContinuousReviewRequest):
     # Security: Prevent mathematical undefined states and ZeroDivisionErrors.
     if req.demand_rate <= 0 or req.order_cost <= 0 or req.holding_cost <= 0:
         raise HTTPException(status_code=400, detail="Demand rate, order cost, and holding cost must be > 0.")

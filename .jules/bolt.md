@@ -70,3 +70,7 @@
 ## 2026-07-05 - [Defers textarea resizing with requestAnimationFrame]
 **Learning:** Setting height='auto' and reading scrollHeight synchronously blocks the main thread with a forced layout recalculation (reflow) on every single keystroke. This causes input lag for textareas.
 **Action:** Defer the resize logic into the browser's natural render cycle using `requestAnimationFrame`. This eliminates input lag by preventing synchronous reflows on every keystroke.
+
+## 2026-07-10 - [FastAPI Threadpool Overhead for O(1) Endpoints]
+**Learning:** In FastAPI, standard `def` endpoints are executed in an external threadpool (via `run_in_threadpool`) to prevent blocking the async event loop. For microsecond-level O(1) CPU tasks (like health checks or simple mathematical formulas), the overhead of acquiring a thread and context switching is significantly higher than the execution time itself. However, defining heavy CPU-bound tasks (like O(N^2) routing solvers) as `async def` is a critical anti-pattern that blocks the event loop and kills server concurrency.
+**Action:** Define ultra-fast O(1) CPU-bound endpoints as `async def` instead of `def` to bypass the threadpool and reduce latency. Always keep computationally heavy endpoints as standard `def` to ensure they are offloaded to the threadpool.
