@@ -73,3 +73,7 @@
 ## 2026-07-08 - Disable Interactive Elements on Stale Data
 **Learning:** While visualizing stale data by dimming results (`opacity: 0.75` and `grayscale`) works for indicating an outdated state, leaving associated interactive elements (like a "Copy" button) enabled creates a poor UX. Users might inadvertently copy or interact with inaccurate data.
 **Action:** Always disable associated interactive elements (e.g., using `disabled=true`, `aria-disabled="true"`, and updating the text) when their visual context becomes stale, preventing users from acting on invalid data while explicitly conveying the element's state.
+
+## 2026-07-15 - Prevent Horizontal Scrolling on Mobile Devices with Grid Layouts
+**Learning:** Using `grid-template-columns: repeat(auto-fit, minmax(400px, 1fr))` can cause `.grid` containers to overflow the viewport on small mobile devices (less than 400px wide), resulting in horizontal scrolling, which is a poor mobile UX experience.
+**Action:** Always use the CSS `min()` function to cap the minimum width at 100% of the viewport container, e.g., `minmax(min(100%, 400px), 1fr)`. This allows the grid items to gracefully shrink below their ideal minimum width to fit narrow screens without forcing a horizontal scrollbar.
