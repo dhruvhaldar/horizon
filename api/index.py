@@ -39,11 +39,9 @@ _request_counts = defaultdict(list)
 
 @app.middleware("http")
 async def rate_limit_middleware(request, call_next):
-    # Security: Use X-Forwarded-For to handle requests behind a reverse proxy/load balancer
-    forwarded_for = request.headers.get("x-forwarded-for")
-    if forwarded_for:
-        client_ip = forwarded_for.split(",")[0].strip()
-    elif request.client and request.client.host:
+    # Security: Avoid naively parsing X-Forwarded-For to prevent IP spoofing bypasses.
+    # Rely on the direct client host unless properly configured behind a trusted proxy.
+    if request.client and request.client.host:
         client_ip = request.client.host
     else:
         client_ip = "unknown"

@@ -53,3 +53,7 @@
 **Vulnerability:** The API exposes mathematically heavy endpoints (e.g., matrix inversion, graph routing) but lacked any rate limiting. An attacker could repeatedly call these endpoints to cause a CPU and Memory Denial of Service (DoS) attack, exhausting backend resources.
 **Learning:** Compute-heavy APIs without request limits allow trivial resource exhaustion attacks even with small payloads.
 **Prevention:** Implement a global rate limiting middleware that restricts requests per IP (e.g., using a sliding window) and ensures the rate limiting tracker itself does not become a memory DoS vector by capping its size.
+## 2024-05-24 - IP Spoofing via Unvalidated X-Forwarded-For Header
+**Vulnerability:** The rate limiting middleware parsed `X-Forwarded-For` without being behind a trusted proxy, allowing attackers to spoof their IP by sending custom `X-Forwarded-For` headers. This bypasses IP-based rate limiting entirely.
+**Learning:** Naively taking the first IP from `X-Forwarded-For` is a major DoS vulnerability unless the proxy layer guarantees the header cannot be forged by clients.
+**Prevention:** Rely on `request.client.host` for rate-limiting client IPs directly, or properly configure a trusted proxy middleware (like `ProxyHeadersMiddleware` in Starlette) to sanitize these headers before they reach business logic.
