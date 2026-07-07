@@ -32,14 +32,22 @@ async function fetchWithCache(endpoint, bodyObj, errorMsg) {
 
 // UX Enhancement: Improve error message clarity with actionable steps
 function getCustomError(input) {
+    let fieldName = "This field";
+    const label = document.querySelector(`label[for="${input.id}"]`);
+    if (label) {
+        // Extract label text and remove math notations, asterisks, and colons
+        fieldName = label.textContent.replace(/\s*\(.*?\)/g, '').replace(/[\*:]/g, '').trim();
+    }
+
     if (input.validity.valueMissing) {
-        const label = document.querySelector(`label[for="${input.id}"]`);
-        if (label) {
-            // Extract label text and remove math notations, asterisks, and colons
-            const text = label.textContent.replace(/\s*\(.*?\)/g, '').replace(/[\*:]/g, '').trim();
-            return `${text} is a required field.`;
-        }
-        return "This field is required.";
+        return `${fieldName} is a required field.`;
+    }
+    if (input.validity.rangeUnderflow) {
+        const min = input.getAttribute('min');
+        return `${fieldName} must be at least ${min}.`;
+    }
+    if (input.validity.badInput || input.validity.typeMismatch) {
+        return `Please enter a valid format for ${fieldName}.`;
     }
     return input.validationMessage;
 }
