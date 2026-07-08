@@ -74,3 +74,6 @@
 ## 2026-07-10 - [FastAPI Threadpool Overhead for O(1) Endpoints]
 **Learning:** In FastAPI, standard `def` endpoints are executed in an external threadpool (via `run_in_threadpool`) to prevent blocking the async event loop. For microsecond-level O(1) CPU tasks (like health checks or simple mathematical formulas), the overhead of acquiring a thread and context switching is significantly higher than the execution time itself. However, defining heavy CPU-bound tasks (like O(N^2) routing solvers) as `async def` is a critical anti-pattern that blocks the event loop and kills server concurrency.
 **Action:** Define ultra-fast O(1) CPU-bound endpoints as `async def` instead of `def` to bypass the threadpool and reduce latency. Always keep computationally heavy endpoints as standard `def` to ensure they are offloaded to the threadpool.
+## 2026-07-15 - [O(N) DOM Traversal Overhead in Validation]
+**Learning:** Using `document.querySelector('label[for="id"]')` to find an input's label forces an O(N) DOM traversal. This is especially problematic during high-frequency validation events (like input event listeners when an element is in an error state), causing performance bottlenecks.
+**Action:** Use the native HTML5 `element.labels[0]` property for O(1) direct access to an input's associated label.
