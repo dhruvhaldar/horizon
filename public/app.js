@@ -33,7 +33,10 @@ async function fetchWithCache(endpoint, bodyObj, errorMsg) {
 // UX Enhancement: Improve error message clarity with actionable steps
 function getCustomError(input) {
     let fieldName = "This field";
-    const label = document.querySelector(`label[for="${input.id}"]`);
+    // ⚡ Bolt: Replace O(N) DOM traversal via querySelector with O(1) direct access
+    // via the native HTML5 element.labels property. This prevents main thread
+    // blocking during high-frequency validation events (like keystrokes when invalid).
+    const label = input.labels && input.labels.length > 0 ? input.labels[0] : null;
     if (label) {
         // Extract label text and remove math notations, asterisks, and colons
         fieldName = label.textContent.replace(/\s*\(.*?\)/g, '').replace(/[\*:]/g, '').trim();
