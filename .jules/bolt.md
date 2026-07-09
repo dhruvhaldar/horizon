@@ -77,3 +77,7 @@
 ## 2026-07-15 - [O(N) DOM Traversal Overhead in Validation]
 **Learning:** Using `document.querySelector('label[for="id"]')` to find an input's label forces an O(N) DOM traversal. This is especially problematic during high-frequency validation events (like input event listeners when an element is in an error state), causing performance bottlenecks.
 **Action:** Use the native HTML5 `element.labels[0]` property for O(1) direct access to an input's associated label.
+
+## 2026-07-20 - [Redundant DOMRect Calculations]
+**Learning:** Calling `getBoundingClientRect()` multiple times consecutively on the same DOM node without an intervening layout mutation doesn't trigger layout thrashing, but it does incur unnecessary execution time by recalculating/fetching the layout box and allocating a new `DOMRect` object on each call.
+**Action:** When multiple dimensions (e.g., width and height) are needed from a single element, cache the result of a single `getBoundingClientRect()` call into a variable (e.g., `const rect = ...`) and read the properties from it.

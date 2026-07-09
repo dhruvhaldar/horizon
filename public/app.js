@@ -214,8 +214,10 @@ function drawQueueGraph(gamma, p) {
     // ⚡ Bolt: Read dimensions before mutating the DOM to utilize cached layout.
     // Interleaving DOM reads (getBoundingClientRect) immediately after DOM writes
     // (selectAll.remove) forces synchronous layout recalculation (layout thrashing).
-    const width = container.node().getBoundingClientRect().width;
-    const height = container.node().getBoundingClientRect().height;
+    // ⚡ Bolt: Cache getBoundingClientRect() object to avoid redundant layout calculations.
+    const rect = container.node().getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
 
     container.selectAll("*").remove();
 
@@ -535,8 +537,10 @@ function drawRoutingGraph(nodesList, edges, path) {
     // ⚡ Bolt: Read dimensions before mutating the DOM to utilize cached layout.
     // Interleaving DOM reads (getBoundingClientRect) immediately after DOM writes
     // (selectAll.remove) forces synchronous layout recalculation (layout thrashing).
-    const width = container.node().getBoundingClientRect().width;
-    const height = container.node().getBoundingClientRect().height;
+    // ⚡ Bolt: Cache getBoundingClientRect() object to avoid redundant layout calculations.
+    const rect = container.node().getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
 
     container.selectAll("*").remove();
 
