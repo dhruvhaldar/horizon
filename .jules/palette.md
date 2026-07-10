@@ -77,3 +77,7 @@
 ## 2026-07-15 - Prevent Horizontal Scrolling on Mobile Devices with Grid Layouts
 **Learning:** Using `grid-template-columns: repeat(auto-fit, minmax(400px, 1fr))` can cause `.grid` containers to overflow the viewport on small mobile devices (less than 400px wide), resulting in horizontal scrolling, which is a poor mobile UX experience.
 **Action:** Always use the CSS `min()` function to cap the minimum width at 100% of the viewport container, e.g., `minmax(min(100%, 400px), 1fr)`. This allows the grid items to gracefully shrink below their ideal minimum width to fit narrow screens without forcing a horizontal scrollbar.
+
+## 2026-07-20 - Auto-resize textareas on window resize
+**Learning:** Responsive layouts (like CSS Grid) can alter the width of textareas when the window is resized. If a fluid textarea contains long text that wraps, changing the width will change the required height. A naive auto-resize implementation that only listens to `input` events will fail to adjust the height during a window resize, leading to hidden text or unwanted scrollbars until the user types again.
+**Action:** When implementing auto-resizing textareas, always attach a debounced `resize` event listener to the `window` object to recalculate heights when the viewport changes, ensuring layout integrity across all devices.
