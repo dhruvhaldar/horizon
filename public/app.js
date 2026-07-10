@@ -766,6 +766,17 @@ document.addEventListener('input', (e) => {
     }
 });
 
+// UX Enhancement: Auto-resize textareas on window resize with debounce
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        document.querySelectorAll('textarea').forEach(textarea => {
+            autoResizeTextarea(textarea);
+        });
+    }, 100);
+});
+
 // UX Enhancement: Add copy button to results container
 document.querySelectorAll('.results').forEach(container => {
     container.style.position = 'relative';
