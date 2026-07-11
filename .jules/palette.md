@@ -81,3 +81,7 @@
 ## 2026-07-20 - Auto-resize textareas on window resize
 **Learning:** Responsive layouts (like CSS Grid) can alter the width of textareas when the window is resized. If a fluid textarea contains long text that wraps, changing the width will change the required height. A naive auto-resize implementation that only listens to `input` events will fail to adjust the height during a window resize, leading to hidden text or unwanted scrollbars until the user types again.
 **Action:** When implementing auto-resizing textareas, always attach a debounced `resize` event listener to the `window` object to recalculate heights when the viewport changes, ensuring layout integrity across all devices.
+
+## 2026-07-30 - Accessible Interactive Elements in Stale State
+**Learning:** Setting `disabled=true` on a button completely removes it from the keyboard tab sequence. In scenarios where a button is disabled to prevent action (like a "Copy" button when data becomes stale), a keyboard-only or screen-reader user will entirely skip the button and never hear the tooltip (`title`) explaining *why* it's disabled.
+**Action:** When disabling buttons that provide contextual state (like "Results are out of date. Recalculate to copy."), use `aria-disabled="true"` instead of `disabled=true` to maintain the element in the tab order, and manually add an early return (`if (btn.getAttribute('aria-disabled') === 'true') return;`) to the click handler to prevent interaction.
