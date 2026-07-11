@@ -81,3 +81,7 @@
 ## 2026-07-20 - [Redundant DOMRect Calculations]
 **Learning:** Calling `getBoundingClientRect()` multiple times consecutively on the same DOM node without an intervening layout mutation doesn't trigger layout thrashing, but it does incur unnecessary execution time by recalculating/fetching the layout box and allocating a new `DOMRect` object on each call.
 **Action:** When multiple dimensions (e.g., width and height) are needed from a single element, cache the result of a single `getBoundingClientRect()` call into a variable (e.g., `const rect = ...`) and read the properties from it.
+
+## 2026-07-25 - [Rate Limit Middleware O(N) Overhead]
+**Learning:** Using a list comprehension to prune a rolling window of timestamps (e.g., `[t for t in history if now - t < 60]`) incurs O(N) overhead and allocates a new list object on *every single request*. For rate-limiting middleware that executes on every API call, this creates unnecessary garbage collection pressure and CPU usage.
+**Action:** Always use a `collections.deque` for rolling time windows. By calling `popleft()` inside a `while` loop, you can prune expired timestamps in amortized O(1) time and perform the update in-place without intermediate allocations.

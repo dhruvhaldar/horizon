@@ -10,7 +10,7 @@ import math
 import time
 import logging
 from typing import List, Dict, Optional, Any, Tuple
-from collections import defaultdict
+from collections import defaultdict, deque
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -35,7 +35,10 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 # In-memory rate limiting dictionary to prevent Compute/Memory DoS attacks
-_request_counts = defaultdict(list)
+# ⚡ Bolt: Use a deque instead of a list for the rolling window to drop
+# the pruning time complexity from O(N) list comprehension allocations
+# to amortized O(1) in-place pops.
+_request_counts = defaultdict(deque)
 
 @app.middleware("http")
 async def rate_limit_middleware(request, call_next):
@@ -47,14 +50,16 @@ async def rate_limit_middleware(request, call_next):
         client_ip = "unknown"
 
     now = time.time()
+    history = _request_counts[client_ip]
 
     # Security: Prune old requests and limit to 100 requests per minute per IP
-    _request_counts[client_ip] = [t for t in _request_counts[client_ip] if now - t < 60]
+    while history and now - history[0] >= 60:
+        history.popleft()
 
-    if len(_request_counts[client_ip]) >= 100:
+    if len(history) >= 100:
         return JSONResponse(status_code=429, content={"detail": "Too many requests. Please try again later."})
 
-    _request_counts[client_ip].append(now)
+    history.append(now)
 
     # Security: Prevent memory DoS from the tracking dictionary itself
     if len(_request_counts) > 10000:
