@@ -674,9 +674,8 @@ document.addEventListener('input', (e) => {
             // UX Enhancement: Disable copy button on stale data to prevent copying inaccurate results
             if (container.classList.contains('results')) {
                 const copyBtn = container.querySelector('.copy-btn');
-                if (copyBtn && !copyBtn.disabled) {
+                if (copyBtn && copyBtn.getAttribute('aria-disabled') !== 'true') {
                     copyBtn.setAttribute('aria-disabled', 'true');
-                    copyBtn.disabled = true;
                     copyBtn.setAttribute('title', 'Results are out of date. Recalculate to copy.');
                     copyBtn.innerHTML = '⏳ Stale';
                     copyBtn.style.cursor = 'not-allowed';
@@ -798,6 +797,7 @@ document.querySelectorAll('.results').forEach(container => {
         btn.style.width = 'auto';
 
         btn.onclick = () => {
+            if (btn.getAttribute('aria-disabled') === 'true') return;
             const clone = container.cloneNode(true);
             const copyBtn = clone.querySelector('.copy-btn');
             if (copyBtn) copyBtn.remove();
