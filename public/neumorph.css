@@ -160,8 +160,10 @@ header.panel {
     font-size: 0.9rem;
     font-weight: 600;
     transition: color 0.2s ease;
+    cursor: pointer;
 }
 
+.input-group label:hover,
 .input-group:focus-within label {
     color: hsl(22, 90%, 38%);
 }

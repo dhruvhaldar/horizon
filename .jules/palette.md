@@ -85,3 +85,7 @@
 ## 2026-07-30 - Accessible Interactive Elements in Stale State
 **Learning:** Setting `disabled=true` on a button completely removes it from the keyboard tab sequence. In scenarios where a button is disabled to prevent action (like a "Copy" button when data becomes stale), a keyboard-only or screen-reader user will entirely skip the button and never hear the tooltip (`title`) explaining *why* it's disabled.
 **Action:** When disabling buttons that provide contextual state (like "Results are out of date. Recalculate to copy."), use `aria-disabled="true"` instead of `disabled=true` to maintain the element in the tab order, and manually add an early return (`if (btn.getAttribute('aria-disabled') === 'true') return;`) to the click handler to prevent interaction.
+
+## 2026-08-01 - Avoid auto-selecting multiline textareas
+**Learning:** While automatically selecting all text on `focus` is an excellent affordance for single-line inputs (allowing users to quickly overwrite existing numbers or short strings), applying `this.select()` to multiline `<textarea>` elements causes destructive UX. Users clicking into a complex matrix or list to fix a single typo end up selecting the entire dataset, leading to accidental deletion of their entire input if they start typing.
+**Action:** Restrict auto-selection on focus strictly to single-line `input` elements. Leave `textarea` elements alone so users can click naturally to place their cursor without fear of accidentally overwriting their entire data block.

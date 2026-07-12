@@ -823,7 +823,7 @@ if (navigator.userAgent.includes('Mac')) {
 }
 
 // UX Enhancement: Auto-select input text on focus to allow quick overwriting
-document.querySelectorAll('input.inset, textarea.inset').forEach(el => {
+document.querySelectorAll('input.inset').forEach(el => {
     el.addEventListener('focus', function() {
         this.select();
     });
