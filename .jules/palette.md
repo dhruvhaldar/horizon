@@ -89,3 +89,7 @@
 ## 2026-08-01 - Avoid auto-selecting multiline textareas
 **Learning:** While automatically selecting all text on `focus` is an excellent affordance for single-line inputs (allowing users to quickly overwrite existing numbers or short strings), applying `this.select()` to multiline `<textarea>` elements causes destructive UX. Users clicking into a complex matrix or list to fix a single typo end up selecting the entire dataset, leading to accidental deletion of their entire input if they start typing.
 **Action:** Restrict auto-selection on focus strictly to single-line `input` elements. Leave `textarea` elements alone so users can click naturally to place their cursor without fear of accidentally overwriting their entire data block.
+
+## 2026-08-05 - Native Frontend Validation for Custom Formats
+**Learning:** Relying on the backend to validate custom string formats (like comma-separated lists) results in slow feedback and generic error messages that lack actionable guidance. Furthermore, the native HTML5 `patternMismatch` validity state provides a way to enforce these formats client-side, but it lacks a built-in descriptive message unless paired with the `title` attribute.
+**Action:** When requiring specific custom text formats, always apply a regex `pattern` and a descriptive `title` attribute to the input. Then, update custom validation logic to handle `input.validity.patternMismatch` by returning `input.title`, ensuring users receive immediate, format-specific guidance before submitting.

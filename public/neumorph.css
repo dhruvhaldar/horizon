@@ -273,6 +273,12 @@ kbd {
     overflow: visible; /* Ensure tooltips or large graphs don't get clipped */
 }
 
+.viz-container:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+    border-radius: 20px;
+}
+
 /* Ensure canvas and svg within viz-container scale properly */
 .viz-container canvas, 
 .viz-container svg {

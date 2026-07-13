@@ -52,6 +52,9 @@ function getCustomError(input) {
     if (input.validity.badInput || input.validity.typeMismatch) {
         return `Please enter a valid format for ${fieldName}.`;
     }
+    if (input.validity.patternMismatch) {
+        return input.title || `Please match the requested format for ${fieldName}.`;
+    }
     return input.validationMessage;
 }
 
