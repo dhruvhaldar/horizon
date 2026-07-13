@@ -44,12 +44,12 @@
                 <div class="input-group">
                     <label for="q-gamma">External Arrivals ($\gamma$) <span aria-hidden="true" title="Required">*</span>:</label>
                     <span id="help-q-gamma" class="helper-text">Avg. arrivals from outside the system per unit time (comma-separated list).</span>
-                    <input type="text" id="q-gamma" aria-describedby="help-q-gamma" class="inset" value="10, 5" placeholder="e.g., 10, 5" spellcheck="false" autocomplete="off" required>
+                    <input type="text" id="q-gamma" aria-describedby="help-q-gamma" class="inset" value="10, 5" placeholder="e.g., 10, 5" spellcheck="false" autocomplete="off" pattern="^\s*\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?)*\s*$" title="Please enter a comma-separated list of numbers (e.g., 10, 5.5)" required>
                 </div>
                 <div class="input-group">
                     <label for="q-mu">Service Rates ($\mu$) <span aria-hidden="true" title="Required">*</span>:</label>
                     <span id="help-q-mu" class="helper-text">Capacity per server at each node (must be > $\gamma$).</span>
-                    <input type="text" id="q-mu" aria-describedby="help-q-mu" class="inset" value="20, 15" placeholder="e.g., 20, 15" spellcheck="false" autocomplete="off" required>
+                    <input type="text" id="q-mu" aria-describedby="help-q-mu" class="inset" value="20, 15" placeholder="e.g., 20, 15" spellcheck="false" autocomplete="off" pattern="^\s*\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?)*\s*$" title="Please enter a comma-separated list of numbers (e.g., 20, 15.5)" required>
                 </div>
                 <div class="calc-group">
                     <div class="input-group">
@@ -141,7 +141,7 @@
                 <div class="input-group">
                     <label for="r-nodes">Nodes (comma separated) <span aria-hidden="true" title="Required">*</span>:</label>
                     <span id="help-r-nodes" class="helper-text">Distinct identifiers for locations to be visited.</span>
-                    <input type="text" id="r-nodes" aria-describedby="help-r-nodes" class="inset" value="A, B, C, D" placeholder="e.g., A, B, C, D" spellcheck="false" autocomplete="off" required>
+                    <input type="text" id="r-nodes" aria-describedby="help-r-nodes" class="inset" value="A, B, C, D" placeholder="e.g., A, B, C, D" spellcheck="false" autocomplete="off" pattern="^[^,]+(,[^,]+)*$" title="Please enter a comma-separated list of node identifiers" required>
                 </div>
                 <div class="input-group">
                     <label for="r-edges">Edges (node1,node2,weight per line) <span aria-hidden="true" title="Required">*</span>:</label>
