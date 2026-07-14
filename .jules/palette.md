@@ -93,3 +93,7 @@
 ## 2026-08-05 - Native Frontend Validation for Custom Formats
 **Learning:** Relying on the backend to validate custom string formats (like comma-separated lists) results in slow feedback and generic error messages that lack actionable guidance. Furthermore, the native HTML5 `patternMismatch` validity state provides a way to enforce these formats client-side, but it lacks a built-in descriptive message unless paired with the `title` attribute.
 **Action:** When requiring specific custom text formats, always apply a regex `pattern` and a descriptive `title` attribute to the input. Then, update custom validation logic to handle `input.validity.patternMismatch` by returning `input.title`, ensuring users receive immediate, format-specific guidance before submitting.
+
+## 2026-08-10 - Hide Switch Decorative Elements from Screen Readers
+**Learning:** Custom interactive components (like toggle switches) built with native inputs often use sibling decorative `div` elements for styling. Without `aria-hidden="true"`, screen readers may traverse these empty decorative elements, causing confusing pauses or reading empty content, degrading the user experience.
+**Action:** Always add `aria-hidden="true"` to decorative elements (like indicators or knobs) that are siblings to an accessible native input.
