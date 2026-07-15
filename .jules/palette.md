@@ -97,3 +97,11 @@
 ## 2026-08-10 - Hide Switch Decorative Elements from Screen Readers
 **Learning:** Custom interactive components (like toggle switches) built with native inputs often use sibling decorative `div` elements for styling. Without `aria-hidden="true"`, screen readers may traverse these empty decorative elements, causing confusing pauses or reading empty content, degrading the user experience.
 **Action:** Always add `aria-hidden="true"` to decorative elements (like indicators or knobs) that are siblings to an accessible native input.
+
+## 2026-08-15 - Explicit Announcements for Async Actions Triggered from Inputs
+**Learning:** Relying on `aria-busy` and text changes on submit buttons is insufficient when screen reader focus remains trapped within an input field (e.g., when the user triggers an async submission via the Enter key). Without moving focus to the loading button, the user encounters confusing "dead air" and does not know if their action was successfully registered.
+**Action:** When initiating async operations that can be triggered while focus remains elsewhere, always use an explicit programmatic announcement (like `announce("Calculating...")`) to provide immediate auditory feedback that the system is processing.
+
+## 2026-08-15 - Ensure Inline Errors are Read Completely
+**Learning:** When inline validation error messages dynamically change in place without moving focus, a screen reader may only read the diff or part of the message if `aria-atomic` is not used in conjunction with `aria-live`.
+**Action:** Always add `aria-atomic="true"` alongside `aria-live="polite"` on dynamically generated or updated inline error containers so the screen reader reads the complete context of the new error message.
