@@ -739,17 +739,37 @@ document.querySelectorAll('input[type="number"]').forEach(input => {
 });
 
 // UX Enhancement: Auto-resize textareas to match content height
-// ⚡ Bolt: Defers the resize logic into the browser's natural render cycle using requestAnimationFrame.
-// Setting height='auto' and reading scrollHeight synchronously blocks the main thread with a forced
-// layout recalculation (reflow) on every single keystroke. Deferring this eliminates input lag.
+// ⚡ Bolt: Batch DOM layout reads and writes during resize using a single requestAnimationFrame.
+// When multiple textareas are resized simultaneously (e.g., during window resize), creating
+// individual requestAnimationFrame callbacks that interleave `style.height = 'auto'` (write)
+// and `scrollHeight` (read) causes O(N) layout thrashing. By queueing the elements and
+// processing them in distinct phases (Write -> Read -> Write) within a single frame,
+// we reduce the layout recalculations from O(N) to O(1) per frame.
+const resizeQueue = new Set();
+let isResizing = false;
+
+function processResizeQueue() {
+    const textareas = Array.from(resizeQueue);
+
+    // Phase 1: Write (reset all)
+    textareas.forEach(t => t.style.height = 'auto');
+
+    // Phase 2: Read (measure all without triggering reflows between measurements)
+    const heights = textareas.map(t => t.scrollHeight);
+
+    // Phase 3: Write (apply final heights)
+    textareas.forEach((t, i) => t.style.height = heights[i] + 'px');
+
+    resizeQueue.clear();
+    isResizing = false;
+}
+
 function autoResizeTextarea(textarea) {
-    if (textarea.dataset.resizing) return;
-    textarea.dataset.resizing = 'true';
-    requestAnimationFrame(() => {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-        textarea.dataset.resizing = '';
-    });
+    resizeQueue.add(textarea);
+    if (!isResizing) {
+        isResizing = true;
+        requestAnimationFrame(processResizeQueue);
+    }
 }
 
 // ⚡ Bolt: Batch DOM layout reads and writes during initialization to prevent

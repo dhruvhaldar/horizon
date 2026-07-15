@@ -85,3 +85,7 @@
 ## 2026-07-25 - [Rate Limit Middleware O(N) Overhead]
 **Learning:** Using a list comprehension to prune a rolling window of timestamps (e.g., `[t for t in history if now - t < 60]`) incurs O(N) overhead and allocates a new list object on *every single request*. For rate-limiting middleware that executes on every API call, this creates unnecessary garbage collection pressure and CPU usage.
 **Action:** Always use a `collections.deque` for rolling time windows. By calling `popleft()` inside a `while` loop, you can prune expired timestamps in amortized O(1) time and perform the update in-place without intermediate allocations.
+
+## 2026-07-30 - [O(N) Layout Thrashing with Concurrent requestAnimationFrame]
+**Learning:** Using individual `requestAnimationFrame` callbacks for elements to batch their own DOM reads/writes is insufficient when multiple elements (like multiple textareas) trigger updates simultaneously (e.g., during window resize). The callbacks run in the same frame, interleaving their reads and writes across instances, which causes O(N) forced synchronous layout recalculations.
+**Action:** When multiple elements might update simultaneously, queue them in a `Set` (to deduplicate) and process them in a single, batched `requestAnimationFrame`. Execute all DOM writes (reset phase), then all DOM reads (measure phase), then the final DOM writes (apply phase) to reduce layout thrashing to O(1) per frame.
