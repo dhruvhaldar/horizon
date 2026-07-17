@@ -58,7 +58,11 @@ async def combined_security_middleware(request, call_next):
         history.popleft()
 
     if len(history) >= 100:
-        return JSONResponse(status_code=429, content={"detail": "Too many requests. Please try again later."})
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Too many requests. Please try again later."},
+            headers={"Retry-After": "60"}
+        )
 
     history.append(now)
 
