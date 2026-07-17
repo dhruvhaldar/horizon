@@ -41,7 +41,8 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 _request_counts = defaultdict(deque)
 
 @app.middleware("http")
-async def rate_limit_middleware(request, call_next):
+async def combined_security_middleware(request, call_next):
+    # --- Rate Limiting ---
     # Security: Avoid naively parsing X-Forwarded-For to prevent IP spoofing bypasses.
     # Rely on the direct client host unless properly configured behind a trusted proxy.
     if request.client and request.client.host:
@@ -65,10 +66,7 @@ async def rate_limit_middleware(request, call_next):
     if len(_request_counts) > 10000:
         _request_counts.clear()
 
-    return await call_next(request)
-
-@app.middleware("http")
-async def limit_upload_size(request, call_next):
+    # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
     if "chunked" in request.headers.get("transfer-encoding", "").lower():
         return JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."})
@@ -80,10 +78,8 @@ async def limit_upload_size(request, call_next):
             return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."})
         if length_val > 2_000_000: # 2MB limit
             return JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."})
-    return await call_next(request)
 
-@app.middleware("http")
-async def add_security_headers(request, call_next):
+    # --- Security Headers ---
     try:
         response = await call_next(request)
     except Exception as e:
