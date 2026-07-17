@@ -89,3 +89,7 @@
 ## 2026-07-30 - [O(N) Layout Thrashing with Concurrent requestAnimationFrame]
 **Learning:** Using individual `requestAnimationFrame` callbacks for elements to batch their own DOM reads/writes is insufficient when multiple elements (like multiple textareas) trigger updates simultaneously (e.g., during window resize). The callbacks run in the same frame, interleaving their reads and writes across instances, which causes O(N) forced synchronous layout recalculations.
 **Action:** When multiple elements might update simultaneously, queue them in a `Set` (to deduplicate) and process them in a single, batched `requestAnimationFrame`. Execute all DOM writes (reset phase), then all DOM reads (measure phase), then the final DOM writes (apply phase) to reduce layout thrashing to O(1) per frame.
+
+## 2026-08-01 - [FastAPI Middleware Stacking Overhead]
+**Learning:** Stacking multiple `@app.middleware("http")` (which creates `BaseHTTPMiddleware` instances) degrades performance significantly because each layer wraps the stream via `anyio` and incurs context switching overhead for each HTTP request.
+**Action:** Consolidate multiple middleware checks (like rate limiting, upload size checking, and security headers) into a single, combined middleware function to avoid the overhead of repeatedly wrapping the request/response cycle.
