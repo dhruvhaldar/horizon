@@ -57,3 +57,8 @@
 **Vulnerability:** The rate limiting middleware parsed `X-Forwarded-For` without being behind a trusted proxy, allowing attackers to spoof their IP by sending custom `X-Forwarded-For` headers. This bypasses IP-based rate limiting entirely.
 **Learning:** Naively taking the first IP from `X-Forwarded-For` is a major DoS vulnerability unless the proxy layer guarantees the header cannot be forged by clients.
 **Prevention:** Rely on `request.client.host` for rate-limiting client IPs directly, or properly configure a trusted proxy middleware (like `ProxyHeadersMiddleware` in Starlette) to sanitize these headers before they reach business logic.
+
+## 2026-10-10 - [MEDIUM] Missing Retry-After Header in Rate Limiting
+**Vulnerability:** The API rate limiting middleware correctly returned a 429 status code but omitted the standard `Retry-After` HTTP header. This forces legitimate clients and intermediate proxies to guess the backoff period, often leading to continuous polling which unnecessarily loads the server and degrades the effectiveness of the rate limit.
+**Learning:** Returning a 429 without a backoff hint is an incomplete rate-limiting implementation. Clients need deterministic guidance on when to resume traffic.
+**Prevention:** Always include a `Retry-After` header (in seconds or an HTTP date) in any 429 Too Many Requests response to guide well-behaved clients and proxies to back off efficiently.
