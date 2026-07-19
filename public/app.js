@@ -642,16 +642,16 @@ document.addEventListener('input', (e) => {
     // UX Enhancement: Dim stale data when inputs change
     const panel = e.target.closest('.panel');
     if (panel) {
+        // ⚡ Bolt: Early return if panel is already marked stale to bypass O(N) DOM
+        // traversal (querySelectorAll) on every keystroke during high-frequency input events.
+        if (panel.dataset.stale === 'true') return;
+        panel.dataset.stale = 'true';
+
         // Clear aggressive error styling as soon as user attempts a correction
         const resultBox = panel.querySelector('.results');
         if (resultBox && resultBox.hasAttribute('aria-invalid')) {
             resultBox.removeAttribute('aria-invalid');
         }
-
-        // ⚡ Bolt: Early return if panel is already marked stale to bypass O(N) DOM
-        // traversal (querySelectorAll) on every keystroke during high-frequency input events.
-        if (panel.dataset.stale === 'true') return;
-        panel.dataset.stale = 'true';
 
         const staleContainers = panel.querySelectorAll('.results, .viz-container');
         staleContainers.forEach(container => {
