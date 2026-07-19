@@ -680,7 +680,7 @@ document.addEventListener('input', (e) => {
                 if (copyBtn && copyBtn.getAttribute('aria-disabled') !== 'true') {
                     copyBtn.setAttribute('aria-disabled', 'true');
                     copyBtn.setAttribute('title', 'Results are out of date. Recalculate to copy.');
-                    copyBtn.innerHTML = '⏳ Stale';
+                    copyBtn.innerHTML = '<span aria-hidden="true">⏳</span> Stale';
                     copyBtn.style.cursor = 'not-allowed';
                 }
             }
@@ -810,7 +810,7 @@ document.querySelectorAll('.results').forEach(container => {
 
         const btn = document.createElement('button');
         btn.className = 'copy-btn btn';
-        btn.innerHTML = '📋 Copy';
+        btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
         btn.setAttribute('aria-label', 'Copy results to clipboard');
         btn.style.position = 'absolute';
         btn.style.top = '0.5rem';
@@ -820,15 +820,21 @@ document.querySelectorAll('.results').forEach(container => {
         btn.style.width = 'auto';
 
         btn.onclick = () => {
-            if (btn.getAttribute('aria-disabled') === 'true') return;
+            if (btn.getAttribute('aria-disabled') === 'true' || btn.dataset.copying === 'true') return;
+            btn.dataset.copying = 'true';
             const clone = container.cloneNode(true);
             const copyBtn = clone.querySelector('.copy-btn');
             if (copyBtn) copyBtn.remove();
             navigator.clipboard.writeText(clone.textContent.trim()).then(() => {
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = '✅ Copied';
+                const originalHtml = '<span aria-hidden="true">📋</span> Copy';
+                btn.innerHTML = '<span aria-hidden="true">✅</span> Copied';
                 announce('Results copied to clipboard');
-                setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.dataset.copying = 'false';
+                }, 2000);
+            }).catch(() => {
+                btn.dataset.copying = 'false';
             });
         };
 
