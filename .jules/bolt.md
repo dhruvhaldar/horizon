@@ -93,3 +93,6 @@
 ## 2026-08-01 - [FastAPI Middleware Stacking Overhead]
 **Learning:** Stacking multiple `@app.middleware("http")` (which creates `BaseHTTPMiddleware` instances) degrades performance significantly because each layer wraps the stream via `anyio` and incurs context switching overhead for each HTTP request.
 **Action:** Consolidate multiple middleware checks (like rate limiting, upload size checking, and security headers) into a single, combined middleware function to avoid the overhead of repeatedly wrapping the request/response cycle.
+## 2026-08-05 - [O(N) DOM Queries vs Early Returns]
+**Learning:** Placing an O(N) DOM query (like `querySelector`) before an early-return check during high-frequency events (like `input` or `scroll`) nullifies the performance optimization. The browser still executes the query on every event instance, leading to main-thread blocking.
+**Action:** Always ensure that early-return checks (e.g., checking a `dataset` flag) are the very first operations performed in high-frequency event handlers, before any DOM traversal or heavy computation.
