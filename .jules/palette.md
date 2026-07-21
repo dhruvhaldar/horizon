@@ -97,3 +97,7 @@
 ## 2026-08-10 - Hide Switch Decorative Elements from Screen Readers
 **Learning:** Custom interactive components (like toggle switches) built with native inputs often use sibling decorative `div` elements for styling. Without `aria-hidden="true"`, screen readers may traverse these empty decorative elements, causing confusing pauses or reading empty content, degrading the user experience.
 **Action:** Always add `aria-hidden="true"` to decorative elements (like indicators or knobs) that are siblings to an accessible native input.
+
+## 2026-08-15 - Visual Parity for External Links
+**Learning:** Screen reader users receive context that external links open in a new tab via `aria-label="... (opens in a new tab)"`. However, sighted mouse users lack this predictability if there is no visual indicator or tooltip, leading to unexpected tab openings and poor navigation predictability.
+**Action:** When creating external links that open in a new tab (`target="_blank"`), ensure visual parity with screen readers by adding a visual indicator (like an `aria-hidden="true"` arrow `↗`) and a `title="Opens in a new tab"` tooltip for sighted users.
