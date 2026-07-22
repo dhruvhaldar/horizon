@@ -1,5 +1,7 @@
 import itertools
 import numpy as np
+import math
+import scipy.special
 from math import factorial
 
 def mmc_queue(arrival_rate: float, service_rate: float, c: int):
@@ -43,15 +45,24 @@ def mmc_queue(arrival_rate: float, service_rate: float, c: int):
             "W": w
         }
 
-    sum_p0 = 0.0
-    current_term = 1.0
+    try:
+        # ⚡ Bolt: Use regularized upper incomplete gamma function to compute the
+        # sum of terms for M/M/c queue. This drops the time complexity from O(c)
+        # to O(1) mathematically, speeding up queries with large server counts.
+        sum_p0 = math.exp(r) * scipy.special.gammaincc(c, r)
+        last_term = math.exp(c * math.log(r) - scipy.special.gammaln(c + 1))
+        p0 = 1.0 / (sum_p0 + (last_term / (1 - rho)))
+    except (OverflowError, ValueError):
+        # Fallback to iterative method for extremely large domain errors
+        sum_p0 = 0.0
+        current_term = 1.0
 
-    for n in range(c):
-        sum_p0 += current_term
-        current_term *= (r / (n + 1))
+        for n in range(c):
+            sum_p0 += current_term
+            current_term *= (r / (n + 1))
 
-    last_term = current_term
-    p0 = 1.0 / (sum_p0 + (last_term / (1 - rho)))
+        last_term = current_term
+        p0 = 1.0 / (sum_p0 + (last_term / (1 - rho)))
 
     # Calculate Lq
     lq = (p0 * last_term * rho) / ((1 - rho) ** 2)

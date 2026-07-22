@@ -96,3 +96,7 @@
 ## 2026-08-05 - [O(N) DOM Queries vs Early Returns]
 **Learning:** Placing an O(N) DOM query (like `querySelector`) before an early-return check during high-frequency events (like `input` or `scroll`) nullifies the performance optimization. The browser still executes the query on every event instance, leading to main-thread blocking.
 **Action:** Always ensure that early-return checks (e.g., checking a `dataset` flag) are the very first operations performed in high-frequency event handlers, before any DOM traversal or heavy computation.
+
+## 2026-08-10 - [O(c) Iterative Loops to O(1) Mathematical Functions in M/M/c]
+**Learning:** Calculating terms for large server counts (c) using O(c) iterative loops degrades performance in M/M/c queueing evaluations. Utilizing `math.exp(r) * scipy.special.gammaincc(c, r)` and `math.exp(c * math.log(r) - scipy.special.gammaln(c + 1))` leverages regularized upper incomplete gamma functions to effectively calculate sums and factors at O(1) mathematically, heavily boosting performance.
+**Action:** When working on formulas iterating terms up to server counts (c), substitute with upper incomplete gamma and log-gamma computations utilizing `scipy.special`. Always wrap the computation in `try...except (OverflowError, ValueError)` and keep the original loop fallback to deal with edge cases of domain error with extremely large values.
