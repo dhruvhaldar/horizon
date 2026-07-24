@@ -97,3 +97,7 @@
 ## 2026-08-10 - Hide Switch Decorative Elements from Screen Readers
 **Learning:** Custom interactive components (like toggle switches) built with native inputs often use sibling decorative `div` elements for styling. Without `aria-hidden="true"`, screen readers may traverse these empty decorative elements, causing confusing pauses or reading empty content, degrading the user experience.
 **Action:** Always add `aria-hidden="true"` to decorative elements (like indicators or knobs) that are siblings to an accessible native input.
+
+## 2026-08-15 - Explicit Auditory Confirmation for Async Operations
+**Learning:** Removing `aria-busy="true"` from a button when an asynchronous operation finishes is semantically correct, but often goes unannounced by screen readers. This leaves users relying on screen readers silently waiting, unsure if the "Calculating..." process ever finished or if the results have been updated.
+**Action:** When performing asynchronous form submissions or calculations that update the page dynamically without a full reload, explicitly announce the completion of the task (e.g., via an `aria-live="polite"` region with `announce("Calculation complete. Results updated.")`) alongside the removal of the busy state.

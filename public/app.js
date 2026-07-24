@@ -151,6 +151,8 @@ async function withLoading(btnElement, asyncFunc) {
     btnElement.setAttribute('aria-busy', 'true');
     try {
         await asyncFunc();
+        // UX Enhancement: Announce completion for screen readers to provide explicit async feedback
+        announce("Calculation complete. Results updated.");
     } finally {
         btnElement.textContent = originalText;
         btnElement.removeAttribute('aria-disabled');
