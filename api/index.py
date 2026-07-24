@@ -20,9 +20,14 @@ from horizon.routing import tsp_approx, job_shop_cpm
 
 app = FastAPI(title="Horizon Math API")
 
+# Security: Replace overly permissive wildcard CORS with a restricted list of allowed origins.
+# Wildcard CORS allows malicious sites to make API requests on behalf of users, potentially exposing data.
+# We read allowed origins from the environment for production flexibility and fall back to safe local defaults.
+allowed_origins = os.environ.get("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

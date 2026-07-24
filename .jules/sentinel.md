@@ -62,3 +62,8 @@
 **Vulnerability:** The API rate limiting middleware correctly returned a 429 status code but omitted the standard `Retry-After` HTTP header. This forces legitimate clients and intermediate proxies to guess the backoff period, often leading to continuous polling which unnecessarily loads the server and degrades the effectiveness of the rate limit.
 **Learning:** Returning a 429 without a backoff hint is an incomplete rate-limiting implementation. Clients need deterministic guidance on when to resume traffic.
 **Prevention:** Always include a `Retry-After` header (in seconds or an HTTP date) in any 429 Too Many Requests response to guide well-behaved clients and proxies to back off efficiently.
+
+## 2026-07-24 - Restrict Wildcard CORS Configuration
+**Vulnerability:** The FastAPI application used an overly permissive CORS configuration (`allow_origins=["*"]`), which allowed any domain to make cross-origin requests to the API and read the responses. This could potentially expose sensitive data or allow malicious sites to interact with the API on behalf of the user.
+**Learning:** Hardcoding wildcard origins in `CORSMiddleware` removes the browser's built-in Same-Origin Policy protections. While it's convenient for initial development, it poses a significant security risk when deployed.
+**Prevention:** Always restrict `allow_origins` to a specific list of trusted domains. Use environment variables to make this list configurable for different environments (e.g., local development vs. production) without committing sensitive domain lists or wildcards to the codebase.
