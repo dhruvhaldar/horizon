@@ -256,6 +256,7 @@ kbd {
 
 /* Results & Visualization Areas */
 .results {
+    position: relative;
     min-height: 60px;
     white-space: pre-wrap;
     font-size: 0.9rem;
