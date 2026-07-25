@@ -302,15 +302,15 @@ kbd {
 }
 
 #queue-graph:empty::before {
-    content: "Run network solver to generate graph";
+    content: "🕸️ Run network solver to generate graph";
 }
 
 #inventory-viz:empty::before {
-    content: "Calculate inventory policy to generate chart";
+    content: "📉 Calculate inventory policy to generate chart";
 }
 
 #routing-graph:empty::before {
-    content: "Optimize route to generate map";
+    content: "🗺️ Optimize route to generate map";
 }
 
 /* D3.js Styling */
