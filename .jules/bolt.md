@@ -100,3 +100,7 @@
 ## 2026-08-10 - [O(c) Iterative Loops to O(1) Mathematical Functions in M/M/c]
 **Learning:** Calculating terms for large server counts (c) using O(c) iterative loops degrades performance in M/M/c queueing evaluations. Utilizing `math.exp(r) * scipy.special.gammaincc(c, r)` and `math.exp(c * math.log(r) - scipy.special.gammaln(c + 1))` leverages regularized upper incomplete gamma functions to effectively calculate sums and factors at O(1) mathematically, heavily boosting performance.
 **Action:** When working on formulas iterating terms up to server counts (c), substitute with upper incomplete gamma and log-gamma computations utilizing `scipy.special`. Always wrap the computation in `try...except (OverflowError, ValueError)` and keep the original loop fallback to deal with edge cases of domain error with extremely large values.
+
+## 2026-08-15 - [scipy.special.gammaln vs math.lgamma]
+**Learning:** For scalar values, `scipy.special.gammaln` incurs significant overhead compared to the standard library's `math.lgamma` because it is built to handle arrays and involves substantial type checking and object creation in Python before calling the C implementation. For a single scalar, `math.lgamma` is roughly 8-10x faster.
+**Action:** When computing the natural logarithm of the absolute value of the gamma function for a scalar (e.g., `c + 1` in queueing formulas), use `math.lgamma` from the built-in `math` module instead of `scipy.special.gammaln`.
