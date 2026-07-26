@@ -173,7 +173,7 @@ async function withLoading(btnElement, asyncFunc) {
             staleContainers.forEach(el => {
                 el.style.opacity = '';
                 el.style.filter = '';
-                if (el.classList.contains('viz-container') && el.hasAttribute('aria-label')) {
+                if (el.hasAttribute('aria-label')) {
                     const currentLabel = el.getAttribute('aria-label');
                     if (currentLabel.startsWith('Out of date: ')) {
                         el.setAttribute('aria-label', currentLabel.replace('Out of date: ', ''));
@@ -672,7 +672,7 @@ document.addEventListener('input', (e) => {
             container.style.filter = 'grayscale(100%)';
             container.style.transition = 'opacity 0.3s ease, filter 0.3s ease';
 
-            if (container.classList.contains('viz-container') && container.hasAttribute('aria-label')) {
+            if (container.hasAttribute('aria-label')) {
                 const currentLabel = container.getAttribute('aria-label');
                 if (!currentLabel.startsWith('Out of date: ')) {
                     container.setAttribute('aria-label', 'Out of date: ' + currentLabel);

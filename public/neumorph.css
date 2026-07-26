@@ -261,6 +261,7 @@ kbd {
     white-space: pre-wrap;
     font-size: 0.9rem;
     color: #555;
+    padding-right: 4.5rem;
 }
 
 .viz-container {
