@@ -67,3 +67,13 @@
 **Vulnerability:** The FastAPI application used an overly permissive CORS configuration (`allow_origins=["*"]`), which allowed any domain to make cross-origin requests to the API and read the responses. This could potentially expose sensitive data or allow malicious sites to interact with the API on behalf of the user.
 **Learning:** Hardcoding wildcard origins in `CORSMiddleware` removes the browser's built-in Same-Origin Policy protections. While it's convenient for initial development, it poses a significant security risk when deployed.
 **Prevention:** Always restrict `allow_origins` to a specific list of trusted domains. Use environment variables to make this list configurable for different environments (e.g., local development vs. production) without committing sensitive domain lists or wildcards to the codebase.
+
+## 2026-07-28 - Middleware Ordering CORS Bypass
+**Vulnerability:** A custom security middleware was registered using `@app.middleware("http")`, which in FastAPI/Starlette makes it the outermost middleware. When this middleware caught an unhandled exception and returned a custom 500 error response, it entirely bypassed `CORSMiddleware`. This resulted in the 500 response lacking CORS headers, breaking the frontend's ability to gracefully handle the error.
+**Learning:** `CORSMiddleware` should almost always be the outermost middleware so that it wraps everything and can append CORS headers to all responses (including 429s, 404s, and 500s).
+**Prevention:** Register custom middlewares using `app.add_middleware(BaseHTTPMiddleware, dispatch=...)` and carefully order the `add_middleware` calls so that `CORSMiddleware` is added last (which puts it at the top of the stack and makes it outermost).
+
+## 2026-07-28 - Negative Duration Logic Vulnerability
+**Vulnerability:** The job shop routing endpoint `job_shop_cpm` lacked validation preventing users from passing negative durations for jobs.
+**Learning:** Negative durations in a Critical Path Method (CPM) calculation corrupt the earliest and latest start times (EST/LFT), leading to mathematically impossible and logically flawed schedules. While not a direct exploit, it represents a failure to enforce application logic bounds that can lead to incorrect business logic execution.
+**Prevention:** Explicitly validate all time or resource-based inputs to ensure they are strictly non-negative (e.g., `if duration < 0: raise ValueError(...)`) before feeding them into numerical algorithms.
