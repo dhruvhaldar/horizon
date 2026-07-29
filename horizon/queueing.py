@@ -125,11 +125,11 @@ def jackson_network(gamma: list[float], p: list[list[float]], mu: list[float], c
     total_L = 0.0
     total_gamma = sum(gamma)
 
-    for i in range(n):
-        l_i = lambda_vec_list[i]
-        mu_i = mu[i]
-        c_i = c[i]
-
+    # ⚡ Bolt: Iterate over lists concurrently using `zip` instead of manual index lookups.
+    # Manual index lookups (e.g., `list[i]`) inside a `for i in range(n)` loop incur
+    # Python index bounds checking overhead on every element. Using `enumerate(zip(...))`
+    # delegates the iteration to C, reducing overhead and speeding up the loop.
+    for i, (l_i, mu_i, c_i) in enumerate(zip(lambda_vec_list, mu, c)):
         # Calculate metrics for each node as an M/M/c queue
         node_metrics = mmc_queue(l_i, mu_i, c_i)
 
