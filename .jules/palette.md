@@ -104,3 +104,7 @@
 ## 2024-07-26 - Improve stale state accessibility and results readability
 **Learning:** Result containers (`.results`) need `tabindex="0"`, `role="region"`, and an `aria-label` to be discoverable by screen readers. When these containers are visually dimmed to indicate stale data, screen readers ignore CSS opacity. Furthermore, absolutely positioned interactive elements (like a "Copy" button) can visually overlap with long text content inside the container if proper padding is not applied.
 **Action:** Added `tabindex="0"`, `role="region"`, and `aria-label="Calculation Results"` to the calculation result containers. Dynamically prepended "Out of date: " to the `aria-label` when the data becomes stale and removed it upon recalculation. Added `padding-right` to the `.results` class to ensure text does not overlap with the copy button.
+
+## 2026-08-20 - SVG Tooltips for Contextual Visualization Data
+**Learning:** SVG data visualizations (like D3 network graphs) often display data where edge weights or probabilities are important, but displaying all text values directly on the graph can quickly clutter the UI.
+**Action:** Utilize the native SVG `<title>` element appended to `<path>` or `<line>` graphical elements to create accessible, zero-clutter tooltips that provide on-demand contextual data (e.g., edge weights) without visually overwhelming the user interface.
