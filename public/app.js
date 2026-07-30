@@ -292,6 +292,9 @@ function drawQueueGraph(gamma, p) {
             return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
         });
 
+    link.append("title")
+        .text(d => `Traffic Rate: ${d.value}`);
+
     const node = svg.append("g")
         .attr("class", "node")
         .selectAll("g")
@@ -602,6 +605,9 @@ function drawRoutingGraph(nodesList, edges, path) {
         .attr("y1", d => d.source.y)
         .attr("x2", d => d.target.x)
         .attr("y2", d => d.target.y);
+
+    link.append("title")
+        .text(d => `Travel Cost: ${d.weight}`);
 
     const node = svg.append("g")
         .attr("class", "node")
