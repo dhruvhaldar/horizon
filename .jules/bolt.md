@@ -104,3 +104,7 @@
 ## 2026-08-15 - [scipy.special.gammaln vs math.lgamma]
 **Learning:** For scalar values, `scipy.special.gammaln` incurs significant overhead compared to the standard library's `math.lgamma` because it is built to handle arrays and involves substantial type checking and object creation in Python before calling the C implementation. For a single scalar, `math.lgamma` is roughly 8-10x faster.
 **Action:** When computing the natural logarithm of the absolute value of the gamma function for a scalar (e.g., `c + 1` in queueing formulas), use `math.lgamma` from the built-in `math` module instead of `scipy.special.gammaln`.
+
+## 2026-08-20 - [O(N) Manual List Indexing Overhead]
+**Learning:** When iterating over multiple NumPy arrays in a Python loop, converting them to native Python lists via `.tolist()` and then using manual index lookups (e.g., `list_a[i]`) inside a `for i in range(...)` loop still introduces per-element bounds checking and indexing overhead in Python.
+**Action:** Always use `enumerate(zip(list_a, list_b))` for concurrent iteration over multiple native lists instead of manual index lookups. This allows CPython to iterate natively, bypassing the bounds checking and indexing overhead, resulting in significantly faster execution.
