@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field, conlist
 from typing import Annotated
@@ -20,19 +21,6 @@ from horizon.routing import tsp_approx, job_shop_cpm
 
 app = FastAPI(title="Horizon Math API")
 
-# Security: Replace overly permissive wildcard CORS with a restricted list of allowed origins.
-# Wildcard CORS allows malicious sites to make API requests on behalf of users, potentially exposing data.
-# We read allowed origins from the environment for production flexibility and fall back to safe local defaults.
-allowed_origins = os.environ.get("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000").split(",")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # ⚡ Bolt: Add GZip response compression to significantly reduce network transfer
 # time and bandwidth for large JSON payloads and static assets (HTML/JS/CSS).
 # For large graphs or matrices, this can compress the payload by 80-90%.
@@ -45,7 +33,6 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # to amortized O(1) in-place pops.
 _request_counts = defaultdict(deque)
 
-@app.middleware("http")
 async def combined_security_middleware(request, call_next):
     # --- Rate Limiting ---
     # Security: Avoid naively parsing X-Forwarded-For to prevent IP spoofing bypasses.
@@ -108,6 +95,21 @@ async def combined_security_middleware(request, call_next):
     response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
     response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
     return response
+
+app.add_middleware(BaseHTTPMiddleware, dispatch=combined_security_middleware)
+
+# Security: Replace overly permissive wildcard CORS with a restricted list of allowed origins.
+# Wildcard CORS allows malicious sites to make API requests on behalf of users, potentially exposing data.
+# We read allowed origins from the environment for production flexibility and fall back to safe local defaults.
+allowed_origins = os.environ.get("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class SafeJSONResponse(JSONResponse):
     """
