@@ -793,9 +793,29 @@ const heights = Array.from(textareas).map(t => t.scrollHeight);
 // Phase 3: Write (apply final heights)
 textareas.forEach((t, i) => t.style.height = heights[i] + 'px');
 
+// ⚡ Bolt: Debounce textarea auto-resize on input to prevent layout thrashing
+// When users type rapidly, firing the resize logic on every keystroke queues
+// up redundant Reflow calculations via requestAnimationFrame.
+// We maintain a map of debounced functions per textarea so fast typing only
+// triggers the DOM resize batching once the user pauses.
+const inputResizeDebouncers = new WeakMap();
+
 document.addEventListener('input', (e) => {
     if (e.target.tagName === 'TEXTAREA') {
-        autoResizeTextarea(e.target);
+        let debouncer = inputResizeDebouncers.get(e.target);
+        if (!debouncer) {
+            debouncer = (() => {
+                let timeout;
+                return (textarea) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        autoResizeTextarea(textarea);
+                    }, 50);
+                };
+            })();
+            inputResizeDebouncers.set(e.target, debouncer);
+        }
+        debouncer(e.target);
     }
 });
 
