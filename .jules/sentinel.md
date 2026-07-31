@@ -71,3 +71,8 @@
 **Vulnerability:** CORS headers were missing on early-return responses (like 429 Too Many Requests or 500 exceptions handled by middleware) because the `combined_security_middleware` used the `@app.middleware("http")` decorator. In FastAPI, this decorator wraps the entire middleware stack, causing it to execute outside of the `CORSMiddleware`.
 **Learning:** `CORSMiddleware` must be the outermost middleware (added *last* in FastAPI's reverse-order `add_middleware` stack) so that if inner security middleware returns early (bypassing `call_next`), the response still traverses out through `CORSMiddleware` and receives the necessary security headers.
 **Prevention:** Avoid `@app.middleware("http")` for intercepting middleware. Instead, use `app.add_middleware(BaseHTTPMiddleware, dispatch=my_middleware)` and strictly control the order, ensuring `CORSMiddleware` is always added last.
+
+## 2026-10-18 - [MEDIUM] Missing negative duration validation in scheduling
+**Vulnerability:** The Critical Path Method algorithm (`job_shop_cpm` in `horizon/routing.py`) accepted negative values for job durations. While it did not cause a direct crash, calculating a schedule with negative durations results in mathematically flawed logic where tasks effectively travel back in time, severely undermining the topological sort and critical path analysis outputs.
+**Learning:** Explicitly validate that time-based inputs (such as job durations) are non-negative when implementing scheduling algorithms like CPM or job shop schedules, to prevent logically flawed zero-or-negative math.
+**Prevention:** Add explicit `value < 0` checks when parsing physical quantities like time/duration, returning a generic error to the user before they can disrupt internal solver mathematics.

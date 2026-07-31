@@ -109,6 +109,8 @@ def job_shop_cpm(jobs: dict[str, dict]):
     for job, details in jobs.items():
         if 'duration' not in details:
             raise ValueError(f"Job '{job}' is missing 'duration' definition.")
+        if details['duration'] < 0:
+            raise ValueError(f"Job '{job}' has a negative duration, which is invalid.")
         durations[job] = details['duration']
         successors[job] = []
         predecessors[job] = []
