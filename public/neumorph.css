@@ -168,6 +168,10 @@ header.panel {
     color: hsl(22, 90%, 38%);
 }
 
+.input-group label span[title="Required"] {
+    color: hsl(350, 70%, 42%);
+}
+
 textarea.inset {
     resize: none;
     overflow-y: hidden;
