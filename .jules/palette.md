@@ -108,3 +108,7 @@
 ## 2026-08-20 - SVG Tooltips for Contextual Visualization Data
 **Learning:** SVG data visualizations (like D3 network graphs) often display data where edge weights or probabilities are important, but displaying all text values directly on the graph can quickly clutter the UI.
 **Action:** Utilize the native SVG `<title>` element appended to `<path>` or `<line>` graphical elements to create accessible, zero-clutter tooltips that provide on-demand contextual data (e.g., edge weights) without visually overwhelming the user interface.
+
+## 2026-08-25 - Synchronize ARIA Labels with Dynamic Visual States
+**Learning:** When interactive elements like a "Copy" button change their visual state (e.g., from "Copy" to "Stale" or "Copied"), updating only the `innerHTML` or `title` leaves screen reader users stranded with the original `aria-label`. They will continue to hear "Copy results to clipboard" even when the button is inactive due to stale data or has already succeeded, leading to confusion and broken expectations. Furthermore, toggle switches with ambiguous labels like "Model: A vs B" do not convey which state maps to 'checked'.
+**Action:** Always ensure that `aria-label` attributes are programmatically updated synchronously with any visual state changes (like 'Copied' or 'Stale' states) and reset them when the state normalizes. For toggle switches, ensure the `aria-label` clearly describes the action of checking the box (e.g., "Enable Model B").

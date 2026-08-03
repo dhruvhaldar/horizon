@@ -179,6 +179,10 @@ async function withLoading(btnElement, asyncFunc) {
                         el.setAttribute('aria-label', currentLabel.replace('Out of date: ', ''));
                     }
                 }
+                const copyBtn = el.querySelector('.copy-btn');
+                if (copyBtn) {
+                    copyBtn.setAttribute('aria-label', 'Copy results to clipboard');
+                }
             });
         }
     }
@@ -691,6 +695,7 @@ document.addEventListener('input', (e) => {
                 if (copyBtn && copyBtn.getAttribute('aria-disabled') !== 'true') {
                     copyBtn.setAttribute('aria-disabled', 'true');
                     copyBtn.setAttribute('title', 'Results are out of date. Recalculate to copy.');
+                    copyBtn.setAttribute('aria-label', 'Results are out of date. Recalculate to copy.');
                     copyBtn.innerHTML = '<span aria-hidden="true">⏳</span> Stale';
                     copyBtn.style.cursor = 'not-allowed';
                 }
@@ -859,9 +864,11 @@ document.querySelectorAll('.results').forEach(container => {
             navigator.clipboard.writeText(clone.textContent.trim()).then(() => {
                 const originalHtml = '<span aria-hidden="true">📋</span> Copy';
                 btn.innerHTML = '<span aria-hidden="true">✅</span> Copied';
+                btn.setAttribute('aria-label', 'Copied to clipboard');
                 announce('Results copied to clipboard');
                 setTimeout(() => {
                     btn.innerHTML = originalHtml;
+                    btn.setAttribute('aria-label', 'Copy results to clipboard');
                     btn.dataset.copying = 'false';
                 }, 2000);
             }).catch(() => {
