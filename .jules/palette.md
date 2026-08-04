@@ -112,3 +112,7 @@
 ## 2026-08-25 - Synchronize ARIA Labels with Dynamic Visual States
 **Learning:** When interactive elements like a "Copy" button change their visual state (e.g., from "Copy" to "Stale" or "Copied"), updating only the `innerHTML` or `title` leaves screen reader users stranded with the original `aria-label`. They will continue to hear "Copy results to clipboard" even when the button is inactive due to stale data or has already succeeded, leading to confusion and broken expectations. Furthermore, toggle switches with ambiguous labels like "Model: A vs B" do not convey which state maps to 'checked'.
 **Action:** Always ensure that `aria-label` attributes are programmatically updated synchronously with any visual state changes (like 'Copied' or 'Stale' states) and reset them when the state normalizes. For toggle switches, ensure the `aria-label` clearly describes the action of checking the box (e.g., "Enable Model B").
+
+## 2026-08-30 - Focus Outline for Text Output Containers
+**Learning:** Adding `tabindex="0"` to custom UI components makes them focusable for keyboard navigation. However, without a corresponding `:focus-visible` style, the user receives no visual indicator when they navigate to it, which is confusing and breaks accessibility principles for sighted keyboard users.
+**Action:** When adding `tabindex` to elements like `.results` containers, ensure you also add a `:focus-visible` CSS block (e.g., `.results:focus-visible { outline: ... }`) to provide clear visual feedback during keyboard navigation.
