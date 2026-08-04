@@ -31,6 +31,8 @@ def newsvendor(selling_price: float, cost: float, salvage_value: float, demand_m
 
     if cu <= 0 or co <= 0:
          raise ValueError("Costs must be > 0")
+    if demand_std < 0:
+         raise ValueError("Standard deviation cannot be negative")
 
     critical_ratio = cu / (cu + co)
 
@@ -53,6 +55,8 @@ def continuous_review(demand_rate: float, order_cost: float, holding_cost: float
 
     if holding_cost <= 0:
         raise ValueError("Holding cost must be > 0")
+    if lead_time_mean < 0 or lead_time_std < 0:
+        raise ValueError("Lead time mean and standard deviation cannot be negative")
 
     # Estimate EOQ for Q first
     # ⚡ Bolt: Use math.sqrt instead of np.sqrt for scalar values.
