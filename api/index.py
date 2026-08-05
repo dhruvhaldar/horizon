@@ -33,6 +33,18 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # to amortized O(1) in-place pops.
 _request_counts = defaultdict(deque)
 
+def apply_security_headers(response):
+    # Security: Defense in depth - inject standard security headers to prevent
+    # clickjacking (X-Frame-Options), MIME sniffing (X-Content-Type-Options),
+    # enforce strict HTTPS (HSTS), and Content Security Policy (CSP).
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
+    return response
+
 async def combined_security_middleware(request, call_next):
     # --- Rate Limiting ---
     # Security: Avoid naively parsing X-Forwarded-For to prevent IP spoofing bypasses.
@@ -50,11 +62,11 @@ async def combined_security_middleware(request, call_next):
         history.popleft()
 
     if len(history) >= 100:
-        return JSONResponse(
+        return apply_security_headers(JSONResponse(
             status_code=429,
             content={"detail": "Too many requests. Please try again later."},
             headers={"Retry-After": "60"}
-        )
+        ))
 
     history.append(now)
 
@@ -65,15 +77,15 @@ async def combined_security_middleware(request, call_next):
     # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
     if "chunked" in request.headers.get("transfer-encoding", "").lower():
-        return JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."})
+        return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."}))
     content_length = request.headers.get("content-length")
     if content_length:
         try:
             length_val = int(content_length)
         except ValueError:
-            return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."})
+            return apply_security_headers(JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."}))
         if length_val > 2_000_000: # 2MB limit
-            return JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."})
+            return apply_security_headers(JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."}))
 
     # --- Security Headers ---
     try:
@@ -85,16 +97,7 @@ async def combined_security_middleware(request, call_next):
         # which could expose stack traces or leave 500 error responses unprotected.
         response = JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
-    # Security: Defense in depth - inject standard security headers to prevent
-    # clickjacking (X-Frame-Options), MIME sniffing (X-Content-Type-Options),
-    # enforce strict HTTPS (HSTS), and Content Security Policy (CSP).
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
-    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
-    return response
+    return apply_security_headers(response)
 
 app.add_middleware(BaseHTTPMiddleware, dispatch=combined_security_middleware)
 

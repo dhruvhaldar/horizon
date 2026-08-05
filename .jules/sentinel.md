@@ -80,3 +80,8 @@
 **Vulnerability:** The mathematical inventory models (like `newsvendor` and `continuous_review`) previously allowed mathematically impossible inputs, such as negative standard deviations or negative lead times, because the validation focused solely on preventing division-by-zero errors. This allowed mathematically flawed state logic.
 **Learning:** Explicitly validate that time-based and statistical inputs (such as standard deviation, lead time) are strictly non-negative when implementing scheduling and stochastic models to prevent mathematically flawed math, exactly like the missing negative duration check in Job-Shop scheduling.
 **Prevention:** Add explicit `value < 0` checks when parsing physical quantities like time or standard deviation.
+
+## 2026-10-18 - [MEDIUM] Missing Security Headers on Middleware Early Returns
+**Vulnerability:** The `combined_security_middleware` appended essential security headers (such as `X-Frame-Options` and `Content-Security-Policy`) *after* the `await call_next(request)` line. If the middleware aborted a request early (for example, returning a 429 Too Many Requests or 413 Payload Too Large `JSONResponse` directly), the execution skipped the header-appending logic, leaving these early-return responses devoid of defense-in-depth headers.
+**Learning:** In Starlette `BaseHTTPMiddleware`, intercepting requests and returning custom responses early bypasses all code written after `call_next`.
+**Prevention:** If a single middleware enforces both early-return policies and global response headers, the header-appending logic must be extracted into a separate function and explicitly applied to the early-return response objects, as well as the standard `call_next` response.
