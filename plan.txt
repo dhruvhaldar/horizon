@@ -1,1 +1,6 @@
-1. Implement the JavaScript fix in `public/app.js` to allow the Enter key to toggle custom switches, directly improving keyboard accessibility without changing layout, CSS, or deleting tooltips.
+1. I will check for UX improvement opportunities. I saw in memory and .jules/palette.md: "When adding `tabindex` to elements like `.results` containers, ensure you also add a `:focus-visible` CSS block (e.g., `.results:focus-visible { outline: ... }`) to provide clear visual feedback during keyboard navigation."
+2. The `.results` container has `tabindex="0"` in `public/index.html`.
+3. The `.results` container does NOT have a `:focus-visible` outline in `public/neumorph.css`.
+4. I will add this rule to `public/neumorph.css` to fix the UX issue.
+5. I'll test locally if needed, format, lint and complete pre commit step.
+6. Commit changes with a descriptive message.

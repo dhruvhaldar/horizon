@@ -116,3 +116,6 @@
 ## 2026-08-30 - Focus Outline for Text Output Containers
 **Learning:** Adding `tabindex="0"` to custom UI components makes them focusable for keyboard navigation. However, without a corresponding `:focus-visible` style, the user receives no visual indicator when they navigate to it, which is confusing and breaks accessibility principles for sighted keyboard users.
 **Action:** When adding `tabindex` to elements like `.results` containers, ensure you also add a `:focus-visible` CSS block (e.g., `.results:focus-visible { outline: ... }`) to provide clear visual feedback during keyboard navigation.
+## 2026-08-06 - Focus Outline for Text Output Containers
+**Learning:** Adding `tabindex="0"` to custom UI components makes them focusable for keyboard navigation. However, without a corresponding `:focus-visible` style, the user receives no visual indicator when they navigate to it, which is confusing and breaks accessibility principles for sighted keyboard users.
+**Action:** When adding `tabindex` to elements like `.results` containers, ensure you also add a `:focus-visible` CSS block (e.g., `.results:focus-visible { outline: 2px solid var(--highlight); outline-offset: 2px; border-radius: 20px; }`) to provide clear visual feedback during keyboard navigation.
