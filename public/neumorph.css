@@ -268,6 +268,12 @@ kbd {
     padding-right: 4.5rem;
 }
 
+.results:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+    border-radius: 20px;
+}
+
 .viz-container {
     width: 100%;
     min-height: 350px;
