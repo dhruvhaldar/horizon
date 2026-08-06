@@ -91,11 +91,13 @@ async function withLoading(btnElement, asyncFunc) {
     if (container) {
         const inputs = container.querySelectorAll('input, textarea');
 
-        // ⚡ Bolt: Batch DOM layout reads (offsetWidth/offsetHeight) before performing DOM writes
-        // inside the validation loop. Interleaving reads and writes causes synchronous layout
-        // thrashing. Filtering the visible inputs upfront bypasses O(N) recalculation overhead.
+        // ⚡ Bolt: Optimize visibility checks to prevent layout thrashing.
+        // Checking `offsetWidth` or `offsetHeight` forces a synchronous layout recalculation
+        // (reflow) if the DOM is dirty. Using `offsetParent !== null` checks the CSS object
+        // model instead of performing expensive geometric bounding box calculations, making
+        // it O(1) and safe during high-frequency events.
         const visibleInputs = Array.from(inputs).filter(input =>
-            input.type !== 'hidden' && (input.offsetWidth > 0 || input.offsetHeight > 0)
+            input.type !== 'hidden' && input.offsetParent !== null
         );
 
         let isValid = true;
@@ -726,7 +728,9 @@ document.addEventListener('keydown', (e) => {
             if (container) {
                 // Find the visible primary action button within this container
                 const btns = Array.from(container.querySelectorAll('.btn'));
-                const btn = btns.find(b => b.offsetWidth > 0 || b.offsetHeight > 0);
+                // ⚡ Bolt: Use offsetParent !== null instead of offsetWidth/offsetHeight
+                // to check visibility without forcing a synchronous layout reflow.
+                const btn = btns.find(b => b.offsetParent !== null);
                 if (btn && !btn.disabled && btn.getAttribute('aria-disabled') !== 'true') {
                     // UX Enhancement: Add tactile visual feedback for keyboard shortcuts
                     btn.classList.add('active');
