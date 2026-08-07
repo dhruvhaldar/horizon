@@ -706,6 +706,16 @@ document.addEventListener('input', (e) => {
     }
 });
 
+// UX Enhancement: Make custom switch labels keyboard accessible
+document.querySelectorAll('.switch-label').forEach(label => {
+    label.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault(); // Prevent page scroll on Space
+            label.click();
+        }
+    });
+});
+
 // UX Enhancement: Enter key submits active module
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {

@@ -496,6 +496,14 @@ kbd {
     white-space: nowrap;
     user-select: none;
     -webkit-user-select: none;
+    cursor: pointer;
+    transition: color 0.2s ease, opacity 0.3s ease;
+}
+
+.switch-label:hover,
+.switch-label:focus,
+.switch-label:active {
+    color: hsl(22, 90%, 38%);
 }
 
 footer {

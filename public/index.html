@@ -69,14 +69,14 @@
                 <h2 id="inventory-heading">Inventory Optimization</h2>
                 <p class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
                 <div class="toggle-wrapper">
-                    <span id="label-eoq" class="switch-label" aria-hidden="true" onclick="switchInv('eoq', true)" style="cursor: pointer; transition: opacity 0.3s ease; opacity: 1;">EOQ</span>
+                    <span id="label-eoq" class="switch-label" role="button" tabindex="0" onclick="switchInv('eoq', true)" style="opacity: 1;">EOQ</span>
                     <label class="switch">
                         <input type="checkbox" id="inv-toggle" class="togglesw" aria-label="Enable Continuous Review Model (R, Q)" aria-controls="inv-eoq-inputs inv-cont-inputs" role="switch" onchange="toggleInv()">
                         <div class="indicator left" aria-hidden="true"></div>
                         <div class="indicator right" aria-hidden="true"></div>
                         <div class="button-knob" aria-hidden="true"></div>
                     </label>
-                    <span id="label-cont" class="switch-label" aria-hidden="true" style="margin-left: 1rem; cursor: pointer; transition: opacity 0.3s ease; opacity: 0.75;" onclick="switchInv('continuous', true)">(R, Q)</span>
+                    <span id="label-cont" class="switch-label" role="button" tabindex="0" style="margin-left: 1rem; opacity: 0.75;" onclick="switchInv('continuous', true)">(R, Q)</span>
                 </div>
 
                 <div id="inv-eoq-inputs">

@@ -119,3 +119,11 @@
 ## 2026-08-06 - Focus Outline for Text Output Containers
 **Learning:** Adding `tabindex="0"` to custom UI components makes them focusable for keyboard navigation. However, without a corresponding `:focus-visible` style, the user receives no visual indicator when they navigate to it, which is confusing and breaks accessibility principles for sighted keyboard users.
 **Action:** When adding `tabindex` to elements like `.results` containers, ensure you also add a `:focus-visible` CSS block (e.g., `.results:focus-visible { outline: 2px solid var(--highlight); outline-offset: 2px; border-radius: 20px; }`) to provide clear visual feedback during keyboard navigation.
+
+## 2026-08-07 - Consistent Visual Affordance for Custom Labels
+**Learning:** When custom interactive elements (like text spans acting as toggle switch labels) share similar semantic behavior with native `label` elements, missing visual states (like hover color changes) degrade perceived affordance and UI consistency. Users expect clickable text labels to respond uniformly.
+**Action:** Ensure custom label components (e.g., `.switch-label`) implement the same `:hover`, `:focus`, and `:active` color transition states as standard form `label` elements to maintain a cohesive, accessible interactive experience.
+
+## 2026-08-07 - Keyboard Accessibility for Custom UI Elements
+**Learning:** To make custom UI elements (like `span` or `div` acting as buttons or labels) fully keyboard accessible, it is not enough to just add a `:focus` CSS state. You must also add `tabindex="0"` to make them focusable in the document order and attach a `keydown` event listener to trigger the action on `Enter` or `Space`. However, you must NEVER combine `tabindex="0"` with `aria-hidden="true"`, as this places an element in the tab order but hides it from screen readers, creating a confusing "phantom" tab stop that breaks WCAG compliance. Elements in the tab sequence must have a valid role (like `role="button"`) and be visible to assistive tech.
+**Action:** When adding `tabindex="0"` to make a custom element keyboard accessible, ensure you also add the correct semantic role (e.g., `role="button"`), provide keyboard event handlers for interaction, and strictly remove any `aria-hidden="true"` attributes that may have been previously applied for decorative purposes.
