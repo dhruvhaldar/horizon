@@ -4,3 +4,4 @@ __pycache__/
 verification.png
 verify.py
 venv/
+node_modules/

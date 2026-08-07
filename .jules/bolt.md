@@ -5,3 +5,6 @@
 ## 2024-05-24 - Layout Thrashing with Visibility Checks
 **Learning:** Checking element visibility dynamically by calling `offsetWidth` or `offsetHeight` forces a synchronous layout recalculation (reflow) if the DOM is dirty. This causes layout thrashing and stutter during high-frequency events (like `keydown` and validation).
 **Action:** Use `offsetParent !== null` to check element visibility instead. This relies on the CSS object model rather than performing expensive geometric bounding box calculations, making it O(1) and safe for use in high-frequency event listeners.
+## 2024-11-20 - Fast JSON Serialization
+**Learning:** In FastAPI, subclassing `JSONResponse` and overriding its `render` method to use `json.dumps` natively does not bypass the significant performance overhead of `jsonable_encoder`. FastAPI automatically applies `jsonable_encoder` to all dictionary/Pydantic returns in its routing layer *before* the payload is passed to the response object.
+**Action:** To completely bypass `jsonable_encoder` for large, simple data structures, subclass Starlette's base `Response` directly (with `media_type="application/json"`) and manually serialize the content using `json.dumps()` in the overridden `render` method.
