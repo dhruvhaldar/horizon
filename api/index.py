@@ -114,15 +114,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class SafeJSONResponse(JSONResponse):
+import json
+from fastapi.responses import Response
+
+class SafeJSONResponse(Response):
     """
-    ⚡ Bolt: Subclass JSONResponse to catch NaN/Infinity validation errors during
-    C-level json.dumps() serialization. This bypasses the need to recursively traverse
-    large nested payloads in Python, significantly improving endpoint response times.
+    ⚡ Bolt: Subclass Response to catch NaN/Infinity validation errors during
+    C-level json.dumps() serialization. This avoids calling FastAPI's default
+    JSONResponse.render which uses the extremely slow `jsonable_encoder` to
+    recursively traverse the entire dictionary tree, significantly improving
+    endpoint response times.
     """
+    media_type = "application/json"
+
     def render(self, content: Any) -> bytes:
         try:
-            return super().render(content)
+            return json.dumps(
+                content,
+                ensure_ascii=False,
+                allow_nan=False,
+                indent=None,
+                separators=(",", ":"),
+            ).encode("utf-8")
         except ValueError:
             raise ValueError("Mathematical result is out of bounds (Infinity/NaN)")
 
