@@ -9,3 +9,7 @@
 ## 2026-07-09 - Screen Reader Context for Inline Validation Errors
 **Learning:** Using `aria-describedby` to link an input to a generated error message provides basic description, but standard `aria-errormessage` creates a much stronger, explicit semantic association that screen readers recognize specifically as an error context.
 **Action:** Always add `aria-errormessage` alongside `aria-invalid` to map inputs directly to their respective error message containers for robust accessibility, and remember to clear both attributes when the input becomes valid again.
+
+## 2026-08-08 - Stateful ARIA for Custom Toggle Labels
+**Learning:** When using custom elements (like spans) as clickable labels alongside a toggle switch to switch between distinct modes, setting `role="button"` and `tabindex="0"` allows keyboard interaction, but fails to convey which mode is currently active to screen readers. Relying solely on visual cues (like opacity) creates an accessibility gap.
+**Action:** Always apply and dynamically update the `aria-pressed` attribute (true/false) on custom toggle label buttons to programmatically communicate the active selection state to assistive technologies.

@@ -340,9 +340,15 @@ function switchInv(type, userInitiated = false) {
         eoqInputs.style.display = 'flex';
         document.getElementById('inv-cont-inputs').style.display = 'none';
 
-        // UX Enhancement: Dim inactive labels for clarity
-        if (labelEoq) labelEoq.style.opacity = '1';
-        if (labelCont) labelCont.style.opacity = '0.75';
+        // UX Enhancement: Dim inactive labels and update ARIA states for clarity
+        if (labelEoq) {
+            labelEoq.style.opacity = '1';
+            labelEoq.setAttribute('aria-pressed', 'true');
+        }
+        if (labelCont) {
+            labelCont.style.opacity = '0.75';
+            labelCont.setAttribute('aria-pressed', 'false');
+        }
 
         if (userInitiated) {
             announce("Switched to EOQ Model");
@@ -356,9 +362,14 @@ function switchInv(type, userInitiated = false) {
         const contInputs = document.getElementById('inv-cont-inputs');
         contInputs.style.display = 'flex';
 
-        // UX Enhancement: Dim inactive labels for clarity
-        if (labelEoq) labelEoq.style.opacity = '0.75';
-        if (labelCont) labelCont.style.opacity = '1';
+        if (labelEoq) {
+            labelEoq.style.opacity = '0.75';
+            labelEoq.setAttribute('aria-pressed', 'false');
+        }
+        if (labelCont) {
+            labelCont.style.opacity = '1';
+            labelCont.setAttribute('aria-pressed', 'true');
+        }
 
         if (userInitiated) {
             announce("Switched to Continuous Review Model");
