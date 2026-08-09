@@ -506,6 +506,12 @@ kbd {
     color: hsl(22, 90%, 38%);
 }
 
+.switch-label:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 footer {
     text-align: center;
     padding: 3rem 1rem;
@@ -575,6 +581,11 @@ footer a:focus-visible {
 
 .skip-link:focus {
     top: 0;
+}
+
+.skip-link:focus-visible {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
 }
 
 /* UX Enhancement: Tactile error shake animation */
