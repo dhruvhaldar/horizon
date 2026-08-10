@@ -688,7 +688,7 @@ document.addEventListener('input', (e) => {
             if (container.style.opacity === '0.75') return;
 
             // Only dim if it has actual data, not default/error states
-            if (container.classList.contains('results') && container.textContent.includes('Results will appear here...')) return;
+            if (container.classList.contains('results') && container.textContent.includes('Ready for calculation')) return;
             if (container.textContent.includes('❌ Error:')) return;
 
             container.style.opacity = '0.75';
@@ -867,7 +867,7 @@ document.querySelectorAll('.results').forEach(container => {
     const observer = new MutationObserver(() => {
         if (container.querySelector('.copy-btn')) return;
         const text = container.textContent;
-        if (text.includes('Results will appear here...') || text.includes('❌ Error:')) return;
+        if (text.includes('Ready for calculation') || text.includes('❌ Error:')) return;
 
         const btn = document.createElement('button');
         btn.className = 'copy-btn btn';

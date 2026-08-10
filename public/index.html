@@ -60,7 +60,7 @@
                     </div>
                     <button class="btn" onclick="withLoading(this, solveQueue)" aria-controls="queue-results queue-graph" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
-                <div class="results inset" id="queue-results" tabindex="0" role="region" aria-label="Calculation Results">Results will appear here...</div>
+                <div class="results inset" id="queue-results" tabindex="0" role="region" aria-label="Calculation Results"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">📊</span><div style="text-align: center;">Ready for calculation. Enter parameters and solve to see results.</div></div></div>
                 <div id="queue-graph" class="viz-container inset" tabindex="0" role="img" aria-label="Queueing Network Graph (Empty: Run network solver to generate graph)"></div>
             </section>
 
@@ -131,7 +131,7 @@
                     </div>
                 </div>
 
-                <div class="results inset" id="inventory-results" tabindex="0" role="region" aria-label="Calculation Results">Results will appear here...</div>
+                <div class="results inset" id="inventory-results" tabindex="0" role="region" aria-label="Calculation Results"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">📊</span><div style="text-align: center;">Ready for calculation. Enter parameters and solve to see results.</div></div></div>
                 <div id="inventory-viz" class="viz-container inset" tabindex="0" role="img" aria-label="Inventory Optimization Chart (Empty: Calculate inventory policy to generate chart)"></div>
             </section>
 
@@ -150,7 +150,7 @@
                     <textarea id="r-edges" aria-describedby="help-r-edges" class="inset" rows="5" placeholder="e.g., A,B,10&#10;A,C,15" spellcheck="false" autocomplete="off" required>A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
                 <button class="btn" onclick="withLoading(this, solveTSP)" aria-controls="routing-results routing-graph" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
-                <div class="results inset" id="routing-results" tabindex="0" role="region" aria-label="Calculation Results">Results will appear here...</div>
+                <div class="results inset" id="routing-results" tabindex="0" role="region" aria-label="Calculation Results"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">📊</span><div style="text-align: center;">Ready for calculation. Enter parameters and solve to see results.</div></div></div>
                 <div id="routing-graph" class="viz-container inset" tabindex="0" role="img" aria-label="Transport Routing Graph (Empty: Optimize route to generate map)"></div>
             </section>
         </main>
