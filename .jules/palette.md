@@ -130,3 +130,7 @@
 ## 2026-08-11 - Focus Visible Styles for Skip Links and Custom Labels
 **Learning:** Adding `:focus` styles is often not enough for elements like `.skip-link` and `.switch-label`, especially if the focus needs to be clearly visible without interfering with mouse interactions. Relying on default focus states can lead to inconsistent or missing visual feedback for keyboard users navigating through custom interactive elements.
 **Action:** Explicitly add `:focus-visible` styles with a high-contrast outline (e.g., `outline: 2px solid var(--highlight); outline-offset: 2px;`) to custom interactive elements like skip links and custom switch labels to ensure clear keyboard navigation visibility while preserving native mouse click styling.
+
+## 2026-08-10 - Improve Calculation Result Empty States
+**Learning:** Initial empty states consisting only of generic text like "Results will appear here..." provide poor affordance and lack visual engagement. Users, especially those using screen readers, benefit from clearer instructions on how to populate the area.
+**Action:** Replaced generic empty state text with an explicit `.empty-state` structure containing a decorative icon (`aria-hidden="true"`) and clear, actionable guidance ("Ready for calculation. Enter parameters and solve to see results."). This improves user confidence before their first interaction and makes the UI feel more polished.
