@@ -10,19 +10,8 @@
          significantly improving the First Contentful Paint (FCP) and initial load performance. -->
     <script src="https://d3js.org/d3.v7.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            svg: {
-                fontCache: 'global'
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="app.js" defer></script>
+    <script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -58,7 +47,7 @@
                         <span id="help-q-p" class="helper-text">Probability of moving from node $i$ to node $j$. Sum of each row should be $\le 1$.</span>
                         <textarea id="q-p" aria-describedby="help-q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5&#10;0, 0" spellcheck="false" autocomplete="off" required>0, 0.5&#10;0, 0</textarea>
                     </div>
-                    <button class="btn" onclick="withLoading(this, solveQueue)" aria-controls="queue-results queue-graph" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
+                    <button id="btn-solve-queue" class="btn" aria-controls="queue-results queue-graph" title="Solve the Jackson Network equations for steady-state performance.">Solve Network</button>
                 </div>
                 <div class="results inset" id="queue-results" tabindex="0" role="region" aria-label="Calculation Results"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">📊</span><div style="text-align: center;">Ready for calculation. Enter parameters and solve to see results.</div></div></div>
                 <div id="queue-graph" class="viz-container inset" tabindex="0" role="img" aria-label="Queueing Network Graph (Empty: Run network solver to generate graph)"></div>
@@ -69,14 +58,14 @@
                 <h2 id="inventory-heading">Inventory Optimization</h2>
                 <p class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
                 <div class="toggle-wrapper">
-                    <span id="label-eoq" class="switch-label" role="button" tabindex="0" onclick="switchInv('eoq', true)" style="opacity: 1;" aria-pressed="true">EOQ</span>
+                    <span id="label-eoq" class="switch-label" role="button" tabindex="0" style="opacity: 1;" aria-pressed="true">EOQ</span>
                     <label class="switch">
-                        <input type="checkbox" id="inv-toggle" class="togglesw" aria-label="Enable Continuous Review Model (R, Q)" aria-controls="inv-eoq-inputs inv-cont-inputs" role="switch" onchange="toggleInv()">
+                        <input type="checkbox" id="inv-toggle" class="togglesw" aria-label="Enable Continuous Review Model (R, Q)" aria-controls="inv-eoq-inputs inv-cont-inputs" role="switch">
                         <div class="indicator left" aria-hidden="true"></div>
                         <div class="indicator right" aria-hidden="true"></div>
                         <div class="button-knob" aria-hidden="true"></div>
                     </label>
-                    <span id="label-cont" class="switch-label" role="button" tabindex="0" style="margin-left: 1rem; opacity: 0.75;" onclick="switchInv('continuous', true)" aria-pressed="false">(R, Q)</span>
+                    <span id="label-cont" class="switch-label" role="button" tabindex="0" style="margin-left: 1rem; opacity: 0.75;" aria-pressed="false">(R, Q)</span>
                 </div>
 
                 <div id="inv-eoq-inputs">
@@ -96,7 +85,7 @@
                             <span id="help-i-hold" class="helper-text">Cost to carry one unit in stock for one period.</span>
                             <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" placeholder="e.g., 2" step="any" min="0" required>
                         </div>
-                        <button class="btn" onclick="withLoading(this, solveEOQ)" aria-controls="inventory-results inventory-viz" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
+                        <button id="btn-solve-eoq" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
                     </div>
                 </div>
 
@@ -127,7 +116,7 @@
                             <span id="help-ic-lt-std" class="helper-text">Variation in lead time (for safety stock).</span>
                             <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" placeholder="e.g., 1.2" step="any" min="0" required>
                         </div>
-                        <button class="btn" onclick="withLoading(this, solveContinuous)" aria-controls="inventory-results inventory-viz" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
+                        <button id="btn-solve-cont" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
                     </div>
                 </div>
 
@@ -149,7 +138,7 @@
                     <span id="help-r-edges" class="helper-text">Travel cost/distance between nodes. Format: Source, Target, Cost.</span>
                     <textarea id="r-edges" aria-describedby="help-r-edges" class="inset" rows="5" placeholder="e.g., A,B,10&#10;A,C,15" spellcheck="false" autocomplete="off" required>A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
-                <button class="btn" onclick="withLoading(this, solveTSP)" aria-controls="routing-results routing-graph" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
+                <button id="btn-solve-tsp" class="btn" aria-controls="routing-results routing-graph" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
                 <div class="results inset" id="routing-results" tabindex="0" role="region" aria-label="Calculation Results"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">📊</span><div style="text-align: center;">Ready for calculation. Enter parameters and solve to see results.</div></div></div>
                 <div id="routing-graph" class="viz-container inset" tabindex="0" role="img" aria-label="Transport Routing Graph (Empty: Optimize route to generate map)"></div>
             </section>
