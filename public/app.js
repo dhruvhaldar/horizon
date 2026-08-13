@@ -171,6 +171,10 @@ async function withLoading(btnElement, asyncFunc) {
         const panel = btnElement.closest('.panel');
         if (panel) {
             panel.dataset.stale = 'false'; // ⚡ Bolt: Reset stale flag
+            // UX Enhancement: Remove call-to-action on the calculate button
+            const calcBtn = panel.querySelector('.btn[onclick*="withLoading"]');
+            if (calcBtn) calcBtn.classList.remove('needs-recalc');
+
             const staleContainers = panel.querySelectorAll('.results, .viz-container');
             staleContainers.forEach(el => {
                 el.style.opacity = '';
@@ -674,6 +678,10 @@ document.addEventListener('input', (e) => {
         // traversal (querySelectorAll) on every keystroke during high-frequency input events.
         if (panel.dataset.stale === 'true') return;
         panel.dataset.stale = 'true';
+
+        // UX Enhancement: Highlight the calculate button to guide user action
+        const calcBtn = panel.querySelector('.btn[onclick*="withLoading"]');
+        if (calcBtn) calcBtn.classList.add('needs-recalc');
 
         // Clear aggressive error styling as soon as user attempts a correction
         const resultBox = panel.querySelector('.results');

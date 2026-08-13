@@ -598,6 +598,24 @@ footer a:focus-visible {
     .shake {
         animation: shake-horizontal 0.4s cubic-bezier(.36,.07,.19,.97) both;
     }
+
+    /* UX Enhancement: Pulse animation for stale state */
+    @keyframes pulse-recalc {
+        0% { box-shadow: 0 0 0 0 hsla(22, 90%, 55%, 0.7); }
+        70% { box-shadow: 0 0 0 10px hsla(22, 90%, 55%, 0); }
+        100% { box-shadow: 0 0 0 0 hsla(22, 90%, 55%, 0); }
+    }
+}
+
+.btn.needs-recalc {
+    outline: 2px solid var(--highlight);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .btn.needs-recalc {
+        animation: pulse-recalc 2s infinite;
+    }
 }
 
 /* UX Enhancement: Async loading spinner */
