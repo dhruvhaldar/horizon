@@ -134,3 +134,7 @@
 ## 2026-08-10 - Improve Calculation Result Empty States
 **Learning:** Initial empty states consisting only of generic text like "Results will appear here..." provide poor affordance and lack visual engagement. Users, especially those using screen readers, benefit from clearer instructions on how to populate the area.
 **Action:** Replaced generic empty state text with an explicit `.empty-state` structure containing a decorative icon (`aria-hidden="true"`) and clear, actionable guidance ("Ready for calculation. Enter parameters and solve to see results."). This improves user confidence before their first interaction and makes the UI feel more polished.
+
+## 2026-08-13 - Explicit Visual Call-to-Action for Stale States
+**Learning:** While dimming results properly communicates that data is stale, users can sometimes feel stuck or unsure of the next step if they miss the disabled state tooltip. A clear, visual call-to-action is necessary to draw their attention back to the primary action button (e.g., "Calculate").
+**Action:** When data enters a stale state, add an explicit visual affordance (like a pulsing outline and `:focus-visible` ring) to the primary action button using a `needs-recalc` class, removing it once the calculation succeeds. Respect `prefers-reduced-motion` for animations.
