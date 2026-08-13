@@ -1,3 +1,14 @@
+// Configure MathJax before loading the script
+window.MathJax = {
+    tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: {
+        fontCache: 'global'
+    }
+};
+
 const API_BASE = '/api';
 
 // ⚡ Bolt: Cache deterministic API call results using a Map.
@@ -769,6 +780,32 @@ document.addEventListener('keydown', (e) => {
             }
         }
     }
+});
+
+// Attach event listeners for interactive elements
+document.addEventListener('DOMContentLoaded', () => {
+    // Inventory Toggles
+    const labelEoq = document.getElementById('label-eoq');
+    if (labelEoq) labelEoq.addEventListener('click', () => switchInv('eoq', true));
+
+    const labelCont = document.getElementById('label-cont');
+    if (labelCont) labelCont.addEventListener('click', () => switchInv('continuous', true));
+
+    const invToggle = document.getElementById('inv-toggle');
+    if (invToggle) invToggle.addEventListener('change', toggleInv);
+
+    // Calculation Buttons
+    const btnSolveQueue = document.getElementById('btn-solve-queue');
+    if (btnSolveQueue) btnSolveQueue.addEventListener('click', function() { withLoading(this, solveQueue); });
+
+    const btnSolveEoq = document.getElementById('btn-solve-eoq');
+    if (btnSolveEoq) btnSolveEoq.addEventListener('click', function() { withLoading(this, solveEOQ); });
+
+    const btnSolveCont = document.getElementById('btn-solve-cont');
+    if (btnSolveCont) btnSolveCont.addEventListener('click', function() { withLoading(this, solveContinuous); });
+
+    const btnSolveTsp = document.getElementById('btn-solve-tsp');
+    if (btnSolveTsp) btnSolveTsp.addEventListener('click', function() { withLoading(this, solveTSP); });
 });
 
 // Initial draw
