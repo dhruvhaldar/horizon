@@ -90,3 +90,8 @@
 **Vulnerability:** The `Content-Security-Policy` header previously allowed `'unsafe-inline'` for `script-src` to support inline event handlers (`onclick`, `onchange`) and an inline configuration script in the HTML. This weakened the CSP significantly, making the application susceptible to DOM-based or reflected Cross-Site Scripting (XSS) if user input were ever mishandled.
 **Learning:** Permitting `'unsafe-inline'` in `script-src` largely defeats the purpose of a Content Security Policy against XSS. Any required inline logic (like configuration objects) or event handlers should be externalized.
 **Prevention:** Strictly forbid `'unsafe-inline'` in `script-src`. Refactor all HTML inline event handlers to use `addEventListener` inside external, deferred JavaScript files, and move necessary inline configuration objects to the top of those external scripts.
+
+## 2026-12-01 - [MEDIUM] Sensitive Data Leakage via Proxy Caching
+**Vulnerability:** The API returned sensitive calculation results (such as queueing performance, inventory policies, and topological sorts) without explicit cache-control directives. This allowed intermediate proxies, CDNs, or the user's browser to cache the responses indefinitely, potentially leaking sensitive operational data to unauthorized users sharing the same cache or device.
+**Learning:** By default, if cache headers are omitted, intermediate nodes are permitted to heuristically cache HTTP responses. Dynamic, data-sensitive API endpoints must explicitly opt-out of caching.
+**Prevention:** Apply strict, global `Cache-Control` headers (e.g., `no-store, no-cache, must-revalidate, max-age=0`) via a security middleware to ensure API responses are never cached by intermediate infrastructure.
