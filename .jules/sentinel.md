@@ -95,3 +95,8 @@
 **Vulnerability:** The API returned sensitive calculation results (such as queueing performance, inventory policies, and topological sorts) without explicit cache-control directives. This allowed intermediate proxies, CDNs, or the user's browser to cache the responses indefinitely, potentially leaking sensitive operational data to unauthorized users sharing the same cache or device.
 **Learning:** By default, if cache headers are omitted, intermediate nodes are permitted to heuristically cache HTTP responses. Dynamic, data-sensitive API endpoints must explicitly opt-out of caching.
 **Prevention:** Apply strict, global `Cache-Control` headers (e.g., `no-store, no-cache, must-revalidate, max-age=0`) via a security middleware to ensure API responses are never cached by intermediate infrastructure.
+
+## 2026-12-05 - [MEDIUM] Missing non-negative input validation in routing models
+**Vulnerability:** The TSP routing endpoint allowed mathematically impossible inputs, such as negative edge weights. Because validation only checked graph size constraints, a user could send negative weights, violating metric space assumptions and potentially undermining downstream algorithms like Christofides or triggering unexpected exceptions.
+**Learning:** Explicitly validate that physical quantities like distances or edge weights are strictly non-negative when implementing routing models like TSP, similarly to duration limits in job shop.
+**Prevention:** Add explicit `w < 0` checks when parsing edge weights or distances to maintain mathematically sound graphs and algorithmic stability.

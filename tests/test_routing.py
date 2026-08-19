@@ -67,3 +67,12 @@ def test_jobshop_dos_protection():
     res = client.post("/api/route/jobshop", json={"jobs": jobs})
     assert res.status_code in (400, 422)
     assert "Too many jobs" in str(res.json()["detail"]) or "at most 100 items" in str(res.json()["detail"])
+
+def test_tsp_negative_weights():
+    client = TestClient(app)
+    res = client.post("/api/route/tsp", json={
+        "nodes": ["A", "B"],
+        "edges": [["A", "B", -5]]
+    })
+    assert res.status_code == 400
+    assert "Edge weights must be non-negative" in str(res.json()["detail"])

@@ -288,6 +288,10 @@ def solve_tsp(req: TSPRequest):
     if len(req.nodes) > 100 or len(req.edges) > 500:
         raise HTTPException(status_code=400, detail="Graph too large. Maximum 100 nodes and 500 edges allowed.")
 
+    # Security: Prevent mathematically flawed graphs and algorithm instability
+    if any(w < 0 for _, _, w in req.edges):
+        raise HTTPException(status_code=400, detail="Edge weights must be non-negative.")
+
     # Security: Prevent 500 Internal Server Error (NetworkXPointlessConcept) from graphs with < 2 nodes
     # Also ensure nodes are unique to prevent mathematically invalid graphs.
     if len(set(req.nodes)) != len(req.nodes):
