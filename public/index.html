@@ -72,18 +72,18 @@
                     <div class="input-group">
                         <label for="i-demand">Demand Rate <span aria-hidden="true" title="Required">*</span>:</label>
                         <span id="help-i-demand" class="helper-text">Total units required per period (e.g., units/year).</span>
-                        <input type="number" id="i-demand" aria-describedby="help-i-demand" class="inset" value="1000" placeholder="e.g., 1000" step="any" min="0" required>
+                        <input type="number" inputmode="decimal" id="i-demand" aria-describedby="help-i-demand" class="inset" value="1000" placeholder="e.g., 1000" step="any" min="0" required>
                     </div>
                     <div class="input-group">
                         <label for="i-order">Ordering Cost <span aria-hidden="true" title="Required">*</span>:</label>
                         <span id="help-i-order" class="helper-text">Flat cost incurred whenever an order is placed.</span>
-                        <input type="number" id="i-order" aria-describedby="help-i-order" class="inset" value="50" placeholder="e.g., 50" step="any" min="0" required>
+                        <input type="number" inputmode="decimal" id="i-order" aria-describedby="help-i-order" class="inset" value="50" placeholder="e.g., 50" step="any" min="0" required>
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
                             <label for="i-hold">Holding Cost <span aria-hidden="true" title="Required">*</span>:</label>
                             <span id="help-i-hold" class="helper-text">Cost to carry one unit in stock for one period.</span>
-                            <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" placeholder="e.g., 2" step="any" min="0" required>
+                            <input type="number" inputmode="decimal" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" placeholder="e.g., 2" step="any" min="0" required>
                         </div>
                         <button id="btn-solve-eoq" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate EOQ</button>
                     </div>
@@ -93,28 +93,28 @@
                     <div class="input-group">
                         <label for="ic-demand">Demand Rate <span aria-hidden="true" title="Required">*</span>:</label>
                         <span id="help-ic-demand" class="helper-text">Average units required per period.</span>
-                        <input type="number" id="ic-demand" aria-describedby="help-ic-demand" class="inset" value="1000" placeholder="e.g., 1000" step="any" min="0" required>
+                        <input type="number" inputmode="decimal" id="ic-demand" aria-describedby="help-ic-demand" class="inset" value="1000" placeholder="e.g., 1000" step="any" min="0" required>
                     </div>
                     <div class="input-group">
                         <label for="ic-order">Ordering Cost <span aria-hidden="true" title="Required">*</span>:</label>
                         <span id="help-ic-order" class="helper-text">Fixed cost to initiate a new order.</span>
-                        <input type="number" id="ic-order" aria-describedby="help-ic-order" class="inset" value="50" placeholder="e.g., 50" step="any" min="0" required>
+                        <input type="number" inputmode="decimal" id="ic-order" aria-describedby="help-ic-order" class="inset" value="50" placeholder="e.g., 50" step="any" min="0" required>
                     </div>
                     <div class="calc-group">
                         <div class="input-group">
                             <label for="ic-hold">Holding Cost <span aria-hidden="true" title="Required">*</span>:</label>
                             <span id="help-ic-hold" class="helper-text">Periodic cost per unit stored.</span>
-                            <input type="number" id="ic-hold" aria-describedby="help-ic-hold" class="inset" value="2" placeholder="e.g., 2" step="any" min="0" required>
+                            <input type="number" inputmode="decimal" id="ic-hold" aria-describedby="help-ic-hold" class="inset" value="2" placeholder="e.g., 2" step="any" min="0" required>
                         </div>
                         <div class="input-group">
                             <label for="ic-lt-mean">Lead Time Mean <span aria-hidden="true" title="Required">*</span>:</label>
                             <span id="help-ic-lt-mean" class="helper-text">Average wait time for delivery.</span>
-                            <input type="number" id="ic-lt-mean" aria-describedby="help-ic-lt-mean" class="inset" value="5" placeholder="e.g., 5" step="any" min="0" required>
+                            <input type="number" inputmode="decimal" id="ic-lt-mean" aria-describedby="help-ic-lt-mean" class="inset" value="5" placeholder="e.g., 5" step="any" min="0" required>
                         </div>
                         <div class="input-group">
                             <label for="ic-lt-std">Lead Time Std Dev <span aria-hidden="true" title="Required">*</span>:</label>
                             <span id="help-ic-lt-std" class="helper-text">Variation in lead time (for safety stock).</span>
-                            <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" placeholder="e.g., 1.2" step="any" min="0" required>
+                            <input type="number" inputmode="decimal" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" placeholder="e.g., 1.2" step="any" min="0" required>
                         </div>
                         <button id="btn-solve-cont" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
                     </div>
