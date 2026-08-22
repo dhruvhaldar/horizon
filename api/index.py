@@ -295,6 +295,10 @@ def solve_tsp(req: TSPRequest):
     if len(req.nodes) < 2:
         raise HTTPException(status_code=400, detail="Graph too small. Minimum 2 nodes required for TSP.")
 
+    # Security: Validate that all edge weights are non-negative to prevent mathematically impossible graphs
+    if any(w < 0 for _, _, w in req.edges):
+        raise HTTPException(status_code=400, detail="Edge weights must be non-negative.")
+
     try:
         res = tsp_approx(req.nodes, req.edges)
         # ⚡ Bolt: Use SafeJSONResponse to bypass recursive jsonable_encoder overhead.
