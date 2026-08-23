@@ -95,3 +95,8 @@
 **Vulnerability:** The API returned sensitive calculation results (such as queueing performance, inventory policies, and topological sorts) without explicit cache-control directives. This allowed intermediate proxies, CDNs, or the user's browser to cache the responses indefinitely, potentially leaking sensitive operational data to unauthorized users sharing the same cache or device.
 **Learning:** By default, if cache headers are omitted, intermediate nodes are permitted to heuristically cache HTTP responses. Dynamic, data-sensitive API endpoints must explicitly opt-out of caching.
 **Prevention:** Apply strict, global `Cache-Control` headers (e.g., `no-store, no-cache, must-revalidate, max-age=0`) via a security middleware to ensure API responses are never cached by intermediate infrastructure.
+
+## 2026-10-18 - [MEDIUM] Missing non-negative input validation in TSP routing model
+**Vulnerability:** The Traveling Salesperson Problem (TSP) algorithm (`tsp_approx`) allowed negative edge weights. While it did not cause an immediate crash, solving for TSP with negative distances leads to mathematically flawed logic and invalid Hamiltonian cycles, severely undermining downstream operations and solver mathematical soundness.
+**Learning:** Explicitly validate that physical quantity inputs (such as distances/edge weights) are strictly non-negative when implementing routing models like TSP, similarly to how job durations are validated for Job-Shop scheduling.
+**Prevention:** Add explicit `weight < 0` checks when iterating physical quantities like edge weights in graph APIs, returning a generic 400 error to the user before processing begins.
