@@ -161,14 +161,14 @@ class NewsvendorRequest(SafeBaseModel):
     cost: float
     salvage_value: float
     demand_mean: float
-    demand_std: float
+    demand_std: Annotated[float, Field(ge=0.0)]
 
 class ContinuousReviewRequest(SafeBaseModel):
     demand_rate: float
     order_cost: float
     holding_cost: float
-    lead_time_mean: float
-    lead_time_std: float
+    lead_time_mean: Annotated[float, Field(ge=0.0)]
+    lead_time_std: Annotated[float, Field(ge=0.0)]
     service_level: float = 0.95
 
 # Security: Enforce strict alphanumeric patterns for node IDs to prevent logic injection,
@@ -177,10 +177,10 @@ NodeStr = constr(max_length=50, pattern=r"^[a-zA-Z0-9_\- ]+$")
 
 class TSPRequest(SafeBaseModel):
     nodes: List[NodeStr] = Field(max_length=100)
-    edges: List[Tuple[NodeStr, NodeStr, float]] = Field(max_length=500)
+    edges: List[Tuple[NodeStr, NodeStr, Annotated[float, Field(ge=0.0)]]] = Field(max_length=500)
 
 class JobDetails(SafeBaseModel):
-    duration: float
+    duration: Annotated[float, Field(ge=0.0)]
     # Security: Prevent DoS by capping the dependencies list to the maximum possible jobs (100)
     dependencies: List[NodeStr] = Field(default=[], max_length=100)
 

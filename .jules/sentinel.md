@@ -95,3 +95,7 @@
 **Vulnerability:** The API returned sensitive calculation results (such as queueing performance, inventory policies, and topological sorts) without explicit cache-control directives. This allowed intermediate proxies, CDNs, or the user's browser to cache the responses indefinitely, potentially leaking sensitive operational data to unauthorized users sharing the same cache or device.
 **Learning:** By default, if cache headers are omitted, intermediate nodes are permitted to heuristically cache HTTP responses. Dynamic, data-sensitive API endpoints must explicitly opt-out of caching.
 **Prevention:** Apply strict, global `Cache-Control` headers (e.g., `no-store, no-cache, must-revalidate, max-age=0`) via a security middleware to ensure API responses are never cached by intermediate infrastructure.
+## 2025-02-28 - Missing Validation for Physical API Constraints
+**Vulnerability:** API endpoints lacked proper bounds validation (specifically >0 or >=0 bounds) for physical and statistical inputs like `lead_time_mean`, standard deviations, durations, and graph edge weights on request Pydantic models.
+**Learning:** Even if backend logic correctly throws ValueErrors during processing, Pydantic models should aggressively restrict the input domain to block mathematically flawed constraints up-front, avoiding logic injection or processing of impossible states.
+**Prevention:** Always use Pydantic's `Annotated` with `Field` validators (e.g. `ge=0.0`) for real-world measurements or statistical probabilities before executing mathematical solver logic.
