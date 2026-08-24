@@ -20,9 +20,9 @@ def test_queueing_module(page_with_app: Page):
     page.click("button:has-text('Solve Network')")
 
     # Wait for results to be populated (it's async, so wait for the text to not be the default)
-    # The default text is "Results will appear here..."
+    # The default text is "Ready for calculation. Enter parameters and solve to see results."
     result_locator = page.locator("#queue-results")
-    expect(result_locator).not_to_have_text("Results will appear here...")
+    expect(result_locator).not_to_have_text("Ready for calculation. Enter parameters and solve to see results.")
 
     # Verify the results contain expected JSON
     result_text = result_locator.inner_text()
@@ -57,7 +57,7 @@ def test_inventory_eoq(page_with_app: Page):
     page.click("button:has-text('Calculate EOQ')")
 
     result_locator = page.locator("#inventory-results")
-    expect(result_locator).not_to_have_text("Results will appear here...")
+    expect(result_locator).not_to_have_text("Ready for calculation. Enter parameters and solve to see results.")
 
     result_text = result_locator.inner_text()
     result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
@@ -90,7 +90,7 @@ def test_inventory_continuous_review(page_with_app: Page):
     page.click("button:has-text('Calculate (R, Q)')")
 
     result_locator = page.locator("#inventory-results")
-    expect(result_locator).not_to_have_text("Results will appear here...")
+    expect(result_locator).not_to_have_text("Ready for calculation. Enter parameters and solve to see results.")
 
     result_text = result_locator.inner_text()
     result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
@@ -115,7 +115,7 @@ def test_routing_module(page_with_app: Page):
     page.click("button:has-text('Optimize Route')")
 
     result_locator = page.locator("#routing-results")
-    expect(result_locator).not_to_have_text("Results will appear here...")
+    expect(result_locator).not_to_have_text("Ready for calculation. Enter parameters and solve to see results.")
 
     result_text = result_locator.inner_text()
     result_text = result_text.replace("📋 Copy", "").replace("✅ Copied", "")
