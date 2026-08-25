@@ -152,24 +152,24 @@ class JacksonRequest(SafeBaseModel):
     c: Optional[List[int]] = Field(default=None, max_length=100)
 
 class EOQRequest(SafeBaseModel):
-    demand_rate: float
-    order_cost: float
-    holding_cost: float
+    demand_rate: Annotated[float, Field(gt=0.0)]
+    order_cost: Annotated[float, Field(gt=0.0)]
+    holding_cost: Annotated[float, Field(gt=0.0)]
 
 class NewsvendorRequest(SafeBaseModel):
-    selling_price: float
-    cost: float
-    salvage_value: float
-    demand_mean: float
+    selling_price: Annotated[float, Field(gt=0.0)]
+    cost: Annotated[float, Field(gt=0.0)]
+    salvage_value: Annotated[float, Field(ge=0.0)]
+    demand_mean: Annotated[float, Field(ge=0.0)]
     demand_std: Annotated[float, Field(ge=0.0)]
 
 class ContinuousReviewRequest(SafeBaseModel):
-    demand_rate: float
-    order_cost: float
-    holding_cost: float
+    demand_rate: Annotated[float, Field(gt=0.0)]
+    order_cost: Annotated[float, Field(gt=0.0)]
+    holding_cost: Annotated[float, Field(gt=0.0)]
     lead_time_mean: Annotated[float, Field(ge=0.0)]
     lead_time_std: Annotated[float, Field(ge=0.0)]
-    service_level: float = 0.95
+    service_level: Annotated[float, Field(gt=0.0, lt=1.0)] = 0.95
 
 # Security: Enforce strict alphanumeric patterns for node IDs to prevent logic injection,
 # log injection, or downstream XSS payload staging.
