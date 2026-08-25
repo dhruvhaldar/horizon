@@ -99,3 +99,8 @@
 **Vulnerability:** API endpoints lacked proper bounds validation (specifically >0 or >=0 bounds) for physical and statistical inputs like `lead_time_mean`, standard deviations, durations, and graph edge weights on request Pydantic models.
 **Learning:** Even if backend logic correctly throws ValueErrors during processing, Pydantic models should aggressively restrict the input domain to block mathematically flawed constraints up-front, avoiding logic injection or processing of impossible states.
 **Prevention:** Always use Pydantic's `Annotated` with `Field` validators (e.g. `ge=0.0`) for real-world measurements or statistical probabilities before executing mathematical solver logic.
+
+## 2025-03-20 - [MEDIUM] Missing Strict Input Validation for Inventory Models
+**Vulnerability:** The Pydantic models for inventory endpoints (`EOQRequest`, `NewsvendorRequest`, `ContinuousReviewRequest`) lacked strict bounds validation (like `gt=0.0`) for physical and statistical inputs such as `demand_rate`, `order_cost`, and `service_level`. This allowed potentially invalid or negative inputs to reach the application logic, relying on manual exception handling which could be bypassed or lead to unexpected states.
+**Learning:** Even if backend logic checks for invalid values or throws ValueErrors, relying solely on endpoint logic instead of schema validation increases the risk of logic injection and mathematically impossible states propagating further into the system.
+**Prevention:** Always use Pydantic's `Annotated` with `Field` validators (e.g., `Annotated[float, Field(gt=0.0)]`) to aggressively restrict the input domain at the API boundary before executing any mathematical solver logic.
