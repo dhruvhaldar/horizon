@@ -5,3 +5,7 @@
 ## 2026-08-24 - Improve Mobile Number Input Experience for Fractional Values
 **Learning:** For inputs that accept fractional numbers (e.g., `step="any"`), using only `type="number"` does not consistently trigger a full numeric keypad with a decimal separator on mobile browsers (particularly iOS Safari).
 **Action:** Pair `type="number"` with `inputmode="decimal"` to ensure mobile users are presented with the appropriate keypad for entering fractional values.
+
+## 2026-08-26 - Replace CSS Pseudo-elements with Explicit Structural Empty States
+**Learning:** Using CSS `:empty::before` with a `content` property to display decorative emojis as empty states causes screen readers to redundantly announce the emojis out of context because pseudo-elements lack the ability to directly accept `aria-hidden="true"`.
+**Action:** Always use an explicit DOM structure (e.g., `<div class="empty-state">`) with `aria-hidden="true"` applied to decorative icons, rather than relying on CSS pseudo-elements for initial empty states.
