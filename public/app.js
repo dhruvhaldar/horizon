@@ -161,9 +161,13 @@ async function withLoading(btnElement, asyncFunc) {
 
     const originalText = btnElement.textContent;
     const wasFocused = document.activeElement === btnElement;
+    const originalAriaLabel = btnElement.getAttribute('aria-label');
+
     btnElement.setAttribute('aria-disabled', 'true');
     btnElement.innerHTML = '<span class="spinner" aria-hidden="true"></span> Calculating...';
     btnElement.setAttribute('aria-busy', 'true');
+    btnElement.setAttribute('aria-label', 'Calculating...');
+
     try {
         await asyncFunc();
         // UX Enhancement: Announce completion for screen readers to provide explicit async feedback
@@ -172,6 +176,12 @@ async function withLoading(btnElement, asyncFunc) {
         btnElement.textContent = originalText;
         btnElement.removeAttribute('aria-disabled');
         btnElement.removeAttribute('aria-busy');
+
+        if (originalAriaLabel !== null) {
+            btnElement.setAttribute('aria-label', originalAriaLabel);
+        } else {
+            btnElement.removeAttribute('aria-label');
+        }
 
         // UX Enhancement: Restore keyboard focus if it was lost due to disabling the button
         if (wasFocused) {
