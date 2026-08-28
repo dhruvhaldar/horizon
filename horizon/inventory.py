@@ -66,8 +66,12 @@ def continuous_review(demand_rate: float, order_cost: float, holding_cost: float
     # Calculate R based on safety stock
     # ⚡ Bolt: special.ndtri is mathematically equivalent to stats.norm.ppf(..., loc=0, scale=1)
     # but ~150x faster because it bypasses the stats distribution object overhead.
-    z = special.ndtri(service_level)
-    ss = z * lead_time_std
+    # ⚡ Bolt: If standard deviation is 0, skip the expensive inverse CDF calculation entirely.
+    if lead_time_std == 0.0:
+        ss = 0.0
+    else:
+        z = special.ndtri(service_level)
+        ss = z * lead_time_std
 
     r_opt = lead_time_mean + ss
 
