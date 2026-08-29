@@ -41,7 +41,11 @@ def newsvendor(selling_price: float, cost: float, salvage_value: float, demand_m
     # adding massive Python overhead. ndtri is the raw C/Fortran implementation
     # that computes the standard normal inverse CDF ~150x faster. We can then scale
     # and shift it to our custom loc and scale manually.
-    q_opt = demand_mean + demand_std * special.ndtri(critical_ratio)
+    # ⚡ Bolt: Short-circuit the expensive ndtri computation entirely if demand_std is 0.0.
+    if demand_std == 0.0:
+        q_opt = demand_mean
+    else:
+        q_opt = demand_mean + demand_std * special.ndtri(critical_ratio)
 
     return {
         "Q": q_opt,
@@ -66,8 +70,12 @@ def continuous_review(demand_rate: float, order_cost: float, holding_cost: float
     # Calculate R based on safety stock
     # ⚡ Bolt: special.ndtri is mathematically equivalent to stats.norm.ppf(..., loc=0, scale=1)
     # but ~150x faster because it bypasses the stats distribution object overhead.
-    z = special.ndtri(service_level)
-    ss = z * lead_time_std
+    # ⚡ Bolt: Short-circuit the expensive ndtri computation entirely if lead_time_std is 0.0.
+    if lead_time_std == 0.0:
+        ss = 0.0
+    else:
+        z = special.ndtri(service_level)
+        ss = z * lead_time_std
 
     r_opt = lead_time_mean + ss
 
