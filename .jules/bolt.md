@@ -28,3 +28,6 @@
 ## 2026-07-31 - Fast List Validation any vs for-loop
 **Learning:** Checking elements using a generator expression inside `any()` (e.g., `any(len(row) != expected for row in matrix)`) adds Python-level iteration and function call overhead. Previously, using `set(map(len, ...))` was suggested to bypass this, but that sacrifices short-circuiting behavior and fails slowly on early failures.
 **Action:** Use a standard `for` loop instead of `any()` with a generator expression. A standard `for` loop avoids the overhead of setting up a generator, resulting in roughly 40% faster validation while retaining O(1) early-exit capability if a mismatched condition is met early.
+## 2024-05-18 - Short-circuiting expensive math functions
+**Learning:** When standard deviation is 0 in stochastic models, multiplying the result of an expensive function (`special.ndtri`) by 0 still incurs the function's overhead.
+**Action:** Always add a short-circuit check (`if std == 0.0`) to skip the expensive calculation entirely, saving significant overhead for deterministic edge cases.
