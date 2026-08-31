@@ -146,10 +146,10 @@ class SafeBaseModel(BaseModel):
     model_config = {"allow_inf_nan": False}
 
 class JacksonRequest(SafeBaseModel):
-    gamma: List[float] = Field(max_length=100)
-    p: List[conlist(float, max_length=100)] = Field(max_length=100)
-    mu: List[float] = Field(max_length=100)
-    c: Optional[List[int]] = Field(default=None, max_length=100)
+    gamma: List[Annotated[float, Field(ge=0.0)]] = Field(max_length=100)
+    p: List[conlist(Annotated[float, Field(ge=0.0, le=1.0)], max_length=100)] = Field(max_length=100)
+    mu: List[Annotated[float, Field(gt=0.0)]] = Field(max_length=100)
+    c: Optional[List[Annotated[int, Field(gt=0, le=100)]]] = Field(default=None, max_length=100)
 
 class EOQRequest(SafeBaseModel):
     demand_rate: Annotated[float, Field(gt=0.0)]
