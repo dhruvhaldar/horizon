@@ -104,3 +104,8 @@
 **Vulnerability:** The Pydantic models for inventory endpoints (`EOQRequest`, `NewsvendorRequest`, `ContinuousReviewRequest`) lacked strict bounds validation (like `gt=0.0`) for physical and statistical inputs such as `demand_rate`, `order_cost`, and `service_level`. This allowed potentially invalid or negative inputs to reach the application logic, relying on manual exception handling which could be bypassed or lead to unexpected states.
 **Learning:** Even if backend logic checks for invalid values or throws ValueErrors, relying solely on endpoint logic instead of schema validation increases the risk of logic injection and mathematically impossible states propagating further into the system.
 **Prevention:** Always use Pydantic's `Annotated` with `Field` validators (e.g., `Annotated[float, Field(gt=0.0)]`) to aggressively restrict the input domain at the API boundary before executing any mathematical solver logic.
+
+## 2026-08-27 - [HIGH] Missing Subresource Integrity (SRI) on External Scripts
+**Vulnerability:** The application was loading external JavaScript dependencies (D3.js, Chart.js, MathJax) from third-party CDNs without verifying their integrity using the `integrity` attribute. If any of these CDNs were compromised, a malicious script could be served and executed in the context of our application, leading to Cross-Site Scripting (XSS).
+**Learning:** Loading external resources over HTTPS guarantees transport security but does not guarantee the integrity of the resource itself. CDNs are high-value targets for attackers.
+**Prevention:** Always use Subresource Integrity (SRI) hashes (`integrity="sha384-..." crossorigin="anonymous"`) when including third-party scripts or stylesheets from external CDNs.
