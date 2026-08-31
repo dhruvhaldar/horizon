@@ -109,3 +109,8 @@
 **Vulnerability:** The application was loading external JavaScript dependencies (D3.js, Chart.js, MathJax) from third-party CDNs without verifying their integrity using the `integrity` attribute. If any of these CDNs were compromised, a malicious script could be served and executed in the context of our application, leading to Cross-Site Scripting (XSS).
 **Learning:** Loading external resources over HTTPS guarantees transport security but does not guarantee the integrity of the resource itself. CDNs are high-value targets for attackers.
 **Prevention:** Always use Subresource Integrity (SRI) hashes (`integrity="sha384-..." crossorigin="anonymous"`) when including third-party scripts or stylesheets from external CDNs.
+
+## 2026-10-30 - [MEDIUM] Missing Inner List Bounds Validation in Pydantic Models
+**Vulnerability:** The Pydantic model `JacksonRequest` validated the outer array length but omitted constraint validation (e.g., `gt=0.0` or `ge=0.0`) on the inner list elements for fields like `gamma`, `p`, `mu`, and `c`. This could allow mathematical logic bypasses or processing errors where algorithms expect strictly non-negative inputs.
+**Learning:** Manual loop validations in endpoints can be easily bypassed or overlook fields (like the routing probability matrix `p`). Pydantic models should aggressively restrict the entire input domain for nested structures using `Annotated` types (e.g., `List[Annotated[float, Field(ge=0.0)]]`).
+**Prevention:** Always use Pydantic's `Annotated` with `Field` validators to enforce constraints on all levels of nested inputs, specifically ensuring that real-world measurements or probabilities cannot contain logically impossible negative values.
