@@ -9,3 +9,7 @@
 ## 2026-08-26 - Replace CSS Pseudo-elements with Explicit Structural Empty States
 **Learning:** Using CSS `:empty::before` with a `content` property to display decorative emojis as empty states causes screen readers to redundantly announce the emojis out of context because pseudo-elements lack the ability to directly accept `aria-hidden="true"`.
 **Action:** Always use an explicit DOM structure (e.g., `<div class="empty-state">`) with `aria-hidden="true"` applied to decorative icons, rather than relying on CSS pseudo-elements for initial empty states.
+
+## 2026-08-30 - Update Aria-label on Dynamically Changing Interactive Elements
+**Learning:** When interactive elements dynamically change their visual text (e.g., a button changing from its original text to 'Calculating...'), their `aria-label` is not automatically updated, which may cause screen readers to read the previous label or confusing DOM properties.
+**Action:** Always programmatically update the `aria-label` to match the new state for screen readers, and restore the original `aria-label` when the state normalizes.
