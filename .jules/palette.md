@@ -13,3 +13,7 @@
 ## 2026-08-30 - Update Aria-label on Dynamically Changing Interactive Elements
 **Learning:** When interactive elements dynamically change their visual text (e.g., a button changing from its original text to 'Calculating...'), their `aria-label` is not automatically updated, which may cause screen readers to read the previous label or confusing DOM properties.
 **Action:** Always programmatically update the `aria-label` to match the new state for screen readers, and restore the original `aria-label` when the state normalizes.
+
+## 2026-09-01 - Provide Accessible Tooltips for Domain-Specific Acronyms
+**Learning:** Educational and domain-specific tools often rely on acronyms (like EOQ or TSP) which can alienate new users and be read ambiguously by screen readers.
+**Action:** Use native `<abbr title="...">` tags for inline text and `aria-label`/`title` attributes for interactive elements to provide on-demand contextual definitions and clear screen-reader expansions.
