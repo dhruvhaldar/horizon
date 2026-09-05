@@ -149,10 +149,16 @@ async function withLoading(btnElement, asyncFunc) {
                 firstInvalid.focus({ preventScroll: true });
 
                 // UX Enhancement: Tactile physical feedback for errors
-                // Remove class, force reflow, and re-add to ensure animation replays
+                // ⚡ Bolt: Use requestAnimationFrame instead of offsetWidth to reset animation
+                // Checking offsetWidth synchronously forces a layout recalculation (reflow)
+                // which causes main thread jank. Double rAF achieves the same animation restart
+                // without synchronous layout thrashing.
                 firstInvalid.classList.remove('shake');
-                void firstInvalid.offsetWidth;
-                firstInvalid.classList.add('shake');
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        firstInvalid.classList.add('shake');
+                    });
+                });
             }
             announce("Validation failed. Please check highlighted inputs.");
             return;

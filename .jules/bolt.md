@@ -31,3 +31,6 @@
 ## 2024-05-18 - Short-circuiting expensive math functions
 **Learning:** When standard deviation is 0 in stochastic models, multiplying the result of an expensive function (`special.ndtri`) by 0 still incurs the function's overhead.
 **Action:** Always add a short-circuit check (`if std == 0.0`) to skip the expensive calculation entirely, saving significant overhead for deterministic edge cases.
+## 2024-05-24 - Layout Thrashing with Animation Reset
+**Learning:** Using `void element.offsetWidth;` to force a synchronous layout recalculation in order to reset and replay CSS animations causes significant layout thrashing on the main thread, especially during high-frequency events like form validation loops.
+**Action:** Replace `element.classList.remove('class'); void element.offsetWidth; element.classList.add('class');` with a double `requestAnimationFrame` pattern (`element.classList.remove('class'); requestAnimationFrame(() => requestAnimationFrame(() => element.classList.add('class')));`). This queues the class addition for the next render cycle, effectively resetting the animation without forcing a blocking synchronous reflow.
