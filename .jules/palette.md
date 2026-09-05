@@ -17,3 +17,7 @@
 ## 2026-09-01 - Provide Accessible Tooltips for Domain-Specific Acronyms
 **Learning:** Educational and domain-specific tools often rely on acronyms (like EOQ or TSP) which can alienate new users and be read ambiguously by screen readers.
 **Action:** Use native `<abbr title="...">` tags for inline text and `aria-label`/`title` attributes for interactive elements to provide on-demand contextual definitions and clear screen-reader expansions.
+
+## 2026-09-03 - Provide Context to Landmark Regions
+**Learning:** While `aria-labelledby` provides a concise name for `<section>` landmark regions, screen reader users miss out on immediately available contextual descriptions placed just below the heading unless they manually read further into the content.
+**Action:** Use `aria-describedby` on the landmark container to programmatically associate descriptive paragraphs (like `.module-def`), providing richer immediate context during landmark navigation.
