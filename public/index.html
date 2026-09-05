@@ -28,9 +28,9 @@
 
         <main id="main-content" class="grid" tabindex="-1" style="outline: none;">
             <!-- Queueing Module -->
-            <section class="panel" id="queueing-module" aria-labelledby="queueing-heading">
+            <section class="panel" id="queueing-module" aria-labelledby="queueing-heading" aria-describedby="queueing-desc">
                 <h2 id="queueing-heading">Queueing Networks</h2>
-                <p class="module-def">Stochastic modeling of waiting lines and resource allocation.</p>
+                <p id="queueing-desc" class="module-def">Stochastic modeling of waiting lines and resource allocation.</p>
                 <div class="input-group">
                     <label for="q-gamma">External Arrivals ($\gamma$) <span aria-hidden="true" title="Required">*</span>:</label>
                     <span id="help-q-gamma" class="helper-text">Avg. arrivals from outside the system per unit time (comma-separated list).</span>
@@ -54,9 +54,9 @@
             </section>
 
             <!-- Inventory Module -->
-            <section class="panel" id="inventory-module" aria-labelledby="inventory-heading">
+            <section class="panel" id="inventory-module" aria-labelledby="inventory-heading" aria-describedby="inventory-desc">
                 <h2 id="inventory-heading">Inventory Optimization</h2>
-                <p class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
+                <p id="inventory-desc" class="module-def">Optimal order quantities and timing to minimize total supply chain costs.</p>
                 <div class="toggle-wrapper">
                     <span id="label-eoq" class="switch-label" role="button" tabindex="0" style="opacity: 1;" aria-pressed="true" aria-label="Economic Order Quantity (EOQ)" title="Economic Order Quantity"><abbr title="Economic Order Quantity">EOQ</abbr></span>
                     <label class="switch">
@@ -125,9 +125,9 @@
             </section>
 
             <!-- Routing Module -->
-            <section class="panel" id="routing-module" aria-labelledby="routing-heading">
+            <section class="panel" id="routing-module" aria-labelledby="routing-heading" aria-describedby="routing-desc">
                 <h2 id="routing-heading">Route Planning (<abbr title="Traveling Salesperson Problem">TSP</abbr>)</h2>
-                <p class="module-def">Solving the Traveling Salesperson Problem for optimal Hamiltonian cycles.</p>
+                <p id="routing-desc" class="module-def">Solving the Traveling Salesperson Problem for optimal Hamiltonian cycles.</p>
                 <div class="input-group">
                     <label for="r-nodes">Nodes (comma separated) <span aria-hidden="true" title="Required">*</span>:</label>
                     <span id="help-r-nodes" class="helper-text">Distinct identifiers for locations to be visited.</span>
