@@ -34,3 +34,7 @@
 ## 2024-05-24 - Layout Thrashing with Animation Reset
 **Learning:** Using `void element.offsetWidth;` to force a synchronous layout recalculation in order to reset and replay CSS animations causes significant layout thrashing on the main thread, especially during high-frequency events like form validation loops.
 **Action:** Replace `element.classList.remove('class'); void element.offsetWidth; element.classList.add('class');` with a double `requestAnimationFrame` pattern (`element.classList.remove('class'); requestAnimationFrame(() => requestAnimationFrame(() => element.classList.add('class')));`). This queues the class addition for the next render cycle, effectively resetting the animation without forcing a blocking synchronous reflow.
+
+## 2026-07-31 - Fast List Validation max vs for-loop
+**Learning:** While `for` loops provide short-circuiting for invalid data, they significantly slow down the 'happy path' (valid requests) due to Python iteration overhead.
+**Action:** Do not replace C-implemented native functions like `max()` or `min()` with Python-level `for` loops in list validation logic when the happy path is the most common case.

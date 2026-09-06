@@ -1,6 +1,14 @@
-1. I will check for UX improvement opportunities. I saw in memory and .jules/palette.md: "When adding `tabindex` to elements like `.results` containers, ensure you also add a `:focus-visible` CSS block (e.g., `.results:focus-visible { outline: ... }`) to provide clear visual feedback during keyboard navigation."
-2. The `.results` container has `tabindex="0"` in `public/index.html`.
-3. The `.results` container does NOT have a `:focus-visible` outline in `public/neumorph.css`.
-4. I will add this rule to `public/neumorph.css` to fix the UX issue.
-5. I'll test locally if needed, format, lint and complete pre commit step.
-6. Commit changes with a descriptive message.
+1. Change the order of CORS and BaseHTTPMiddleware so CORS wraps the app correctly, which fixes the problem with CORS not being applied on early return in combined_security_middleware.
+   - I see the rule "In FastAPI/Starlette, decorators like `@app.middleware("http")` wrap the entire middleware stack added via `app.add_middleware()`, meaning they execute first (outermost). If this custom middleware intercepts a request and returns early... it bypasses middlewares added via `add_middleware` like `CORSMiddleware`... To fix, use `app.add_middleware(BaseHTTPMiddleware, dispatch=...)` and ensure `CORSMiddleware` is added last so it acts as the true outermost wrapper."
+   - Wait, `CORSMiddleware` is currently added AFTER `BaseHTTPMiddleware`, which means `CORSMiddleware` wraps the app that ALREADY has `BaseHTTPMiddleware` applied. Wait, actually Starlette's `add_middleware` wraps the *existing* app with the new middleware.
+     If `app.add_middleware(A)` then `app.add_middleware(B)`, B is the outermost middleware.
+     Wait, in the file:
+     ```
+     app.add_middleware(BaseHTTPMiddleware, dispatch=combined_security_middleware)
+     app.add_middleware(
+         CORSMiddleware, ...
+     )
+     ```
+     So CORS is added last, which means it wraps `BaseHTTPMiddleware`. This is ALREADY done. Let's check the memory: "To fix, use `app.add_middleware(BaseHTTPMiddleware, dispatch=...)` and ensure `CORSMiddleware` is added last so it acts as the true outermost wrapper."
+
+Let's find the missing performance improvement. Let's check `api/index.py`

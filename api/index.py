@@ -203,24 +203,20 @@ def solve_queue(req: JacksonRequest):
     # Security: Prevent CPU/Memory DoS attacks from extremely large factorials
     # in the M/M/c queueing calculation.
     # Security: Prevent ZeroDivisionError and 500 error leaks by validating physical limits.
-    # ⚡ Bolt: Use standard for-loops for list validation instead of max()/min().
-    # Standard for-loops provide O(1) short-circuiting for early exits and avoid
-    # the function call overhead of min()/max(), running significantly faster overall.
+    # ⚡ Bolt: Use C-implemented native functions like max() or min() instead of Python-level for-loops.
+    # While for loops provide short-circuiting for invalid data, they significantly slow down the 'happy path' (valid requests) due to Python iteration overhead.
     # We do not use zip() here to prevent truncation bypass if list lengths mismatch.
-    if req.c is not None:
-        for c_val in req.c:
-            if c_val > 100:
-                raise HTTPException(status_code=400, detail="Maximum number of servers (c) exceeded. Must be <= 100.")
-            if c_val <= 0:
-                raise HTTPException(status_code=400, detail="Number of servers (c) must be > 0.")
-    if req.mu is not None:
-        for mu_val in req.mu:
-            if mu_val <= 0:
-                raise HTTPException(status_code=400, detail="Service rate (mu) must be > 0.")
-    if req.gamma is not None:
-        for gamma_val in req.gamma:
-            if gamma_val <= 0:
-                raise HTTPException(status_code=400, detail="Arrival rate (gamma) must be > 0.")
+    if req.c:
+        if max(req.c) > 100:
+            raise HTTPException(status_code=400, detail="Maximum number of servers (c) exceeded. Must be <= 100.")
+        if min(req.c) <= 0:
+            raise HTTPException(status_code=400, detail="Number of servers (c) must be > 0.")
+    if req.mu:
+        if min(req.mu) <= 0:
+            raise HTTPException(status_code=400, detail="Service rate (mu) must be > 0.")
+    if req.gamma:
+        if min(req.gamma) <= 0:
+            raise HTTPException(status_code=400, detail="Arrival rate (gamma) must be > 0.")
 
     # Security: Prevent CPU/Memory DoS attacks from large Jackson Networks (e.g. matrix inversion)
     if len(req.gamma) > 100:
