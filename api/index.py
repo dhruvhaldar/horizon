@@ -87,6 +87,8 @@ async def combined_security_middleware(request, call_next):
             return apply_security_headers(JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."}))
         if length_val > 2_000_000: # 2MB limit
             return apply_security_headers(JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."}))
+    elif request.method in ["POST", "PUT", "PATCH"]:
+        return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Content-Length header is required."}))
 
     # --- Security Headers ---
     try:
