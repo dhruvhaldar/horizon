@@ -119,3 +119,13 @@
 **Vulnerability:** The HTTP middleware enforcing a global payload size limit relied on the `Content-Length` header. However, it did not explicitly require this header for HTTP methods like `POST`, `PUT`, and `PATCH`. An attacker could bypass the 2MB size limit by omitting the `Content-Length` header entirely, causing the application to buffer arbitrarily large payloads into memory and potentially leading to a Denial of Service (DoS) condition.
 **Learning:** Checking the value of `Content-Length` is insufficient if the absence of the header defaults to a bypass. Payload limits must fail securely by explicitly requiring the header when a payload is expected.
 **Prevention:** Explicitly require the `Content-Length` header for `POST`, `PUT`, and `PATCH` methods in global size-limiting middleware, returning a `411 Length Required` status code if the header is missing.
+
+## 2026-11-05 - [MEDIUM] Overly Permissive CORS Configuration
+**Vulnerability:** The CORS middleware was configured with `allow_methods=["*"]` and `allow_headers=["*"]`. This is overly permissive. While origin checking restricts which sites can make requests, allowing all HTTP methods (like `DELETE`, `PUT`, `PATCH`) and any arbitrary headers needlessly increases the attack surface against the application in cross-origin scenarios.
+**Learning:** According to the principle of least privilege and defense in depth, CORS configurations should only allow the exact HTTP methods and HTTP headers that the API expects.
+**Prevention:** Hardcode specific arrays for `allow_methods` (e.g., `["GET", "POST", "OPTIONS"]`) and `allow_headers` (e.g., `["Content-Type", "Origin", "Accept"]`) in `CORSMiddleware` instead of using the `*` wildcard.
+
+## 2026-11-05 - [MEDIUM] Log Injection via Unhandled Exception Messages
+**Vulnerability:** The global exception handler in the FastAPI middleware (`combined_security_middleware`) logged raw exception strings (`logging.error(f"Unhandled exception in request: {e}")`). If a maliciously crafted payload causes a parsing error or triggers an underlying library exception that includes the user input, an attacker could insert newline characters (`\n` or `\r`) to inject forged log entries (CRLF Injection), spoofing server activity or hiding traces.
+**Learning:** Any data incorporated into server logs that might stem from user input (even indirectly via exception strings) must be sanitized to ensure each event remains on a single line.
+**Prevention:** Sanitize exception messages by replacing `\n` and `\r` with spaces (e.g., `str(e).replace('\n', ' ')`) before passing them to the logger.
