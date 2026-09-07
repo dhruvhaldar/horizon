@@ -94,7 +94,8 @@ async def combined_security_middleware(request, call_next):
     try:
         response = await call_next(request)
     except Exception as e:
-        logging.error(f"Unhandled exception in request: {e}", exc_info=True)
+        safe_msg = str(e).replace('\n', ' ').replace('\r', ' ')
+        logging.error(f"Unhandled exception in request: {safe_msg}", exc_info=True)
         # Security: Catch unhandled exceptions at the middleware level to prevent
         # them from bubbling up and bypassing the application of security headers,
         # which could expose stack traces or leave 500 error responses unprotected.
@@ -113,8 +114,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Origin", "Accept"],
 )
 
 import json
