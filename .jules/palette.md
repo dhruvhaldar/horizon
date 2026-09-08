@@ -21,3 +21,7 @@
 ## 2026-09-03 - Provide Context to Landmark Regions
 **Learning:** While `aria-labelledby` provides a concise name for `<section>` landmark regions, screen reader users miss out on immediately available contextual descriptions placed just below the heading unless they manually read further into the content.
 **Action:** Use `aria-describedby` on the landmark container to programmatically associate descriptive paragraphs (like `.module-def`), providing richer immediate context during landmark navigation.
+
+## 2026-09-04 - Preserve Inner HTML of Stateful Buttons and Prevent Clashing ARIA Announcements
+**Learning:** Overwriting a button's content with generic text during an async loading state using `textContent` inadvertently strips accessible HTML tags like `<abbr>` upon restoration. Furthermore, generic unconditional async success announcements (like "Calculation complete") can clobber domain-specific error or success `aria-live` announcements that were triggered just milliseconds prior by the resolved function.
+**Action:** Use `innerHTML` to store and restore button content instead of `textContent`. Rely on the specific business logic functions to trigger screen reader announcements rather than an unconditional wrapper.
