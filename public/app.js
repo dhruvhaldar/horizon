@@ -165,7 +165,7 @@ async function withLoading(btnElement, asyncFunc) {
         }
     }
 
-    const originalText = btnElement.textContent;
+    const originalHTML = btnElement.innerHTML;
     const wasFocused = document.activeElement === btnElement;
     const originalAriaLabel = btnElement.getAttribute('aria-label');
 
@@ -176,10 +176,8 @@ async function withLoading(btnElement, asyncFunc) {
 
     try {
         await asyncFunc();
-        // UX Enhancement: Announce completion for screen readers to provide explicit async feedback
-        announce("Calculation complete. Results updated.");
     } finally {
-        btnElement.textContent = originalText;
+        btnElement.innerHTML = originalHTML;
         btnElement.removeAttribute('aria-disabled');
         btnElement.removeAttribute('aria-busy');
 
