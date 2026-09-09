@@ -25,3 +25,7 @@
 ## 2026-09-04 - Preserve Inner HTML of Stateful Buttons and Prevent Clashing ARIA Announcements
 **Learning:** Overwriting a button's content with generic text during an async loading state using `textContent` inadvertently strips accessible HTML tags like `<abbr>` upon restoration. Furthermore, generic unconditional async success announcements (like "Calculation complete") can clobber domain-specific error or success `aria-live` announcements that were triggered just milliseconds prior by the resolved function.
 **Action:** Use `innerHTML` to store and restore button content instead of `textContent`. Rely on the specific business logic functions to trigger screen reader announcements rather than an unconditional wrapper.
+
+## 2026-09-05 - Avoid ARIA Label Shadowing of Semantic Tags
+**Learning:** Placing semantic tags like `<abbr>` inside an interactive element (such as a `<span role="button">`) that already has an `aria-label` is ineffective for screen readers. The `aria-label` overrides and shadows the entire subtree, causing screen readers to ignore the semantic benefits of the `<abbr>` tag.
+**Action:** Do not wrap acronyms in `<abbr>` tags if they are placed inside elements with an `aria-label`. Instead, expand the acronym directly within the `aria-label` and `title` attributes of the parent interactive element to ensure it is properly announced by screen readers and visible to sighted users via native tooltips.
