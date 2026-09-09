@@ -33,7 +33,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # to amortized O(1) in-place pops.
 _request_counts = defaultdict(deque)
 
-def apply_security_headers(response):
+def apply_security_headers(response, is_api=False):
     # Security: Defense in depth - inject standard security headers to prevent
     # clickjacking (X-Frame-Options), MIME sniffing (X-Content-Type-Options),
     # enforce strict HTTPS (HSTS), and Content Security Policy (CSP).
@@ -43,10 +43,20 @@ def apply_security_headers(response):
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests;"
     response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+
+    # ⚡ Bolt: Only disable caching for dynamic API endpoints or error responses.
+    # Applying no-store globally prevents browsers from caching static assets (HTML/JS/CSS),
+    # forcing redundant network requests on every page load.
+    if is_api or response.status_code != 200:
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    else:
+        response.headers["Cache-Control"] = "public, max-age=86400"
+
     return response
 
 async def combined_security_middleware(request, call_next):
+    is_api = request.url.path.startswith("/api")
+
     # --- Rate Limiting ---
     # Security: Avoid naively parsing X-Forwarded-For to prevent IP spoofing bypasses.
     # Rely on the direct client host unless properly configured behind a trusted proxy.
@@ -67,7 +77,7 @@ async def combined_security_middleware(request, call_next):
             status_code=429,
             content={"detail": "Too many requests. Please try again later."},
             headers={"Retry-After": "60"}
-        ))
+        ), is_api=is_api)
 
     history.append(now)
 
@@ -78,17 +88,17 @@ async def combined_security_middleware(request, call_next):
     # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
     if "chunked" in request.headers.get("transfer-encoding", "").lower():
-        return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."}))
+        return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."}), is_api=is_api)
     content_length = request.headers.get("content-length")
     if content_length:
         try:
             length_val = int(content_length)
         except ValueError:
-            return apply_security_headers(JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."}))
+            return apply_security_headers(JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."}), is_api=is_api)
         if length_val > 2_000_000: # 2MB limit
-            return apply_security_headers(JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."}))
+            return apply_security_headers(JSONResponse(status_code=413, content={"detail": "Payload too large. Maximum size is 2MB."}), is_api=is_api)
     elif request.method in ["POST", "PUT", "PATCH"]:
-        return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Content-Length header is required."}))
+        return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Content-Length header is required."}), is_api=is_api)
 
     # --- Security Headers ---
     try:
@@ -101,7 +111,7 @@ async def combined_security_middleware(request, call_next):
         # which could expose stack traces or leave 500 error responses unprotected.
         response = JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
-    return apply_security_headers(response)
+    return apply_security_headers(response, is_api=is_api)
 
 app.add_middleware(BaseHTTPMiddleware, dispatch=combined_security_middleware)
 
