@@ -38,3 +38,7 @@
 ## 2026-07-31 - Fast List Validation max vs for-loop
 **Learning:** While `for` loops provide short-circuiting for invalid data, they significantly slow down the 'happy path' (valid requests) due to Python iteration overhead.
 **Action:** Do not replace C-implemented native functions like `max()` or `min()` with Python-level `for` loops in list validation logic when the happy path is the most common case.
+
+## 2026-08-01 - Conditional Cache-Control for Static Assets
+**Learning:** Applying `Cache-Control: no-store, no-cache, must-revalidate, max-age=0` globally in a security middleware (e.g., to protect dynamic API endpoints from proxy caching) inadvertently prevents browsers from caching static assets (HTML/JS/CSS). This forces redundant network requests on every page load, causing a significant performance regression in FCP (First Contentful Paint) and overall bandwidth usage.
+**Action:** When enforcing strict `Cache-Control` security headers, always apply them conditionally (e.g., checking if `request.url.path.startswith("/api")` or if the response is an error `!= 200`). Allow static assets to use browser caching (`Cache-Control: public, max-age=86400`) to significantly improve subsequent load times.
