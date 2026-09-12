@@ -133,3 +133,8 @@
 **Vulnerability:** The application's `Content-Security-Policy` header lacked directives for `frame-ancestors`, `object-src`, `base-uri`, and `upgrade-insecure-requests`. This left the application vulnerable to Clickjacking (if `X-Frame-Options` failed), XSS via malicious `<object>` or `<embed>` tags, base URI injection, and mixed-content issues over HTTP.
 **Learning:** A minimal CSP (only `default-src`, `script-src`, `style-src`) is insufficient for robust defense-in-depth. Modern CSPs must explicitly lock down legacy tag injection capabilities and enforce protocol upgrades.
 **Prevention:** Always include `frame-ancestors 'none'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests` in the global `Content-Security-Policy` header for static or decoupled frontends.
+
+## 2026-12-05 - [MEDIUM] Missing Cross-Origin Isolation Headers
+**Vulnerability:** The application was missing `Cross-Origin-Opener-Policy` (COOP) and `Cross-Origin-Resource-Policy` (CORP) headers. Without these, the application is not cross-origin isolated and is more susceptible to XS-Leaks and timing attacks like Spectre, where a malicious cross-origin document could potentially open the application in a popup and infer sensitive data or state.
+**Learning:** Standard security headers (like CSP and X-Frame-Options) protect against traditional XSS and Clickjacking, but do not prevent side-channel timing attacks that leverage shared process memory. Modern defense-in-depth requires explicit cross-origin isolation.
+**Prevention:** Always add `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Resource-Policy: same-origin` to global security headers to enforce process isolation and prevent other origins from embedding or reading the application's responses.

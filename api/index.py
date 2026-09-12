@@ -44,6 +44,11 @@ def apply_security_headers(response, is_api=False):
     response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://d3js.org https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; upgrade-insecure-requests;"
     response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=(), payment=(), usb=()"
 
+    # Security: Defense in depth against XS-Leaks and Spectre by enforcing Cross-Origin Isolation
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+    response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+
     # ⚡ Bolt: Only disable caching for dynamic API endpoints or error responses.
     # Applying no-store globally prevents browsers from caching static assets (HTML/JS/CSS),
     # forcing redundant network requests on every page load.
