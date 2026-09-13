@@ -55,3 +55,20 @@ def test_queue_dos_protection():
     })
     assert res_invalid.status_code in (400, 422)
     assert "Maximum number of servers (c) exceeded" in str(res_invalid.json()['detail']) or "at most 100 items" in str(res_invalid.json()['detail']) or "less than or equal to 100" in str(res_invalid.json()['detail'])
+
+def test_extra_field_rejection():
+    from fastapi.testclient import TestClient
+    from api.index import app
+    client = TestClient(app)
+
+    # Invalid input with extra field
+    res_extra = client.post('/api/queue', json={
+        "gamma": [1.0],
+        "p": [[0.0]],
+        "mu": [2.0],
+        "c": [1],
+        "extra_unauthorized_field": "hacked"
+    })
+
+    assert res_extra.status_code == 422
+    assert "Extra inputs are not permitted" in str(res_extra.json()['detail'])
