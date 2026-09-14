@@ -935,6 +935,7 @@ document.querySelectorAll('.results').forEach(container => {
         btn.className = 'copy-btn btn';
         btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
         btn.setAttribute('aria-label', 'Copy results to clipboard');
+        btn.setAttribute('title', 'Copy results to clipboard');
         btn.style.position = 'absolute';
         btn.style.top = '0.5rem';
         btn.style.right = '0.5rem';
@@ -952,10 +953,12 @@ document.querySelectorAll('.results').forEach(container => {
                 const originalHtml = '<span aria-hidden="true">📋</span> Copy';
                 btn.innerHTML = '<span aria-hidden="true">✅</span> Copied';
                 btn.setAttribute('aria-label', 'Copied to clipboard');
+                btn.setAttribute('title', 'Copied to clipboard');
                 announce('Results copied to clipboard');
                 setTimeout(() => {
                     btn.innerHTML = originalHtml;
                     btn.setAttribute('aria-label', 'Copy results to clipboard');
+                    btn.setAttribute('title', 'Copy results to clipboard');
                     btn.dataset.copying = 'false';
                 }, 2000);
             }).catch(() => {

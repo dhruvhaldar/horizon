@@ -29,3 +29,6 @@
 ## 2026-09-05 - Avoid ARIA Label Shadowing of Semantic Tags
 **Learning:** Placing semantic tags like `<abbr>` inside an interactive element (such as a `<span role="button">`) that already has an `aria-label` is ineffective for screen readers. The `aria-label` overrides and shadows the entire subtree, causing screen readers to ignore the semantic benefits of the `<abbr>` tag.
 **Action:** Do not wrap acronyms in `<abbr>` tags if they are placed inside elements with an `aria-label`. Instead, expand the acronym directly within the `aria-label` and `title` attributes of the parent interactive element to ensure it is properly announced by screen readers and visible to sighted users via native tooltips.
+## 2026-09-08 - Provide Tooltips for Interactive Elements
+**Learning:** When an interactive element dynamically updates its `aria-label` for screen readers (e.g., a button changing from 'Copy' to 'Copied'), sighted mouse users are left without visual confirmation if the element lacks a native tooltip.
+**Action:** Programmatically update the `title` attribute alongside the `aria-label` when states change to ensure native browser tooltips provide equivalent context for sighted users.
