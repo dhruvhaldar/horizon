@@ -161,7 +161,7 @@ class SafeJSONResponse(Response):
 class SafeBaseModel(BaseModel):
     # Security: Reject 'NaN' and 'Infinity' string representations in float fields
     # to prevent unhandled ValueError crashes during JSON serialization (500 Internal Server Error).
-    model_config = {"allow_inf_nan": False}
+    model_config = {"allow_inf_nan": False, "extra": "forbid"}
 
 class JacksonRequest(SafeBaseModel):
     gamma: List[Annotated[float, Field(ge=0.0)]] = Field(max_length=100)
