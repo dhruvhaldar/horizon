@@ -85,7 +85,7 @@
                             <span id="help-i-hold" class="helper-text">Cost to carry one unit in stock for one period.</span>
                             <input type="number" id="i-hold" aria-describedby="help-i-hold" class="inset" value="2" placeholder="e.g., 2" step="any" inputmode="decimal" min="0" required>
                         </div>
-                        <button id="btn-solve-eoq" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Economic Order Quantity to minimize total cost.">Calculate <abbr title="Economic Order Quantity">EOQ</abbr></button>
+                        <button id="btn-solve-eoq" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Economic Order Quantity to minimize total cost." aria-label="Calculate Economic Order Quantity (EOQ)">Calculate EOQ</button>
                     </div>
                 </div>
 
@@ -116,7 +116,7 @@
                             <span id="help-ic-lt-std" class="helper-text">Variation in lead time (for safety stock).</span>
                             <input type="number" id="ic-lt-std" aria-describedby="help-ic-lt-std" class="inset" value="1.2" placeholder="e.g., 1.2" step="any" inputmode="decimal" min="0" required>
                         </div>
-                        <button id="btn-solve-cont" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock.">Calculate (R, Q)</button>
+                        <button id="btn-solve-cont" class="btn" aria-controls="inventory-results inventory-viz" title="Calculate the Reorder Point (R) and Order Quantity (Q) with safety stock." aria-label="Calculate Reorder Point and Order Quantity (R, Q)">Calculate (R, Q)</button>
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@
                     <span id="help-r-edges" class="helper-text">Travel cost/distance between nodes. Format: Source, Target, Cost.</span>
                     <textarea id="r-edges" aria-describedby="help-r-edges" class="inset" rows="5" placeholder="e.g., A,B,10&#10;A,C,15" spellcheck="false" autocomplete="off" required>A,B,10&#10;A,C,15&#10;A,D,20&#10;B,C,35&#10;B,D,25&#10;C,D,30</textarea>
                 </div>
-                <button id="btn-solve-tsp" class="btn" aria-controls="routing-results routing-graph" title="Apply dynamic programming to find the optimal Hamiltonian cycle.">Optimize Route</button>
+                <button id="btn-solve-tsp" class="btn" aria-controls="routing-results routing-graph" title="Apply dynamic programming to find the optimal Hamiltonian cycle." aria-label="Optimize Route for Traveling Salesperson Problem (TSP)">Optimize Route</button>
                 <div class="results inset" id="routing-results" tabindex="0" role="region" aria-label="Calculation Results"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">📊</span><div style="text-align: center;">Ready for calculation. Enter parameters and solve to see results.</div></div></div>
                 <div id="routing-graph" class="viz-container inset" tabindex="0" role="img" aria-label="Transport Routing Graph (Empty: Optimize route to generate map)"><div class="empty-state"><span aria-hidden="true" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem; text-align: center;">🗺️</span><div style="text-align: center;">Optimize route to generate map</div></div></div>
             </section>
