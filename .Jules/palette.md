@@ -13,3 +13,7 @@
 ## 2026-08-08 - Stateful ARIA for Custom Toggle Labels
 **Learning:** When using custom elements (like spans) as clickable labels alongside a toggle switch to switch between distinct modes, setting `role="button"` and `tabindex="0"` allows keyboard interaction, but fails to convey which mode is currently active to screen readers. Relying solely on visual cues (like opacity) creates an accessibility gap.
 **Action:** Always apply and dynamically update the `aria-pressed` attribute (true/false) on custom toggle label buttons to programmatically communicate the active selection state to assistive technologies.
+
+## 2026-09-17 - Button Content Shadowing and Semantic Tags
+**Learning:** Placing semantic tags like `<abbr>` inside interactive elements (e.g., `<button>` or `<span role="button">`) that already have (or will dynamically receive) an `aria-label` shadows the child content from screen readers. This breaks accessibility, particularly when buttons have their `.innerHTML` overwritten during async operations or rely on the `aria-label` attribute dynamically updating.
+**Action:** Always avoid nesting semantic tags (like `<abbr>`) inside interactive elements whose accessible name is driven by `aria-label`. Instead, provide the acronym expansion directly in the `aria-label` and `title` of the parent element, keeping the visual text clean and static.
