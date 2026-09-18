@@ -32,3 +32,7 @@
 ## 2026-09-08 - Provide Tooltips for Interactive Elements
 **Learning:** When an interactive element dynamically updates its `aria-label` for screen readers (e.g., a button changing from 'Copy' to 'Copied'), sighted mouse users are left without visual confirmation if the element lacks a native tooltip.
 **Action:** Programmatically update the `title` attribute alongside the `aria-label` when states change to ensure native browser tooltips provide equivalent context for sighted users.
+
+## 2026-09-09 - Visual Toast Notification with ARIA Consistency
+**Learning:** Adding a visual toast notification provides crucial feedback for sighted users during events like asynchronous completions, but this often clashes with existing screen reader setups. Adding another `aria-live` element on the visual toast can result in duplicate announcements.
+**Action:** Pair visual toasts (for sighted users) with a dedicated screen-reader announcer (like `sr-announcer` with `aria-live`). Add `aria-hidden="true"` to the visual toast container to ensure screen readers only read from the invisible announcer element, providing consistency without redundancy.
