@@ -77,6 +77,25 @@ function announce(message) {
         announcer.textContent = '';
         setTimeout(() => { announcer.textContent = message; }, 50);
     }
+
+    const toastContainer = document.getElementById('toast-container');
+    if (toastContainer) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        // Trigger reflow to start transition
+        void toast.offsetWidth;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 300); // Wait for fade out transition
+        }, 3000); // Show for 3 seconds
+    }
 }
 
 // Helper to format validation errors from FastAPI
