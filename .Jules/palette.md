@@ -17,3 +17,7 @@
 ## 2026-09-17 - Button Content Shadowing and Semantic Tags
 **Learning:** Placing semantic tags like `<abbr>` inside interactive elements (e.g., `<button>` or `<span role="button">`) that already have (or will dynamically receive) an `aria-label` shadows the child content from screen readers. This breaks accessibility, particularly when buttons have their `.innerHTML` overwritten during async operations or rely on the `aria-label` attribute dynamically updating.
 **Action:** Always avoid nesting semantic tags (like `<abbr>`) inside interactive elements whose accessible name is driven by `aria-label`. Instead, provide the acronym expansion directly in the `aria-label` and `title` of the parent element, keeping the visual text clean and static.
+
+## 2026-09-19 - Empty ARIA Reference Attributes
+**Learning:** When dynamically removing IDs from space-separated ARIA attributes (like `aria-describedby` or `aria-labelledby`), simply calling `.replace(id, '').trim()` can result in an empty string if the removed ID was the only value. Setting `element.setAttribute('aria-describedby', '')` leaves an invalid empty reference in the DOM, which violates WCAG guidelines.
+**Action:** Always check the cleaned string after removing an ID and cleaning up double spaces (e.g., using `.replace(/\s+/g, ' ').trim()`). If the resulting string is empty, use `removeAttribute('aria-describedby')` instead of setting it to an empty string.

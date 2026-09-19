@@ -163,7 +163,12 @@ async function withLoading(btnElement, asyncFunc) {
                 input.removeAttribute('aria-errormessage');
                 if (errorDiv) {
                     const existingDescribedBy = input.getAttribute('aria-describedby') || '';
-                    input.setAttribute('aria-describedby', existingDescribedBy.replace(errorDiv.id, '').trim());
+                    const newDescribedBy = existingDescribedBy.replace(errorDiv.id, '').replace(/\s+/g, ' ').trim();
+                    if (newDescribedBy) {
+                        input.setAttribute('aria-describedby', newDescribedBy);
+                    } else {
+                        input.removeAttribute('aria-describedby');
+                    }
                     errorDiv.remove();
                 }
             }
@@ -723,7 +728,12 @@ document.addEventListener('input', (e) => {
             e.target.removeAttribute('aria-errormessage');
             if (errorDiv) {
                 const existingDescribedBy = e.target.getAttribute('aria-describedby') || '';
-                e.target.setAttribute('aria-describedby', existingDescribedBy.replace(errorDiv.id, '').trim());
+                const newDescribedBy = existingDescribedBy.replace(errorDiv.id, '').replace(/\s+/g, ' ').trim();
+                if (newDescribedBy) {
+                    e.target.setAttribute('aria-describedby', newDescribedBy);
+                } else {
+                    e.target.removeAttribute('aria-describedby');
+                }
                 errorDiv.remove();
             }
         } else if (errorDiv) {
