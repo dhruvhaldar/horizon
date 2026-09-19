@@ -85,9 +85,15 @@ function announce(message) {
         toast.textContent = message;
         toastContainer.appendChild(toast);
 
-        // Trigger reflow to start transition
-        void toast.offsetWidth;
-        toast.classList.add('show');
+        // ⚡ Bolt: Use requestAnimationFrame instead of offsetWidth to start transition.
+        // Checking offsetWidth synchronously forces a layout recalculation (reflow)
+        // which causes main thread jank. Double rAF achieves the same animation start
+        // without synchronous layout thrashing.
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+        });
 
         setTimeout(() => {
             toast.classList.remove('show');
