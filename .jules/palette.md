@@ -36,3 +36,11 @@
 ## 2026-09-09 - Visual Toast Notification with ARIA Consistency
 **Learning:** Adding a visual toast notification provides crucial feedback for sighted users during events like asynchronous completions, but this often clashes with existing screen reader setups. Adding another `aria-live` element on the visual toast can result in duplicate announcements.
 **Action:** Pair visual toasts (for sighted users) with a dedicated screen-reader announcer (like `sr-announcer` with `aria-live`). Add `aria-hidden="true"` to the visual toast container to ensure screen readers only read from the invisible announcer element, providing consistency without redundancy.
+
+## 2026-09-20 - Expose Implicit JavaScript Keyboard Shortcuts
+**Learning:** When JavaScript adds global keyboard event listeners (like mapping 'Enter' inside a form to click the primary submit button), screen readers and sighted users navigating via mouse hover are unaware of these implicit shortcuts unless explicitly told.
+**Action:** Always append keyboard shortcut hints (like " (Press Enter)") to the `title` attribute for native tooltips and use the `aria-keyshortcuts` attribute (e.g., `aria-keyshortcuts="Enter"`) to programmatically expose these implicit JavaScript shortcuts to screen readers.
+
+## 2026-09-20 - Context-Specific ARIA Labels for Repeating Structures
+**Learning:** Using generic ARIA labels (like `aria-label="Calculation Results"`) across multiple identical repeating structures (e.g., `.results` divs in different panels) provides ambiguous navigation context for screen reader users when they jump between landmarks.
+**Action:** Replace generic ARIA labels with context-specific descriptions (e.g., `Queueing Calculation Results`) on repeating UI components to ensure clarity during non-linear screen reader navigation.
