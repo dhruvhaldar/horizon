@@ -992,20 +992,38 @@ document.querySelectorAll('.results').forEach(container => {
             const clone = container.cloneNode(true);
             const copyBtn = clone.querySelector('.copy-btn');
             if (copyBtn) copyBtn.remove();
+
+            const handleFailure = () => {
+                btn.innerHTML = '<span aria-hidden="true">❌</span> Failed';
+                btn.setAttribute('aria-label', 'Failed to copy results');
+                btn.setAttribute('title', 'Failed to copy results');
+                announce('Failed to copy results to clipboard.');
+                setTimeout(() => {
+                    btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
+                    btn.setAttribute('aria-label', 'Copy results to clipboard');
+                    btn.setAttribute('title', 'Copy results to clipboard');
+                    btn.dataset.copying = 'false';
+                }, 2000);
+            };
+
+            if (!navigator.clipboard) {
+                handleFailure();
+                return;
+            }
+
             navigator.clipboard.writeText(clone.textContent.trim()).then(() => {
-                const originalHtml = '<span aria-hidden="true">📋</span> Copy';
                 btn.innerHTML = '<span aria-hidden="true">✅</span> Copied';
                 btn.setAttribute('aria-label', 'Copied to clipboard');
                 btn.setAttribute('title', 'Copied to clipboard');
                 announce('Results copied to clipboard');
                 setTimeout(() => {
-                    btn.innerHTML = originalHtml;
+                    btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
                     btn.setAttribute('aria-label', 'Copy results to clipboard');
                     btn.setAttribute('title', 'Copy results to clipboard');
                     btn.dataset.copying = 'false';
                 }, 2000);
             }).catch(() => {
-                btn.dataset.copying = 'false';
+                handleFailure();
             });
         };
 

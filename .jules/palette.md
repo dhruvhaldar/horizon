@@ -44,3 +44,7 @@
 ## 2026-09-20 - Context-Specific ARIA Labels for Repeating Structures
 **Learning:** Using generic ARIA labels (like `aria-label="Calculation Results"`) across multiple identical repeating structures (e.g., `.results` divs in different panels) provides ambiguous navigation context for screen reader users when they jump between landmarks.
 **Action:** Replace generic ARIA labels with context-specific descriptions (e.g., `Queueing Calculation Results`) on repeating UI components to ensure clarity during non-linear screen reader navigation.
+
+## 2026-10-01 - Provide Feedback for Synchronous Clipboard API Failures
+**Learning:** When using `navigator.clipboard.writeText()`, the `navigator.clipboard` object itself may be undefined in non-secure contexts (HTTP), causing a synchronous `TypeError` that bypasses Promise `.catch()` handlers. This leaves UI components in a permanently broken "loading" or "copying" state with no user feedback.
+**Action:** Always wrap clipboard API calls in a `try/catch` block (or check for `navigator.clipboard` existence) to gracefully handle synchronous failures and provide accessible error feedback to the user.
