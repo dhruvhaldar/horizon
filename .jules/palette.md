@@ -48,3 +48,6 @@
 ## 2026-10-01 - Provide Feedback for Synchronous Clipboard API Failures
 **Learning:** When using `navigator.clipboard.writeText()`, the `navigator.clipboard` object itself may be undefined in non-secure contexts (HTTP), causing a synchronous `TypeError` that bypasses Promise `.catch()` handlers. This leaves UI components in a permanently broken "loading" or "copying" state with no user feedback.
 **Action:** Always wrap clipboard API calls in a `try/catch` block (or check for `navigator.clipboard` existence) to gracefully handle synchronous failures and provide accessible error feedback to the user.
+## 2026-09-22 - Dynamic Contextual Labels for Repeating Actions
+**Learning:** Repeating UI actions (like 'Copy' buttons appended to multiple different results panels) can be confusing for screen reader users if they all have the same generic `aria-label` (e.g., 'Copy results to clipboard').
+**Action:** When dynamically generating generic action buttons within a specific context, extract context (like the container's `aria-label`) to construct descriptive labels (e.g., 'Copy Queueing Calculation Results to clipboard') and ensure these dynamic labels are reapplied when resetting button state.

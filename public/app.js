@@ -250,7 +250,12 @@ async function withLoading(btnElement, asyncFunc) {
                 }
                 const copyBtn = el.querySelector('.copy-btn');
                 if (copyBtn) {
-                    copyBtn.setAttribute('aria-label', 'Copy results to clipboard');
+                    let baseLabel = el.getAttribute('aria-label') || 'results';
+                    baseLabel = baseLabel.replace('Out of date: ', '');
+                    // Format appropriately: "Copy Queueing Calculation Results to clipboard"
+                    const copyText = `Copy ${baseLabel.charAt(0).toLowerCase() + baseLabel.slice(1)} to clipboard`;
+                    copyBtn.setAttribute('aria-label', copyText);
+                    copyBtn.setAttribute('title', copyText);
                 }
             });
         }
@@ -974,11 +979,15 @@ document.querySelectorAll('.results').forEach(container => {
         const text = container.textContent;
         if (text.includes('Ready for calculation') || text.includes('❌ Error:')) return;
 
+        let baseLabel = container.getAttribute('aria-label') || 'results';
+        baseLabel = baseLabel.replace('Out of date: ', '');
+        const copyText = `Copy ${baseLabel.charAt(0).toLowerCase() + baseLabel.slice(1)} to clipboard`;
+
         const btn = document.createElement('button');
         btn.className = 'copy-btn btn';
         btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
-        btn.setAttribute('aria-label', 'Copy results to clipboard');
-        btn.setAttribute('title', 'Copy results to clipboard');
+        btn.setAttribute('aria-label', copyText);
+        btn.setAttribute('title', copyText);
         btn.style.position = 'absolute';
         btn.style.top = '0.5rem';
         btn.style.right = '0.5rem';
@@ -1000,8 +1009,8 @@ document.querySelectorAll('.results').forEach(container => {
                 announce('Failed to copy results to clipboard.');
                 setTimeout(() => {
                     btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
-                    btn.setAttribute('aria-label', 'Copy results to clipboard');
-                    btn.setAttribute('title', 'Copy results to clipboard');
+                    btn.setAttribute('aria-label', copyText);
+                    btn.setAttribute('title', copyText);
                     btn.dataset.copying = 'false';
                 }, 2000);
             };
@@ -1018,8 +1027,8 @@ document.querySelectorAll('.results').forEach(container => {
                 announce('Results copied to clipboard');
                 setTimeout(() => {
                     btn.innerHTML = '<span aria-hidden="true">📋</span> Copy';
-                    btn.setAttribute('aria-label', 'Copy results to clipboard');
-                    btn.setAttribute('title', 'Copy results to clipboard');
+                    btn.setAttribute('aria-label', copyText);
+                    btn.setAttribute('title', copyText);
                     btn.dataset.copying = 'false';
                 }, 2000);
             }).catch(() => {
