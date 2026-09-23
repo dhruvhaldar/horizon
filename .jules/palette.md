@@ -51,3 +51,7 @@
 ## 2026-09-22 - Dynamic Contextual Labels for Repeating Actions
 **Learning:** Repeating UI actions (like 'Copy' buttons appended to multiple different results panels) can be confusing for screen reader users if they all have the same generic `aria-label` (e.g., 'Copy results to clipboard').
 **Action:** When dynamically generating generic action buttons within a specific context, extract context (like the container's `aria-label`) to construct descriptive labels (e.g., 'Copy Queueing Calculation Results to clipboard') and ensure these dynamic labels are reapplied when resetting button state.
+
+## 2026-10-15 - Prevent Screen Readers from Announcing Raw MathJax LaTeX
+**Learning:** Using raw LaTeX strings (like `$\gamma$` or `$\le 1$`) in labels and helper text for MathJax rendering causes screen readers to read the literal string characters ("dollar backslash gamma dollar") instead of the intended mathematical meaning, creating severe accessibility barriers.
+**Action:** Wrap the raw LaTeX string in a `<span aria-hidden="true">` to hide it from screen readers, and provide an adjacent `<span class="sr-only">` containing the plain text pronunciation (e.g., "gamma" or "less than or equal to 1") for assistive technologies.

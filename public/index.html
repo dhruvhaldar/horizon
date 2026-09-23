@@ -33,19 +33,19 @@
                 <h2 id="queueing-heading">Queueing Networks</h2>
                 <p id="queueing-desc" class="module-def">Stochastic modeling of waiting lines and resource allocation.</p>
                 <div class="input-group">
-                    <label for="q-gamma">External Arrivals ($\gamma$) <span aria-hidden="true" title="Required">*</span>:</label>
+                    <label for="q-gamma">External Arrivals <span aria-hidden="true">($\gamma$)</span><span class="sr-only">(gamma)</span> <span aria-hidden="true" title="Required">*</span>:</label>
                     <span id="help-q-gamma" class="helper-text">Avg. arrivals from outside the system per unit time (comma-separated list).</span>
                     <input type="text" id="q-gamma" aria-describedby="help-q-gamma" class="inset" value="10, 5" placeholder="e.g., 10, 5" spellcheck="false" autocomplete="off" pattern="^\s*\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?)*\s*$" title="Please enter a comma-separated list of numbers (e.g., 10, 5.5)" required>
                 </div>
                 <div class="input-group">
-                    <label for="q-mu">Service Rates ($\mu$) <span aria-hidden="true" title="Required">*</span>:</label>
-                    <span id="help-q-mu" class="helper-text">Capacity per server at each node (must be > $\gamma$).</span>
+                    <label for="q-mu">Service Rates <span aria-hidden="true">($\mu$)</span><span class="sr-only">(mu)</span> <span aria-hidden="true" title="Required">*</span>:</label>
+                    <span id="help-q-mu" class="helper-text">Capacity per server at each node (must be > <span aria-hidden="true">$\gamma$</span><span class="sr-only">gamma</span>).</span>
                     <input type="text" id="q-mu" aria-describedby="help-q-mu" class="inset" value="20, 15" placeholder="e.g., 20, 15" spellcheck="false" autocomplete="off" pattern="^\s*\d+(\.\d+)?(\s*,\s*\d+(\.\d+)?)*\s*$" title="Please enter a comma-separated list of numbers (e.g., 20, 15.5)" required>
                 </div>
                 <div class="calc-group">
                     <div class="input-group">
-                        <label for="q-p">Routing Matrix ($P$) <span aria-hidden="true" title="Required">*</span>:</label>
-                        <span id="help-q-p" class="helper-text">Probability of moving from node $i$ to node $j$. Sum of each row should be $\le 1$.</span>
+                        <label for="q-p">Routing Matrix <span aria-hidden="true">($P$)</span><span class="sr-only">(P)</span> <span aria-hidden="true" title="Required">*</span>:</label>
+                        <span id="help-q-p" class="helper-text">Probability of moving from node <span aria-hidden="true">$i$</span><span class="sr-only">i</span> to node <span aria-hidden="true">$j$</span><span class="sr-only">j</span>. Sum of each row should be <span aria-hidden="true">$\le 1$</span><span class="sr-only">less than or equal to 1</span>.</span>
                         <textarea id="q-p" aria-describedby="help-q-p" class="inset" rows="3" placeholder="Row-wise, e.g., 0, 0.5&#10;0, 0" spellcheck="false" autocomplete="off" required>0, 0.5&#10;0, 0</textarea>
                     </div>
                     <button id="btn-solve-queue" class="btn" aria-controls="queue-results queue-graph" title="Solve the Jackson Network equations for steady-state performance. (Press Enter)" aria-keyshortcuts="Enter">Solve Network</button>
