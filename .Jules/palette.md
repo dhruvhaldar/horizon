@@ -21,3 +21,7 @@
 ## 2026-09-19 - Empty ARIA Reference Attributes
 **Learning:** When dynamically removing IDs from space-separated ARIA attributes (like `aria-describedby` or `aria-labelledby`), simply calling `.replace(id, '').trim()` can result in an empty string if the removed ID was the only value. Setting `element.setAttribute('aria-describedby', '')` leaves an invalid empty reference in the DOM, which violates WCAG guidelines.
 **Action:** Always check the cleaned string after removing an ID and cleaning up double spaces (e.g., using `.replace(/\s+/g, ' ').trim()`). If the resulting string is empty, use `removeAttribute('aria-describedby')` instead of setting it to an empty string.
+
+## 2026-10-24 - Centering Empty States in Absolute-Button Containers
+**Learning:** Hardcoding right-padding on a container to make room for a dynamically added absolute-positioned element (like a Copy button) causes the container's default or empty-state text to become visually misaligned (off-center) because the content box is uneven.
+**Action:** Use the CSS `:has()` pseudo-class to conditionally apply the padding (e.g., `.results:has(.copy-btn)`) so that empty states remain perfectly centered when the button is absent.

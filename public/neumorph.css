@@ -265,6 +265,10 @@ kbd {
     white-space: pre-wrap;
     font-size: 0.9rem;
     color: #555;
+}
+
+/* UX Enhancement: Apply right padding only when the copy button is present to maintain centered empty states */
+.results:has(.copy-btn) {
     padding-right: 4.5rem;
 }
 
@@ -557,9 +561,11 @@ footer a:focus-visible {
     top: 0;
 }
 
-.skip-link:focus-visible {
+.skip-link:focus-visible,
+abbr[tabindex]:focus-visible {
     outline: 2px solid var(--highlight);
     outline-offset: 2px;
+    border-radius: 2px;
 }
 
 /* UX Enhancement: Tactile error shake animation */
