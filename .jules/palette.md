@@ -55,3 +55,7 @@
 ## 2026-10-15 - Prevent Screen Readers from Announcing Raw MathJax LaTeX
 **Learning:** Using raw LaTeX strings (like `$\gamma$` or `$\le 1$`) in labels and helper text for MathJax rendering causes screen readers to read the literal string characters ("dollar backslash gamma dollar") instead of the intended mathematical meaning, creating severe accessibility barriers.
 **Action:** Wrap the raw LaTeX string in a `<span aria-hidden="true">` to hide it from screen readers, and provide an adjacent `<span class="sr-only">` containing the plain text pronunciation (e.g., "gamma" or "less than or equal to 1") for assistive technologies.
+
+## 2026-10-25 - Avoid Label in Name WCAG 2.5.3 Violations
+**Learning:** Adding an `aria-label` to a button that overrides its visible text, without containing that exact visible text as a contiguous string, violates WCAG 2.5.3 (Label in Name). This breaks voice dictation software for sighted users, as their spoken command (matching the visible text) will fail to activate the element.
+**Action:** Do not apply `aria-label`s to buttons that already have clear visible text just to add extra context. Instead, use the `title` attribute or `aria-describedby` to provide extended descriptions for screen readers without replacing the primary programmatic name.
