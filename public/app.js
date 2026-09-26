@@ -792,7 +792,7 @@ document.addEventListener('input', (e) => {
                 if (copyBtn && copyBtn.getAttribute('aria-disabled') !== 'true') {
                     copyBtn.setAttribute('aria-disabled', 'true');
                     copyBtn.setAttribute('title', 'Results are out of date. Recalculate to copy.');
-                    copyBtn.setAttribute('aria-label', 'Results are out of date. Recalculate to copy.');
+                    copyBtn.removeAttribute('aria-label');
                     copyBtn.innerHTML = '<span aria-hidden="true">⏳</span> Stale';
                     copyBtn.style.cursor = 'not-allowed';
                 }
@@ -1004,7 +1004,7 @@ document.querySelectorAll('.results').forEach(container => {
 
             const handleFailure = () => {
                 btn.innerHTML = '<span aria-hidden="true">❌</span> Failed';
-                btn.setAttribute('aria-label', 'Failed to copy results');
+                btn.removeAttribute('aria-label');
                 btn.setAttribute('title', 'Failed to copy results');
                 announce('Failed to copy results to clipboard.');
                 setTimeout(() => {
@@ -1022,7 +1022,7 @@ document.querySelectorAll('.results').forEach(container => {
 
             navigator.clipboard.writeText(clone.textContent.trim()).then(() => {
                 btn.innerHTML = '<span aria-hidden="true">✅</span> Copied';
-                btn.setAttribute('aria-label', 'Copied to clipboard');
+                btn.removeAttribute('aria-label');
                 btn.setAttribute('title', 'Copied to clipboard');
                 announce('Results copied to clipboard');
                 setTimeout(() => {
