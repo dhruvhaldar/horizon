@@ -59,3 +59,7 @@
 ## 2026-10-25 - Avoid Label in Name WCAG 2.5.3 Violations
 **Learning:** Adding an `aria-label` to a button that overrides its visible text, without containing that exact visible text as a contiguous string, violates WCAG 2.5.3 (Label in Name). This breaks voice dictation software for sighted users, as their spoken command (matching the visible text) will fail to activate the element.
 **Action:** Do not apply `aria-label`s to buttons that already have clear visible text just to add extra context. Instead, use the `title` attribute or `aria-describedby` to provide extended descriptions for screen readers without replacing the primary programmatic name.
+
+## 2026-10-26 - Accessible Expansion for Switch Acronyms
+**Learning:** While native tooltips (`title`) provide visual expansions for acronyms used as switch labels (like "EOQ"), screen readers will still pronounce the literal acronym unless an `aria-label` is provided. However, naively replacing the `aria-label` with the full expansion violates WCAG 2.5.3 (Label in Name) because it removes the visible text from the programmatic name.
+**Action:** When adding `aria-label` to interactive elements containing acronyms, always include both the expanded text and the original visible acronym in parentheses (e.g., `aria-label="Economic Order Quantity (EOQ)"`) to provide clear screen reader pronunciation while preserving dictation software compatibility.
