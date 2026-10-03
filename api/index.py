@@ -11,7 +11,7 @@ import math
 import time
 import logging
 from typing import List, Dict, Optional, Any, Tuple
-from collections import defaultdict, deque
+from collections import defaultdict, deque, OrderedDict
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -31,7 +31,9 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # ⚡ Bolt: Use a deque instead of a list for the rolling window to drop
 # the pruning time complexity from O(N) list comprehension allocations
 # to amortized O(1) in-place pops.
-_request_counts = defaultdict(deque)
+# Security: Use an OrderedDict as an LRU cache to prevent fail-open DoS attacks
+# where an attacker rotates 10,000 IPs to clear the entire dictionary.
+_request_counts = OrderedDict()
 
 def apply_security_headers(response, is_api=False):
     # Security: Defense in depth - inject standard security headers to prevent
@@ -71,6 +73,13 @@ async def combined_security_middleware(request, call_next):
         client_ip = "unknown"
 
     now = time.time()
+
+    if client_ip not in _request_counts:
+        _request_counts[client_ip] = deque()
+
+    # Mark as recently used for the LRU eviction policy
+    _request_counts.move_to_end(client_ip)
+
     history = _request_counts[client_ip]
 
     # Security: Prune old requests and limit to 100 requests per minute per IP
@@ -86,9 +95,10 @@ async def combined_security_middleware(request, call_next):
 
     history.append(now)
 
-    # Security: Prevent memory DoS from the tracking dictionary itself
-    if len(_request_counts) > 10000:
-        _request_counts.clear()
+    # Security: Prevent memory DoS from the tracking dictionary itself using LRU eviction
+    # instead of clearing the entire dictionary (which causes a fail-open rate limit bypass).
+    while len(_request_counts) > 10000:
+        _request_counts.popitem(last=False)
 
     # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
