@@ -11,7 +11,7 @@ import math
 import time
 import logging
 from typing import List, Dict, Optional, Any, Tuple
-from collections import defaultdict, deque
+from collections import OrderedDict, deque
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -31,7 +31,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # ⚡ Bolt: Use a deque instead of a list for the rolling window to drop
 # the pruning time complexity from O(N) list comprehension allocations
 # to amortized O(1) in-place pops.
-_request_counts = defaultdict(deque)
+_request_counts = OrderedDict()
 
 def apply_security_headers(response, is_api=False):
     # Security: Defense in depth - inject standard security headers to prevent
@@ -71,6 +71,14 @@ async def combined_security_middleware(request, call_next):
         client_ip = "unknown"
 
     now = time.time()
+
+    # 🛡️ Sentinel: Use OrderedDict as LRU cache instead of naive .clear()
+    # Using .clear() introduces a fail-open DoS vulnerability where an attacker
+    # can wipe the rate limit history for all users by rotating through 10001 IPs.
+    if client_ip not in _request_counts:
+        _request_counts[client_ip] = deque()
+
+    _request_counts.move_to_end(client_ip)
     history = _request_counts[client_ip]
 
     # Security: Prune old requests and limit to 100 requests per minute per IP
@@ -87,8 +95,9 @@ async def combined_security_middleware(request, call_next):
     history.append(now)
 
     # Security: Prevent memory DoS from the tracking dictionary itself
+    # 🛡️ Sentinel: Evict oldest entry (LRU) instead of clearing all history
     if len(_request_counts) > 10000:
-        _request_counts.clear()
+        _request_counts.popitem(last=False)
 
     # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
