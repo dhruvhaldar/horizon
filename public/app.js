@@ -64,7 +64,8 @@ function getCustomError(input) {
         return `Please enter a valid format for ${fieldName}.`;
     }
     if (input.validity.patternMismatch) {
-        return input.title || `Please match the requested format for ${fieldName}.`;
+        const cleanTitle = input.title ? input.title.replace(/\s*\(Press .*? to calculate\)/, '') : '';
+        return cleanTitle || `Please match the requested format for ${fieldName}.`;
     }
     return input.validationMessage;
 }
@@ -1054,4 +1055,19 @@ document.querySelectorAll('input.inset').forEach(el => {
     el.addEventListener('focus', function() {
         this.select();
     });
+});
+
+// UX Enhancement: Programmatically expose implicit keyboard shortcuts on inputs
+document.querySelectorAll('input.inset').forEach(el => {
+    el.setAttribute('aria-keyshortcuts', 'Enter');
+    const t = el.getAttribute('title');
+    el.setAttribute('title', t ? t + ' (Press Enter to calculate)' : 'Press Enter to calculate');
+});
+
+document.querySelectorAll('textarea.inset').forEach(el => {
+    const isMac = navigator.userAgent.includes('Mac');
+    el.setAttribute('aria-keyshortcuts', isMac ? 'Meta+Enter' : 'Control+Enter');
+    const key = isMac ? '⌘ Cmd+Enter' : 'Ctrl+Enter';
+    const t = el.getAttribute('title');
+    el.setAttribute('title', t ? t + ` (Press ${key} to calculate)` : `Press ${key} to calculate`);
 });
