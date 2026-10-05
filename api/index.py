@@ -11,7 +11,7 @@ import math
 import time
 import logging
 from typing import List, Dict, Optional, Any, Tuple
-from collections import defaultdict, deque
+from collections import defaultdict, deque, OrderedDict
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 
@@ -31,7 +31,12 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 # ⚡ Bolt: Use a deque instead of a list for the rolling window to drop
 # the pruning time complexity from O(N) list comprehension allocations
 # to amortized O(1) in-place pops.
-_request_counts = defaultdict(deque)
+class LRUDict(OrderedDict):
+    def __missing__(self, key):
+        self[key] = deque()
+        return self[key]
+
+_request_counts = LRUDict()
 
 def apply_security_headers(response, is_api=False):
     # Security: Defense in depth - inject standard security headers to prevent
@@ -86,9 +91,13 @@ async def combined_security_middleware(request, call_next):
 
     history.append(now)
 
-    # Security: Prevent memory DoS from the tracking dictionary itself
-    if len(_request_counts) > 10000:
-        _request_counts.clear()
+    # Security: Move updated key to the end to maintain LRU order
+    _request_counts.move_to_end(client_ip)
+
+    # Security: Prevent memory DoS from the tracking dictionary itself without fail-open
+    # Avoid .clear() to prevent attackers from rotating IPs to reset rate limits for all users.
+    while len(_request_counts) > 10000:
+        _request_counts.popitem(last=False)
 
     # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.

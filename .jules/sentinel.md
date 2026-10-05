@@ -142,3 +142,8 @@
 **Vulnerability:** FastAPI models inherited from Pydantic `BaseModel` allowed arbitrary, unvalidated extra fields to be passed in requests by default. This mass assignment vulnerability could lead to memory pollution, logging bloat, or bypassing logic constraints if data models unexpectedly carried rogue parameters.
 **Learning:** The default behavior of Pydantic is to ignore extra fields (`extra='ignore'`). In a security context, particularly for strict REST APIs, models should explicitly forbid unexpected fields to maintain a tight API contract and prevent parameter injection.
 **Prevention:** To prevent memory pollution and mass assignment vulnerabilities, always configure FastAPI/Pydantic base models to strictly reject unexpected fields using `model_config = {"extra": "forbid"}`.
+
+## 2026-12-10 - [HIGH] Fail-Open DoS Vulnerability in Rate Limiter
+**Vulnerability:** The in-memory rate limiter tracked request history by client IP. To prevent memory exhaustion, it cleared the entire tracking dictionary (`_request_counts.clear()`) when the size exceeded 10,000 entries. An attacker could bypass the rate limit by continuously making requests with spoofed or rotated IP addresses until the limit was hit, which cleared the tracker for *all* users, resulting in a fail-open state.
+**Learning:** Preventing memory DoS by unconditionally clearing state trackers creates a secondary vulnerability where attackers can intentionally trigger the reset mechanism to evade restrictions.
+**Prevention:** Never use `.clear()` to enforce size limits on memory-bound state trackers. Instead, use `collections.OrderedDict` as a Least Recently Used (LRU) cache and securely evict only the oldest entries using `.popitem(last=False)`.
