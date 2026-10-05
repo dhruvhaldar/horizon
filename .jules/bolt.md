@@ -50,3 +50,7 @@
 ## 2026-09-17 - Fast Path for Small M/M/c Queues
 **Learning:** While mathematical approximations like `scipy.special.gammaincc` provide O(1) time complexity and are essential for scaling (e.g. large server counts), the constant overhead of Python function calls (like `math.exp`, `math.lgamma`, and the `scipy` wrapper itself) makes them surprisingly slower (up to 3-4x) than a simple iterative `for` loop for small inputs (e.g., `c < 30`).
 **Action:** When replacing loops with O(1) mathematical functions from heavy libraries like `scipy`, profile the performance on small/common inputs. Implement a hybrid approach that uses a simple Python loop for small inputs (fast path) and falls back to the O(1) function for large inputs to avoid function call overhead while preventing O(N) scaling bottlenecks.
+
+## 2026-10-03 - Preconnect for External CDNs
+**Learning:** Browsers must resolve DNS, establish a TCP connection, and complete a TLS handshake before downloading resources from a new origin, adding hundreds of milliseconds of latency to critical assets like `d3.js` and `chart.js`.
+**Action:** Always add `<link rel="preconnect" href="https://cdn.example.com" crossorigin>` for CDNs hosting critical external scripts to preemptively establish the connection during initial HTML parsing.
