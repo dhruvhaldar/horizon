@@ -59,3 +59,7 @@
 ## 2026-10-25 - Avoid Label in Name WCAG 2.5.3 Violations
 **Learning:** Adding an `aria-label` to a button that overrides its visible text, without containing that exact visible text as a contiguous string, violates WCAG 2.5.3 (Label in Name). This breaks voice dictation software for sighted users, as their spoken command (matching the visible text) will fail to activate the element.
 **Action:** Do not apply `aria-label`s to buttons that already have clear visible text just to add extra context. Instead, use the `title` attribute or `aria-describedby` to provide extended descriptions for screen readers without replacing the primary programmatic name.
+
+## 2026-11-12 - Preserving Screen Reader Context and WCAG 2.5.3 Compliance in Dynamic Buttons
+**Learning:** Removing the `aria-label` entirely during a dynamic button state change (e.g., changing from "Copy" to "Copied" or "Stale") can leave screen reader users with reduced or confusing context, as they might only hear the new inner text (which may just be an emoji or short phrase). Additionally, any new `aria-label` must contain the exact contiguous visible text to comply with WCAG 2.5.3 (Label in Name) and prevent breaking voice dictation software.
+**Action:** When updating a button's visual state, always explicitly set the `aria-label` to a descriptive string that matches the full context (e.g., `setAttribute('aria-label', 'Copied to clipboard')`), ensuring it includes the visible text, rather than using `removeAttribute('aria-label')`.
