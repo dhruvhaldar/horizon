@@ -651,6 +651,8 @@ input[type="number"] {
     color: var(--text-color);
     padding: 1rem 1.5rem;
     border-radius: 12px;
+    pointer-events: auto;
+    cursor: pointer;
     box-shadow: 8px 8px 16px var(--shadow-dark),
                 -8px -8px 16px var(--shadow-light);
     font-size: 0.95rem;
