@@ -96,14 +96,47 @@ function announce(message) {
             });
         });
 
-        setTimeout(() => {
+        let toastTimeout;
+        const dismissToast = () => {
             toast.classList.remove('show');
             setTimeout(() => {
                 if (toast.parentNode) toast.remove();
-            }, 300); // Wait for fade out transition
-        }, 3000); // Show for 3 seconds
+            }, 300);
+        };
+
+        const startTimeout = () => {
+            toastTimeout = setTimeout(dismissToast, 5000); // Show for 5 seconds
+        };
+
+        startTimeout();
+
+        toast.addEventListener('mouseenter', () => {
+            clearTimeout(toastTimeout);
+        });
+
+        toast.addEventListener('mouseleave', () => {
+            startTimeout();
+        });
+
+        toast.addEventListener('click', () => {
+            clearTimeout(toastTimeout);
+            dismissToast();
+        });
     }
 }
+
+// UX Enhancement: Allow keyboard dismissal of toasts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const toasts = document.querySelectorAll('.toast.show');
+        toasts.forEach(toast => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 300);
+        });
+    }
+});
 
 // Helper to format validation errors from FastAPI
 function formatError(detail) {

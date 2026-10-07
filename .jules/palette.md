@@ -63,3 +63,7 @@
 ## 2026-11-12 - Preserving Screen Reader Context and WCAG 2.5.3 Compliance in Dynamic Buttons
 **Learning:** Removing the `aria-label` entirely during a dynamic button state change (e.g., changing from "Copy" to "Copied" or "Stale") can leave screen reader users with reduced or confusing context, as they might only hear the new inner text (which may just be an emoji or short phrase). Additionally, any new `aria-label` must contain the exact contiguous visible text to comply with WCAG 2.5.3 (Label in Name) and prevent breaking voice dictation software.
 **Action:** When updating a button's visual state, always explicitly set the `aria-label` to a descriptive string that matches the full context (e.g., `setAttribute('aria-label', 'Copied to clipboard')`), ensuring it includes the visible text, rather than using `removeAttribute('aria-label')`.
+
+## 2026-11-12 - Ensure Timing Adjustable Toast Notifications
+**Learning:** Short, non-interactive toast notifications disappear before users with reading disabilities or visual impairments can process them, violating WCAG 2.2.1 (Timing Adjustable).
+**Action:** Make toast notifications interactive: extend default duration, pause on hover, allow click-to-dismiss, and support keyboard dismissal (Escape key).
