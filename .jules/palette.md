@@ -67,3 +67,7 @@
 ## 2026-11-12 - Ensure Timing Adjustable Toast Notifications
 **Learning:** Short, non-interactive toast notifications disappear before users with reading disabilities or visual impairments can process them, violating WCAG 2.2.1 (Timing Adjustable).
 **Action:** Make toast notifications interactive: extend default duration, pause on hover, allow click-to-dismiss, and support keyboard dismissal (Escape key).
+
+## 2026-11-12 - Interactive Auto-Dismissing Toasts
+**Learning:** Toasts that dismiss automatically without allowing users to pause or interact with them violate the WCAG 2.2.1 Timing Adjustable standard. Users need sufficient time to read messages, and some users require more time than others.
+**Action:** Always ensure auto-dismissing toast notifications are interactive. Implement a default duration (e.g., 5000ms), pause the countdown on hover (`mouseenter`), resume the countdown when hover ends (`mouseleave`), allow immediate dismissal on click, and provide a global keyboard shortcut (like Escape) to dismiss them.
