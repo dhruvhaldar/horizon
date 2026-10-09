@@ -54,3 +54,7 @@
 ## 2026-10-03 - Preconnect for External CDNs
 **Learning:** Browsers must resolve DNS, establish a TCP connection, and complete a TLS handshake before downloading resources from a new origin, adding hundreds of milliseconds of latency to critical assets like `d3.js` and `chart.js`.
 **Action:** Always add `<link rel="preconnect" href="https://cdn.example.com" crossorigin>` for CDNs hosting critical external scripts to preemptively establish the connection during initial HTML parsing.
+
+## 2026-10-06 - Fast TSP Nearest Neighbor without NetworkX
+**Learning:** Bypassing `networkx` graph instantiation (`nx.Graph`) and running heuristics like Nearest Neighbor (`greedy_tsp`) directly on a NumPy distance matrix provides immense performance gains. The overhead of instantiating an O(N^2) complete graph in Python and iterating over its dictionaries dominates the runtime for dense metric closure graphs.
+**Action:** For simple graph heuristics on dense matrices (like TSP), implement them directly using vectorized NumPy operations (e.g. masking and `np.argmin`) instead of building a `networkx` object.
