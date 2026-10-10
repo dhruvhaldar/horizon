@@ -125,7 +125,7 @@ function announce(message) {
     }
 }
 
-// UX Enhancement: Allow keyboard dismissal of toasts
+// UX Enhancement: Allow keyboard dismissal of toasts and blurring of active inputs
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const toasts = document.querySelectorAll('.toast.show');
@@ -135,6 +135,12 @@ document.addEventListener('keydown', (e) => {
                 if (toast.parentNode) toast.remove();
             }, 300);
         });
+
+        // UX Enhancement: Blur active input/textarea to drop focus safely
+        const activeElement = document.activeElement;
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+            activeElement.blur();
+        }
     }
 });
 
