@@ -55,17 +55,18 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # Nearest Neighbor heuristic natively on the distance matrix using fast NumPy
     # masking and vector operations (np.argmin). This drops approximation time
     # for 100 nodes to less than 0.001s.
+    # ⚡ Bolt Update: When implementing Nearest Neighbor heuristics (e.g., TSP) on a distance
+    # matrix using NumPy, use column-masking (`dist_matrix[:, curr] = np.inf`) instead of
+    # element-wise boolean visitation masking (`distances[visited] = np.inf`) inside the loop.
+    # This avoids O(N) array copying and boolean indexing overhead per iteration, improving performance.
     tsp_path_int = np.zeros(n + 1, dtype=int)
-    visited = np.zeros(n, dtype=bool)
+    working_matrix = path_lengths.copy()
     curr = 0
-    visited[curr] = True
 
     for i in range(1, n):
-        distances = path_lengths[curr].copy()
-        distances[visited] = np.inf
-        next_node = int(np.argmin(distances))
+        working_matrix[:, curr] = np.inf
+        next_node = int(np.argmin(working_matrix[curr]))
         tsp_path_int[i] = next_node
-        visited[next_node] = True
         curr = next_node
 
     tsp_path_int[n] = 0
