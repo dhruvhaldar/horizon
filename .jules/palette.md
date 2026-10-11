@@ -71,3 +71,7 @@
 ## 2026-11-12 - Interactive Auto-Dismissing Toasts
 **Learning:** Toasts that dismiss automatically without allowing users to pause or interact with them violate the WCAG 2.2.1 Timing Adjustable standard. Users need sufficient time to read messages, and some users require more time than others.
 **Action:** Always ensure auto-dismissing toast notifications are interactive. Implement a default duration (e.g., 5000ms), pause the countdown on hover (`mouseenter`), resume the countdown when hover ends (`mouseleave`), allow immediate dismissal on click, and provide a global keyboard shortcut (like Escape) to dismiss them.
+
+## 2026-10-11 - Escape Key to Drop Focus
+**Learning:** Users navigating with keyboards can feel 'trapped' in input fields or textareas without a clear way to return to general page navigation, especially in complex forms.
+**Action:** Enhance global Escape key handlers to blur the active element if it is an input or textarea, providing a safe shortcut to drop focus.

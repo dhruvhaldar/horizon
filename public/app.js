@@ -125,7 +125,7 @@ function announce(message) {
     }
 }
 
-// UX Enhancement: Allow keyboard dismissal of toasts
+// UX Enhancement: Allow keyboard dismissal of toasts and safe focus dropping
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const toasts = document.querySelectorAll('.toast.show');
@@ -135,6 +135,12 @@ document.addEventListener('keydown', (e) => {
                 if (toast.parentNode) toast.remove();
             }, 300);
         });
+
+        // UX Enhancement: Blur active input/textarea to drop focus for keyboard navigation
+        const active = document.activeElement;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+            active.blur();
+        }
     }
 });
 
