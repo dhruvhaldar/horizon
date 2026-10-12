@@ -10,6 +10,7 @@ import os
 import math
 import time
 import logging
+import traceback
 from typing import List, Dict, Optional, Any, Tuple
 from collections import defaultdict, deque, OrderedDict
 import numpy as np
@@ -119,7 +120,9 @@ async def combined_security_middleware(request, call_next):
         response = await call_next(request)
     except Exception as e:
         safe_msg = str(e).replace('\n', ' ').replace('\r', ' ')
-        logging.error(f"Unhandled exception in request: {safe_msg}", exc_info=True)
+        raw_traceback = traceback.format_exc()
+        safe_traceback = raw_traceback.replace('\n', ' | ').replace('\r', ' ')
+        logging.error(f"Unhandled exception in request: {safe_msg} | Traceback: {safe_traceback}")
         # Security: Catch unhandled exceptions at the middleware level to prevent
         # them from bubbling up and bypassing the application of security headers,
         # which could expose stack traces or leave 500 error responses unprotected.
