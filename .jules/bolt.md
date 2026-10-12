@@ -58,3 +58,11 @@
 ## 2026-10-06 - Fast TSP Nearest Neighbor without NetworkX
 **Learning:** Bypassing `networkx` graph instantiation (`nx.Graph`) and running heuristics like Nearest Neighbor (`greedy_tsp`) directly on a NumPy distance matrix provides immense performance gains. The overhead of instantiating an O(N^2) complete graph in Python and iterating over its dictionaries dominates the runtime for dense metric closure graphs.
 **Action:** For simple graph heuristics on dense matrices (like TSP), implement them directly using vectorized NumPy operations (e.g. masking and `np.argmin`) instead of building a `networkx` object.
+
+## 2026-10-06 - Avoid inlining for micro-optimizations
+**Learning:** While inlining complex mathematical functions (like `mmc_queue` inside a `jackson_network` loop) technically bypasses the overhead of Python function calls, it qualifies as a micro-optimization that severely degrades code readability, maintainability, and violates the DRY principle. If the underlying logic requires patching in the future, it would necessitate changes in multiple duplicated code blocks.
+**Action:** Do not inline complex functions purely for micro-optimizations. Preserve functional abstraction unless profiling proves that function call overhead is a critical bottleneck that justifies the cost to code maintainability.
+
+## 2026-10-06 - Fast Nearest Neighbor TSP using Column Masking
+**Learning:** In Nearest Neighbor heuristics applied to NumPy distance matrices, repeatedly making copies of rows and masking out visited nodes with `np.inf` via boolean arrays (e.g., `distances[visited] = np.inf`) inside the loop incurs significant allocation and traversal overhead.
+**Action:** Use an O(1) in-place column masking technique instead. Create a single copy of the distance matrix, and for each visited node, mask its entire column with `np.inf` (`distances[:, next_node] = np.inf`). This completely avoids allocating new arrays inside the iterative loop while ensuring visited nodes are mathematically excluded from future `np.argmin` calls.

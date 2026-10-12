@@ -56,16 +56,20 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
     # masking and vector operations (np.argmin). This drops approximation time
     # for 100 nodes to less than 0.001s.
     tsp_path_int = np.zeros(n + 1, dtype=int)
-    visited = np.zeros(n, dtype=bool)
+
+    # ⚡ Bolt: Fast column masking for Nearest Neighbor TSP.
+    # By copying the entire matrix once and modifying the columns to inf in place,
+    # we bypass copying individual rows (N copies) and re-evaluating the boolean
+    # visited array masking (N times) on every iteration. This O(1) in-place modification
+    # drastically speeds up the inner loop for dense matrices.
+    distances = path_lengths.copy()
     curr = 0
-    visited[curr] = True
+    distances[:, curr] = np.inf
 
     for i in range(1, n):
-        distances = path_lengths[curr].copy()
-        distances[visited] = np.inf
-        next_node = int(np.argmin(distances))
+        next_node = int(np.argmin(distances[curr]))
         tsp_path_int[i] = next_node
-        visited[next_node] = True
+        distances[:, next_node] = np.inf
         curr = next_node
 
     tsp_path_int[n] = 0
