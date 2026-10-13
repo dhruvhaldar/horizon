@@ -25,3 +25,7 @@
 ## 2026-10-24 - Centering Empty States in Absolute-Button Containers
 **Learning:** Hardcoding right-padding on a container to make room for a dynamically added absolute-positioned element (like a Copy button) causes the container's default or empty-state text to become visually misaligned (off-center) because the content box is uneven.
 **Action:** Use the CSS `:has()` pseudo-class to conditionally apply the padding (e.g., `.results:has(.copy-btn)`) so that empty states remain perfectly centered when the button is absent.
+
+## 2026-11-05 - Keyboard Focus Drop for Forms
+**Learning:** Users navigating dense, form-heavy interfaces (like simulators) using a keyboard can easily feel trapped if there is no quick way to drop focus from inputs without tabbing through the entire form or using a mouse.
+**Action:** Enhance global `Escape` key handlers to call `blur()` on the `document.activeElement` if it's an `INPUT` or `TEXTAREA`. This provides a quick, universal "unfocus" shortcut, significantly improving keyboard navigability and accessibility.
