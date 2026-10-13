@@ -135,6 +135,11 @@ document.addEventListener('keydown', (e) => {
                 if (toast.parentNode) toast.remove();
             }, 300);
         });
+
+        // UX Enhancement: Allow users to drop focus from inputs/textareas using Escape
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+            document.activeElement.blur();
+        }
     }
 });
 
