@@ -58,3 +58,7 @@
 ## 2026-10-06 - Fast TSP Nearest Neighbor without NetworkX
 **Learning:** Bypassing `networkx` graph instantiation (`nx.Graph`) and running heuristics like Nearest Neighbor (`greedy_tsp`) directly on a NumPy distance matrix provides immense performance gains. The overhead of instantiating an O(N^2) complete graph in Python and iterating over its dictionaries dominates the runtime for dense metric closure graphs.
 **Action:** For simple graph heuristics on dense matrices (like TSP), implement them directly using vectorized NumPy operations (e.g. masking and `np.argmin`) instead of building a `networkx` object.
+
+## 2026-10-09 - Fast TSP Nearest Neighbor visitation masking
+**Learning:** When implementing Nearest Neighbor heuristics (e.g., TSP) on a distance matrix using NumPy, applying boolean visitation masking (`distances[visited] = np.inf`) inside the loop on a copied array incurs O(N) array copying and boolean indexing overhead per iteration.
+**Action:** Use column-masking (`working_distances[:, curr] = np.inf`) on a single working copy of the distance matrix before and during the loop instead. This avoids copying row arrays inside the loop, significantly improving performance.
