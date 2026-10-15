@@ -71,3 +71,7 @@
 ## 2026-11-12 - Interactive Auto-Dismissing Toasts
 **Learning:** Toasts that dismiss automatically without allowing users to pause or interact with them violate the WCAG 2.2.1 Timing Adjustable standard. Users need sufficient time to read messages, and some users require more time than others.
 **Action:** Always ensure auto-dismissing toast notifications are interactive. Implement a default duration (e.g., 5000ms), pause the countdown on hover (`mouseenter`), resume the countdown when hover ends (`mouseleave`), allow immediate dismissal on click, and provide a global keyboard shortcut (like Escape) to dismiss them.
+
+## 2025-05-19 - Semantic Toast Accents
+**Learning:** While screen readers benefit from `aria-live` announcements, sighted users rely on visual cues for quick comprehension of transient toast messages. Adding semantic colors (e.g., green for success, red for errors) and standardized icons significantly improves scannability compared to purely text-based toasts.
+**Action:** When implementing visual toast notifications, dynamically inject state-specific icons (wrapped in `aria-hidden="true"`) and semantic border colors (`.toast-error`, `.toast-success`) by checking the context of the message being displayed.
