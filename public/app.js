@@ -83,7 +83,26 @@ function announce(message) {
     if (toastContainer) {
         const toast = document.createElement('div');
         toast.className = 'toast';
-        toast.textContent = message;
+
+        // UX Enhancement: Add visual icons and semantic colors based on message context
+        const msgLower = message.toLowerCase();
+        let iconStr = 'ℹ️';
+        if (msgLower.includes('error') || msgLower.includes('failed')) {
+            iconStr = '❌';
+            toast.classList.add('toast-error');
+        } else if (msgLower.includes('complete') || msgLower.includes('copied')) {
+            iconStr = '✅';
+            toast.classList.add('toast-success');
+        }
+
+        const icon = document.createElement('span');
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = iconStr;
+        toast.appendChild(icon);
+
+        const textNode = document.createTextNode(message);
+        toast.appendChild(textNode);
+
         toastContainer.appendChild(toast);
 
         // ⚡ Bolt: Use requestAnimationFrame instead of offsetWidth to start transition.
