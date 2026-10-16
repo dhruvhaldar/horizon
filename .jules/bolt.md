@@ -62,3 +62,7 @@
 ## 2026-10-09 - Fast TSP Nearest Neighbor visitation masking
 **Learning:** When implementing Nearest Neighbor heuristics (e.g., TSP) on a distance matrix using NumPy, applying boolean visitation masking (`distances[visited] = np.inf`) inside the loop on a copied array incurs O(N) array copying and boolean indexing overhead per iteration.
 **Action:** Use column-masking (`working_distances[:, curr] = np.inf`) on a single working copy of the distance matrix before and during the loop instead. This avoids copying row arrays inside the loop, significantly improving performance.
+
+## 2026-11-20 - Fast Rendering for Cached API JSON
+**Learning:** Caching parsed JSON objects from an API avoids redundant network requests, but subsequently running `JSON.stringify(data, null, 2)` on that cached object every time it needs to be rendered to the DOM still causes significant synchronous, main-thread-blocking overhead (especially for large payloads like routing graphs).
+**Action:** When caching API responses, compute and cache the formatted UI representation (the JSON string) alongside the object data in the cache itself using `Object.defineProperty(data, '_formattedStr', { ... })`. This allows instantaneous O(1) rendering on subsequent cache hits without repeated O(N) serialization.

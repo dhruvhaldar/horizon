@@ -36,6 +36,15 @@ async function fetchWithCache(endpoint, bodyObj, errorMsg) {
     const data = await res.json();
     if (!res.ok) throw new Error(formatError(data.detail) || errorMsg);
 
+    // ⚡ Bolt: Cache the formatted JSON string on the object itself to prevent
+    // O(N) synchronous main-thread blocking when re-rendering cached results.
+    // We use Object.defineProperty so it remains non-enumerable and doesn't
+    // affect subsequent stringifications or object iterations.
+    Object.defineProperty(data, '_formattedStr', {
+        value: JSON.stringify(data, null, 2),
+        enumerable: false
+    });
+
     // Only cache successful deterministic results
     apiCache.set(cacheKey, data);
     return data;
@@ -338,7 +347,7 @@ async function solveQueue() {
         drawQueueGraph(gamma, p);
 
         const resultsEl = document.getElementById('queue-results');
-        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.textContent = data._formattedStr || JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
         announce("Queueing network calculation complete.");
     } catch (e) {
@@ -525,7 +534,7 @@ async function solveEOQ() {
         drawInventoryChart(data.Q, 0, demand);
 
         const resultsEl = document.getElementById('inventory-results');
-        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.textContent = data._formattedStr || JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
         announce("EOQ calculation complete.");
     } catch (e) {
@@ -562,7 +571,7 @@ async function solveContinuous() {
         drawInventoryChart(data.Q, data.R, demand);
 
         const resultsEl = document.getElementById('inventory-results');
-        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.textContent = data._formattedStr || JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
         announce("Continuous review calculation complete.");
     } catch (e) {
@@ -676,7 +685,7 @@ async function solveTSP() {
         drawRoutingGraph(nodes, edges, data.path);
 
         const resultsEl = document.getElementById('routing-results');
-        resultsEl.textContent = JSON.stringify(data, null, 2);
+        resultsEl.textContent = data._formattedStr || JSON.stringify(data, null, 2);
         resultsEl.removeAttribute('aria-invalid');
         announce("Route optimization complete.");
     } catch (e) {
