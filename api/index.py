@@ -77,6 +77,11 @@ async def combined_security_middleware(request, call_next):
     else:
         client_ip = "unknown"
 
+    trusted_proxies = [p.strip() for p in os.environ.get("TRUSTED_PROXIES", "").split(",")]
+    forwarded_for = request.headers.get("x-forwarded-for")
+    if forwarded_for and (client_ip in trusted_proxies or "*" in trusted_proxies):
+        client_ip = forwarded_for.split(",")[0].strip()
+
     now = time.time()
     history = _request_counts[client_ip]
 
