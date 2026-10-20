@@ -66,3 +66,7 @@
 ## 2026-11-20 - Fast Rendering for Cached API JSON
 **Learning:** Caching parsed JSON objects from an API avoids redundant network requests, but subsequently running `JSON.stringify(data, null, 2)` on that cached object every time it needs to be rendered to the DOM still causes significant synchronous, main-thread-blocking overhead (especially for large payloads like routing graphs).
 **Action:** When caching API responses, compute and cache the formatted UI representation (the JSON string) alongside the object data in the cache itself using `Object.defineProperty(data, '_formattedStr', { ... })`. This allows instantaneous O(1) rendering on subsequent cache hits without repeated O(N) serialization.
+
+## 2026-11-21 - Fast O(1) Global Middleware Config
+**Learning:** Evaluating OS environment configuration variables (e.g. `os.environ.get`) and performing operations like string splitting or list comprehensions inside a global request middleware causes significant overhead for *every single incoming HTTP request*, including static assets.
+**Action:** Extract configuration parsing to the global module scope so it executes only once during application startup. If the configuration list will be searched, convert it into a Python `set` to reduce per-request lookup time complexity from O(N) list searches to O(1) hashing.

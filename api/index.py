@@ -39,6 +39,14 @@ class LRUDict(OrderedDict):
 
 _request_counts = LRUDict()
 
+# ⚡ Bolt: Cache trusted proxies configuration in the global scope.
+# Evaluating `os.environ.get()` and running a list comprehension on *every single
+# incoming HTTP request* (including all static assets like CSS/JS) inside the
+# global middleware adds significant overhead. By precomputing a `set` at startup,
+# we reduce the per-request time complexity from O(N) array allocation/search to O(1) hashing.
+TRUSTED_PROXIES = set(p.strip() for p in os.environ.get("TRUSTED_PROXIES", "").split(","))
+TRUSTED_PROXIES_ALLOW_ALL = "*" in TRUSTED_PROXIES
+
 def apply_security_headers(response, is_api=False):
     # Security: Defense in depth - inject standard security headers to prevent
     # clickjacking (X-Frame-Options), MIME sniffing (X-Content-Type-Options),
@@ -77,9 +85,8 @@ async def combined_security_middleware(request, call_next):
     else:
         client_ip = "unknown"
 
-    trusted_proxies = [p.strip() for p in os.environ.get("TRUSTED_PROXIES", "").split(",")]
     forwarded_for = request.headers.get("x-forwarded-for")
-    if forwarded_for and (client_ip in trusted_proxies or "*" in trusted_proxies):
+    if forwarded_for and (client_ip in TRUSTED_PROXIES or TRUSTED_PROXIES_ALLOW_ALL):
         client_ip = forwarded_for.split(",")[0].strip()
 
     now = time.time()
