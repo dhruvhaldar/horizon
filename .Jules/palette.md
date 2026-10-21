@@ -29,3 +29,7 @@
 ## 2026-11-05 - Keyboard Focus Drop for Forms
 **Learning:** Users navigating dense, form-heavy interfaces (like simulators) using a keyboard can easily feel trapped if there is no quick way to drop focus from inputs without tabbing through the entire form or using a mouse.
 **Action:** Enhance global `Escape` key handlers to call `blur()` on the `document.activeElement` if it's an `INPUT` or `TEXTAREA`. This provides a quick, universal "unfocus" shortcut, significantly improving keyboard navigability and accessibility.
+
+## 2026-11-20 - Programmatic Context for Visual State Highlights
+**Learning:** Relying solely on visual CSS classes (like `.needs-recalc`) to highlight interactive state changes creates an accessibility gap. Screen reader users navigating the form are not informed that a button needs to be clicked again because its accessible name or description remains unchanged.
+**Action:** Always pair visual state highlights with programmatic accessibility context. For example, dynamically append a visually hidden `.sr-only` element describing the new state (e.g., "(Needs recalculation)") and link it to the target element using `aria-describedby`, ensuring you clean up both when the state normalizes.
