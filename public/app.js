@@ -303,7 +303,23 @@ async function withLoading(btnElement, asyncFunc) {
             panel.dataset.stale = 'false'; // ⚡ Bolt: Reset stale flag
             // UX Enhancement: Remove call-to-action on the calculate button
             const calcBtns = panel.querySelectorAll('button[id^="btn-solve-"]');
-            calcBtns.forEach(btn => btn.classList.remove('needs-recalc'));
+            calcBtns.forEach(btn => {
+                btn.classList.remove('needs-recalc');
+
+                // UX Enhancement: Clean up the screen reader hint for recalculation
+                const staleId = `stale-calc-${btn.id}`;
+                const staleEl = document.getElementById(staleId);
+                if (staleEl) {
+                    const existingDescribedBy = btn.getAttribute('aria-describedby') || '';
+                    const newDescribedBy = existingDescribedBy.replace(staleId, '').replace(/\s+/g, ' ').trim();
+                    if (newDescribedBy) {
+                        btn.setAttribute('aria-describedby', newDescribedBy);
+                    } else {
+                        btn.removeAttribute('aria-describedby');
+                    }
+                    staleEl.remove();
+                }
+            });
 
             const staleContainers = panel.querySelectorAll('.results, .viz-container');
             staleContainers.forEach(el => {
@@ -824,7 +840,25 @@ document.addEventListener('input', (e) => {
         // UX Enhancement: Highlight the calculate button to guide user action
         const calcBtns = Array.from(panel.querySelectorAll('button[id^="btn-solve-"]'));
         const calcBtn = calcBtns.find(b => b.offsetParent !== null);
-        if (calcBtn) calcBtn.classList.add('needs-recalc');
+        if (calcBtn) {
+            calcBtn.classList.add('needs-recalc');
+
+            // UX Enhancement: Announce the required action to screen readers
+            const staleId = `stale-calc-${calcBtn.id}`;
+            let staleEl = document.getElementById(staleId);
+            if (!staleEl) {
+                staleEl = document.createElement('span');
+                staleEl.className = 'sr-only sr-only-stale';
+                staleEl.id = staleId;
+                staleEl.textContent = '(Needs recalculation)';
+                calcBtn.parentNode.insertBefore(staleEl, calcBtn.nextSibling);
+
+                const existingDescribedBy = calcBtn.getAttribute('aria-describedby') || '';
+                if (!existingDescribedBy.includes(staleId)) {
+                    calcBtn.setAttribute('aria-describedby', `${existingDescribedBy} ${staleId}`.trim());
+                }
+            }
+        }
 
         // Clear aggressive error styling as soon as user attempts a correction
         const resultBox = panel.querySelector('.results');
