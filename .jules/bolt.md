@@ -70,3 +70,7 @@
 ## 2026-11-21 - Fast O(1) Global Middleware Config
 **Learning:** Evaluating OS environment configuration variables (e.g. `os.environ.get`) and performing operations like string splitting or list comprehensions inside a global request middleware causes significant overhead for *every single incoming HTTP request*, including static assets.
 **Action:** Extract configuration parsing to the global module scope so it executes only once during application startup. If the configuration list will be searched, convert it into a Python `set` to reduce per-request lookup time complexity from O(N) list searches to O(1) hashing.
+
+## 2026-11-22 - Fast Middleware Scope Access
+**Learning:** Accessing properties like `request.url` and `request.client` in a FastAPI global middleware forces the framework to lazily construct heavy objects (like URL parsers and address tuples) on *every single incoming HTTP request*. This significantly adds to per-request latency.
+**Action:** To bypass this object creation overhead in high-throughput global middleware, read values directly from the raw ASGI dictionary via `request.scope` (e.g. use `request.scope["path"]` instead of `request.url.path`, and `request.scope.get("client")[0]` instead of `request.client.host`).
