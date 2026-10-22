@@ -75,13 +75,19 @@ def apply_security_headers(response, is_api=False):
     return response
 
 async def combined_security_middleware(request, call_next):
-    is_api = request.url.path.startswith("/api")
+    # ⚡ Bolt: Fast URL and Client parsing in Middleware.
+    # Accessing `request.url` and `request.client` forces FastAPI to lazily instantiate
+    # heavy objects (URL parsing, address tuples) for every single HTTP request.
+    # By reading directly from the raw ASGI `request.scope` dictionary, we bypass
+    # this object creation overhead, reducing per-request latency significantly.
+    is_api = request.scope["path"].startswith("/api")
 
     # --- Rate Limiting ---
     # Security: Avoid naively parsing X-Forwarded-For to prevent IP spoofing bypasses.
     # Rely on the direct client host unless properly configured behind a trusted proxy.
-    if request.client and request.client.host:
-        client_ip = request.client.host
+    client = request.scope.get("client")
+    if client and client[0]:
+        client_ip = client[0]
     else:
         client_ip = "unknown"
 
