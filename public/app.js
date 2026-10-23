@@ -267,11 +267,15 @@ async function withLoading(btnElement, asyncFunc) {
     const originalAriaLabel = btnElement.getAttribute('aria-label');
     const originalTitle = btnElement.getAttribute('title');
 
+    // UX Enhancement: Preserve original context during loading state for screen readers and tooltips
+    const originalText = btnElement.textContent.trim();
+    const loadingContextText = `Calculating... (${originalText})`;
+
     btnElement.setAttribute('aria-disabled', 'true');
     btnElement.innerHTML = '<span class="spinner" aria-hidden="true"></span> Calculating...';
     btnElement.setAttribute('aria-busy', 'true');
-    btnElement.setAttribute('aria-label', 'Calculating...');
-    btnElement.setAttribute('title', 'Calculating...');
+    btnElement.setAttribute('aria-label', loadingContextText);
+    btnElement.setAttribute('title', loadingContextText);
 
     try {
         await asyncFunc();
