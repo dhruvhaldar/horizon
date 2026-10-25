@@ -157,3 +157,13 @@
 **Vulnerability:** The rate limiter blindly trusted `request.client.host` which, behind a proxy like Vercel, meant all traffic appeared to come from the proxy's IP, leading to shared rate limits. If the application attempted to naively read `X-Forwarded-For` without validating the connecting proxy, attackers could spoof the header and bypass the rate limit.
 **Learning:** When deployed behind a proxy, `request.client.host` is insufficient for rate limiting. However, trusting `X-Forwarded-For` without validating that the direct connection came from a trusted proxy allows trivial IP spoofing.
 **Prevention:** Always validate that the direct client IP (`request.client.host`) matches a known trusted proxy (via environment variables or static lists) before parsing and trusting the `X-Forwarded-For` header to determine the true client IP.
+
+## 2026-12-16 - [HIGH] LRU Rate Limiter Eviction Bypass
+**Vulnerability:** The rate limiter updated the LRU cache (moving the IP to the end) only after a successful request. When an IP was rate limited (429), it returned early without updating the LRU cache order. During a massive DoS attack, active attackers hitting the 429 limit would age out and be evicted when the dictionary hit its 10,000 limit, effectively resetting their rate limit and failing open.
+**Learning:** LRU caches must update the item's position on *every* interaction, including rejections or rate limits, to accurately track active malicious users and prevent them from being evicted prematurely.
+**Prevention:** Always update the LRU tracker order *before* evaluating early returns or rate limit exceptions.
+
+## 2026-12-16 - [HIGH] X-Forwarded-For IP Spoofing via Leftmost IP
+**Vulnerability:** When parsing the `X-Forwarded-For` header behind a proxy, the application trusted the first (leftmost) IP in the comma-separated list (`forwarded_for.split(",")[0]`). The `X-Forwarded-For` header is appended to by each proxy. An attacker could trivially inject a fake IP in their initial request (e.g. `X-Forwarded-For: 1.2.3.4`), which the proxy would then append the real IP to (`X-Forwarded-For: 1.2.3.4, 203.0.113.5`). By reading the leftmost IP, the application trusted the forged IP, bypassing rate limits.
+**Learning:** The leftmost IP in `X-Forwarded-For` is unverified and easily spoofable by the client. The only cryptographically reliable IP in the chain is the one added by the immediate trusted proxy connecting to the application.
+**Prevention:** When deployed behind a single trusted proxy, always read the rightmost IP (`forwarded_for.split(",")[-1]`) in the `X-Forwarded-For` header to ensure you are parsing the IP appended by the trusted infrastructure.
