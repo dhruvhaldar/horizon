@@ -93,10 +93,14 @@ async def combined_security_middleware(request, call_next):
 
     forwarded_for = request.headers.get("x-forwarded-for")
     if forwarded_for and (client_ip in TRUSTED_PROXIES or TRUSTED_PROXIES_ALLOW_ALL):
-        client_ip = forwarded_for.split(",")[0].strip()
+        client_ip = forwarded_for.split(",")[-1].strip()
 
     now = time.time()
     history = _request_counts[client_ip]
+
+    # Security: Move updated key to the end to maintain LRU order.
+    # Must be done *before* early returns to ensure active attackers don't age out of the cache.
+    _request_counts.move_to_end(client_ip)
 
     # Security: Prune old requests and limit to 100 requests per minute per IP
     while history and now - history[0] >= 60:
@@ -110,9 +114,6 @@ async def combined_security_middleware(request, call_next):
         ), is_api=is_api)
 
     history.append(now)
-
-    # Security: Move updated key to the end to maintain LRU order
-    _request_counts.move_to_end(client_ip)
 
     # Security: Prevent memory DoS from the tracking dictionary itself without fail-open
     # Avoid .clear() to prevent attackers from rotating IPs to reset rate limits for all users.
