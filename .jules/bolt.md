@@ -78,3 +78,7 @@
 ## 2026-11-23 - Fast NumPy to List Conversion for Iteration
 **Learning:** Iterating directly over a NumPy array in a Python list comprehension (e.g., `[nodes[node] for node in tsp_path_int]`) incurs a significant performance penalty because each element accessed causes a C-to-Python type conversion (boxing to `np.int64` then implicitly to `int` for indexing).
 **Action:** Use `.tolist()` on the NumPy array before iterating over it (e.g., `[nodes[node] for node in tsp_path_int.tolist()]`). This leverages NumPy's highly optimized internal C loop to convert the entire array into a standard Python list of integers at once, avoiding the per-element boxing overhead during the list comprehension and resulting in a roughly 2.7x speedup.
+
+## 2026-11-24 - Fast TSP Nearest Neighbor visitation masking (1D Mask)
+**Learning:** When implementing Nearest Neighbor heuristics (e.g., TSP) on a distance matrix using NumPy, applying column-masking (`working_distances[:, curr] = np.inf`) on a working copy of the distance matrix still requires a full O(N²) array copy initially and modifies an O(N²) structure, which is slower for large graphs. Using a 1D `visited_mask` array initialized to zeros and setting visited indices to `np.inf`, then adding it during the loop (`path_lengths[curr] + visited_mask`) eliminates the initial matrix copy and operates in O(N) memory, improving performance by up to 2x for large dense matrices (e.g. N=1000).
+**Action:** Use a 1D visitation mask added to the current row in the loop instead of column-masking a full NxN matrix copy.
