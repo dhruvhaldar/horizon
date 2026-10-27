@@ -82,3 +82,7 @@
 ## 2026-11-24 - Fast TSP Nearest Neighbor visitation masking (1D Mask)
 **Learning:** When implementing Nearest Neighbor heuristics (e.g., TSP) on a distance matrix using NumPy, applying column-masking (`working_distances[:, curr] = np.inf`) on a working copy of the distance matrix still requires a full O(N²) array copy initially and modifies an O(N²) structure, which is slower for large graphs. Using a 1D `visited_mask` array initialized to zeros and setting visited indices to `np.inf`, then adding it during the loop (`path_lengths[curr] + visited_mask`) eliminates the initial matrix copy and operates in O(N) memory, improving performance by up to 2x for large dense matrices (e.g. N=1000).
 **Action:** Use a 1D visitation mask added to the current row in the loop instead of column-masking a full NxN matrix copy.
+
+## 2026-11-25 - Fast Header Parsing in Global Middleware
+**Learning:** Accessing `request.headers` in a FastAPI/Starlette global middleware forces the framework to lazily instantiate a heavy `starlette.datastructures.Headers` object for *every single incoming HTTP request*. This significantly adds to per-request latency.
+**Action:** To bypass this object creation overhead in high-throughput global middleware, read values directly from the raw ASGI dictionary via `request.scope.get("headers", [])` and decode the values natively.
