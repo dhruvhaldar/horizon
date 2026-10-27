@@ -91,7 +91,26 @@ async def combined_security_middleware(request, call_next):
     else:
         client_ip = "unknown"
 
-    forwarded_for = request.headers.get("x-forwarded-for")
+    # ⚡ Bolt: Fast header parsing in Middleware.
+    # Accessing `request.headers` forces FastAPI to lazily instantiate a `Headers`
+    # object for every HTTP request. By reading directly from the raw ASGI `request.scope["headers"]`,
+    # we bypass this overhead. We join duplicate headers with commas to match Starlette's
+    # native behavior and prevent security bypasses (e.g. IP spoofing via multiple X-Forwarded-For).
+    forwarded_for_parts = []
+    transfer_encoding_parts = []
+    content_length_parts = []
+    for k, v in request.scope.get("headers", []):
+        if k == b"x-forwarded-for":
+            forwarded_for_parts.append(v.decode("latin1"))
+        elif k == b"transfer-encoding":
+            transfer_encoding_parts.append(v.decode("latin1"))
+        elif k == b"content-length":
+            content_length_parts.append(v.decode("latin1"))
+
+    forwarded_for = ",".join(forwarded_for_parts) if forwarded_for_parts else None
+    transfer_encoding = ",".join(transfer_encoding_parts) if transfer_encoding_parts else ""
+    content_length = ",".join(content_length_parts) if content_length_parts else None
+
     if forwarded_for and (client_ip in TRUSTED_PROXIES or TRUSTED_PROXIES_ALLOW_ALL):
         client_ip = forwarded_for.split(",")[-1].strip()
 
@@ -122,9 +141,8 @@ async def combined_security_middleware(request, call_next):
 
     # --- Upload Size Limiting ---
     # Security: Limit maximum payload size to prevent DoS (Denial of Service) via massive JSON payloads.
-    if "chunked" in request.headers.get("transfer-encoding", "").lower():
+    if "chunked" in transfer_encoding.lower():
         return apply_security_headers(JSONResponse(status_code=411, content={"detail": "Chunked transfer encoding is not allowed to prevent payload size bypass."}), is_api=is_api)
-    content_length = request.headers.get("content-length")
     if content_length:
         try:
             length_val = int(content_length)
