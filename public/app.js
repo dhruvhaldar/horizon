@@ -907,13 +907,13 @@ document.addEventListener('input', (e) => {
 });
 
 // UX Enhancement: Make custom switch labels keyboard accessible
-document.querySelectorAll('.switch-label').forEach(label => {
-    label.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault(); // Prevent page scroll on Space
-            label.click();
-        }
-    });
+// ⚡ Bolt: Replaced O(N) event listeners attached to every label with a single
+// O(1) delegated listener on document to reduce memory bloat and speed up initialization.
+document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('switch-label')) {
+        e.preventDefault(); // Prevent page scroll on Space
+        e.target.click();
+    }
 });
 
 // UX Enhancement: Enter key submits active module
@@ -1155,10 +1155,12 @@ if (navigator.userAgent.includes('Mac')) {
 }
 
 // UX Enhancement: Auto-select input text on focus to allow quick overwriting
-document.querySelectorAll('input.inset').forEach(el => {
-    el.addEventListener('focus', function() {
-        this.select();
-    });
+// ⚡ Bolt: Use O(1) event delegation with `focusin` (which bubbles, unlike `focus`)
+// instead of attaching O(N) listeners to all `input.inset` elements.
+document.addEventListener('focusin', (e) => {
+    if (e.target.tagName === 'INPUT' && e.target.classList.contains('inset')) {
+        e.target.select();
+    }
 });
 
 // UX Enhancement: Programmatically expose implicit keyboard shortcuts on inputs
