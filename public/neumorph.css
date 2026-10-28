@@ -674,6 +674,20 @@ input[type="number"] {
     border-left-color: hsl(140, 70%, 42%);
 }
 
+/* UX Enhancement: Visual affordance for click-to-dismiss */
+.toast-close {
+    margin-left: auto;
+    font-size: 1.25rem;
+    line-height: 1;
+    opacity: 0.5;
+    padding-left: 1rem;
+    transition: opacity 0.2s ease;
+}
+
+.toast:hover .toast-close {
+    opacity: 1;
+}
+
 .toast.show {
     opacity: 1;
     transform: translateY(0);

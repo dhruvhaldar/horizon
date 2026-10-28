@@ -33,3 +33,7 @@
 ## 2026-11-20 - Programmatic Context for Visual State Highlights
 **Learning:** Relying solely on visual CSS classes (like `.needs-recalc`) to highlight interactive state changes creates an accessibility gap. Screen reader users navigating the form are not informed that a button needs to be clicked again because its accessible name or description remains unchanged.
 **Action:** Always pair visual state highlights with programmatic accessibility context. For example, dynamically append a visually hidden `.sr-only` element describing the new state (e.g., "(Needs recalculation)") and link it to the target element using `aria-describedby`, ensuring you clean up both when the state normalizes.
+
+## 2026-10-28 - Discoverability of Dismissible Notifications
+**Learning:** While implementing click-to-dismiss and global keyboard shortcuts fulfills WCAG requirements for auto-dismissing notifications, sighted users often fail to discover the click-to-dismiss behavior without a clear visual signifier.
+**Action:** Always include a visual close indicator (like a trailing '×' icon with `margin-left: auto`) in dismissible toast notifications to explicitly communicate their interactive nature, keeping it `aria-hidden="true"` to avoid redundant screen reader announcements.
