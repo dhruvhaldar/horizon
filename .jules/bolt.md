@@ -86,3 +86,7 @@
 ## 2026-11-25 - Fast Header Parsing in Global Middleware
 **Learning:** Accessing `request.headers` in a FastAPI/Starlette global middleware forces the framework to lazily instantiate a heavy `starlette.datastructures.Headers` object for *every single incoming HTTP request*. This significantly adds to per-request latency.
 **Action:** To bypass this object creation overhead in high-throughput global middleware, read values directly from the raw ASGI dictionary via `request.scope.get("headers", [])` and decode the values natively.
+
+## 2024-05-24 - Event Delegation for Input Focus
+**Learning:** Attaching native `focus` event listeners to individual input elements introduces O(N) memory overhead and layout thrashing during JS initialization, but `focus` events do not bubble so naive event delegation fails.
+**Action:** Use `focusin` instead, which is a bubblable equivalent to `focus`, to enable O(1) event delegation on `document` and reduce memory footprint.
