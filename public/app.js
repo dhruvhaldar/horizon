@@ -112,6 +112,13 @@ function announce(message) {
         const textNode = document.createTextNode(message);
         toast.appendChild(textNode);
 
+        // UX Enhancement: Add visual close indicator for discoverability
+        const closeIcon = document.createElement('span');
+        closeIcon.setAttribute('aria-hidden', 'true');
+        closeIcon.className = 'toast-close';
+        closeIcon.textContent = '×';
+        toast.appendChild(closeIcon);
+
         toastContainer.appendChild(toast);
 
         // ⚡ Bolt: Use requestAnimationFrame instead of offsetWidth to start transition.
