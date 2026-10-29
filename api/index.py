@@ -44,7 +44,7 @@ _request_counts = LRUDict()
 # incoming HTTP request* (including all static assets like CSS/JS) inside the
 # global middleware adds significant overhead. By precomputing a `set` at startup,
 # we reduce the per-request time complexity from O(N) array allocation/search to O(1) hashing.
-TRUSTED_PROXIES = set(p.strip() for p in os.environ.get("TRUSTED_PROXIES", "").split(","))
+TRUSTED_PROXIES = set(p.strip() for p in os.environ.get("TRUSTED_PROXIES", "").split(",") if p.strip())
 TRUSTED_PROXIES_ALLOW_ALL = "*" in TRUSTED_PROXIES
 
 def apply_security_headers(response, is_api=False):
