@@ -37,3 +37,7 @@
 ## 2026-10-28 - Discoverability of Dismissible Notifications
 **Learning:** While implementing click-to-dismiss and global keyboard shortcuts fulfills WCAG requirements for auto-dismissing notifications, sighted users often fail to discover the click-to-dismiss behavior without a clear visual signifier.
 **Action:** Always include a visual close indicator (like a trailing '×' icon with `margin-left: auto`) in dismissible toast notifications to explicitly communicate their interactive nature, keeping it `aria-hidden="true"` to avoid redundant screen reader announcements.
+
+## 2026-11-26 - Sync Shared Form Fields Across Alternate Views
+**Learning:** When users toggle between alternative models (like EOQ vs. Continuous Review) that share several common parameters, forcing them to re-enter identical data creates unnecessary friction and increases cognitive load.
+**Action:** When creating toggleable views that share equivalent data fields, always implement bidirectional state syncing (e.g. via `input` event listeners) so that entering data in one view automatically populates the identical field in the alternative view, ensuring a seamless user experience when comparing models.
