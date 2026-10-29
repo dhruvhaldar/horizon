@@ -983,6 +983,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnSolveTsp = document.getElementById('btn-solve-tsp');
     if (btnSolveTsp) btnSolveTsp.addEventListener('click', function() { withLoading(this, solveTSP); });
+
+    // UX Enhancement: Bidirectionally sync shared inputs between EOQ and Continuous Review models
+    const syncFields = [
+        { eoq: 'i-demand', cont: 'ic-demand' },
+        { eoq: 'i-order', cont: 'ic-order' },
+        { eoq: 'i-hold', cont: 'ic-hold' }
+    ];
+
+    syncFields.forEach(pair => {
+        const eoqEl = document.getElementById(pair.eoq);
+        const contEl = document.getElementById(pair.cont);
+        if (eoqEl && contEl) {
+            eoqEl.addEventListener('input', () => { contEl.value = eoqEl.value; });
+            contEl.addEventListener('input', () => { eoqEl.value = contEl.value; });
+        }
+    });
 });
 
 // Initial draw
