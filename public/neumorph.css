@@ -699,3 +699,4 @@ input[type="number"] {
         transform: none;
     }
 }
+button[aria-busy="true"] { cursor: wait !important; }
