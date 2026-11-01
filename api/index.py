@@ -118,7 +118,13 @@ async def combined_security_middleware(request, call_next):
     content_length = ",".join(content_length_parts) if content_length_parts else None
 
     if forwarded_for and (client_ip in TRUSTED_PROXIES or TRUSTED_PROXIES_ALLOW_ALL):
-        client_ip = forwarded_for.split(",")[-1].strip()
+        ips = [ip.strip() for ip in forwarded_for.split(",")]
+        for ip in reversed(ips):
+            if ip not in TRUSTED_PROXIES:
+                client_ip = ip
+                break
+        else:
+            client_ip = ips[0]
 
     now = time.time()
     history = _request_counts[client_ip]
