@@ -94,3 +94,7 @@
 ## 2026-11-26 - Fast Header Injection via raw_headers
 **Learning:** In FastAPI/Starlette, appending headers using dictionary assignment (`response.headers["Key"] = "value"`) forces the instantiation and manipulation of a heavy `MutableHeaders` object. When injecting a large number of static security headers globally on every request, this overhead accumulates.
 **Action:** Precompute static headers as a list of bytes tuples (e.g., `[(b"key", b"value")]`) and use `response.raw_headers.extend(STATIC_HEADERS)` and `response.raw_headers.append()`. This manipulates the underlying list directly, bypassing the `MutableHeaders` wrapper and providing roughly a 3-4x speedup for header injection.
+
+## 2026-11-27 - Fast Adjacency Connectivity Tracking
+**Learning:** When building adjacency lists for graph algorithms (like Kahn's topological sort), avoid maintaining redundant sets (like `has_successors`) to track node connectivity. The length of the adjacency list itself (`if not successors[node]:`) provides O(1) connectivity checking without the O(E) set insertion and hashing overhead.
+**Action:** Remove redundant state tracking mechanisms and rely on the inherent properties of adjacency lists whenever possible.

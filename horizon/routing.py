@@ -114,7 +114,6 @@ def job_shop_cpm(jobs: dict[str, dict]):
     successors = {'START': [], 'END': []}
     predecessors = {'START': [], 'END': []}
     in_degree = {'START': 0, 'END': 0}
-    has_successors = set()
 
     for job, details in jobs.items():
         if 'duration' not in details:
@@ -134,16 +133,14 @@ def job_shop_cpm(jobs: dict[str, dict]):
             successors[dep].append(job)
             predecessors[job].append(dep)
             in_degree[job] += 1
-            has_successors.add(dep)
 
         if not deps:
             successors['START'].append(job)
             predecessors[job].append('START')
             in_degree[job] += 1
-            has_successors.add('START')
 
     for job in jobs:
-        if job not in has_successors:
+        if not successors[job]:
             successors[job].append('END')
             predecessors['END'].append(job)
             in_degree['END'] += 1
