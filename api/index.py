@@ -184,7 +184,7 @@ app.add_middleware(BaseHTTPMiddleware, dispatch=combined_security_middleware)
 # Security: Replace overly permissive wildcard CORS with a restricted list of allowed origins.
 # Wildcard CORS allows malicious sites to make API requests on behalf of users, potentially exposing data.
 # We read allowed origins from the environment for production flexibility and fall back to safe local defaults.
-allowed_origins = os.environ.get("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000").split(",")
+allowed_origins = [p.strip() for p in os.environ.get("CORS_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000").split(",") if p.strip()]
 
 app.add_middleware(
     CORSMiddleware,

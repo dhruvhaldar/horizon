@@ -175,3 +175,7 @@
 **Vulnerability:** The rate limiter blindly extracted the rightmost IP from the `X-Forwarded-For` header (`forwarded_for.split(",")[-1].strip()`) when the direct `client_ip` was trusted. If multiple trusted proxies are involved in the chain (e.g., CDN -> Load Balancer), the rightmost IP in the header is simply the previous proxy's IP. This caused the system to rate-limit the proxy itself rather than the true client, leading to a global DoS. Furthermore, attackers could exploit this by injecting trusted proxy IPs at the end of their spoofed `X-Forwarded-For` headers to evade rate limits.
 **Learning:** `X-Forwarded-For` must be parsed from right-to-left, checking each IP against the trusted proxy list, and extracting the *first untrusted IP*.
 **Prevention:** Traverse the `X-Forwarded-For` list in reverse and break at the first IP not in `TRUSTED_PROXIES`.
+## 2027-11-03 - [MEDIUM] CORS Bypass via Empty String Match
+**Vulnerability:** When parsing the `CORS_ORIGINS` environment variable via `os.environ.get("CORS_ORIGINS", "...").split(",")`, an unset or empty variable evaluates to `[""]`. This adds an empty string `""` to the allowed origins.
+**Learning:** List comprehensions generating security configuration sets from environment strings must explicitly filter out empty or whitespace-only elements to avoid inadvertently trusting invalid inputs.
+**Prevention:** Always use conditional filtering (e.g., `if p.strip()`) when parsing comma-separated strings for security contexts like proxy whitelists or allowed origins.
