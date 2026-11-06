@@ -41,3 +41,7 @@
 ## 2026-11-26 - Sync Shared Form Fields Across Alternate Views
 **Learning:** When users toggle between alternative models (like EOQ vs. Continuous Review) that share several common parameters, forcing them to re-enter identical data creates unnecessary friction and increases cognitive load.
 **Action:** When creating toggleable views that share equivalent data fields, always implement bidirectional state syncing (e.g. via `input` event listeners) so that entering data in one view automatically populates the identical field in the alternative view, ensuring a seamless user experience when comparing models.
+
+## 2026-11-27 - Color-Independent Inline Form Validation and DOM Safety
+**Learning:** Inline form validation errors that rely purely on color (like red text or red borders) violate WCAG 1.4.1 (Use of Color) and are inaccessible to color-blind users. However, using `.innerHTML` to insert visual icon spans dynamically alongside user-influenced data introduces potential DOM XSS vulnerabilities.
+**Action:** Always include a visual signifier independent of color (such as an icon or symbol) alongside error text for accessibility. When injecting this feedback into the DOM, use native DOM creation methods (`document.createElement` and `document.createTextNode`) rather than `.innerHTML` to safely append semantic elements like `<span aria-hidden="true">⚠️</span>` without risking XSS.
