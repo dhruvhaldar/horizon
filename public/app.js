@@ -225,7 +225,12 @@ async function withLoading(btnElement, asyncFunc) {
                         errorDiv.id = `error-${input.id || Math.random().toString(36).substring(2, 9)}`;
                         input.parentNode.appendChild(errorDiv);
                     }
-                    errorDiv.textContent = getCustomError(input);
+                    errorDiv.textContent = '';
+                    const iconSpan = document.createElement('span');
+                    iconSpan.setAttribute('aria-hidden', 'true');
+                    iconSpan.textContent = '⚠️ ';
+                    errorDiv.appendChild(iconSpan);
+                    errorDiv.appendChild(document.createTextNode(getCustomError(input)));
                     const existingDescribedBy = input.getAttribute('aria-describedby') || '';
                     if (!existingDescribedBy.includes(errorDiv.id)) {
                         input.setAttribute('aria-describedby', `${existingDescribedBy} ${errorDiv.id}`.trim());
@@ -836,7 +841,12 @@ document.addEventListener('input', (e) => {
                 errorDiv.remove();
             }
         } else if (errorDiv) {
-            errorDiv.textContent = getCustomError(e.target);
+            errorDiv.textContent = '';
+            const iconSpan = document.createElement('span');
+            iconSpan.setAttribute('aria-hidden', 'true');
+            iconSpan.textContent = '⚠️ ';
+            errorDiv.appendChild(iconSpan);
+            errorDiv.appendChild(document.createTextNode(getCustomError(e.target)));
         }
     }
 
