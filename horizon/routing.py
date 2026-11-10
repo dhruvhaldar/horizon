@@ -39,8 +39,9 @@ def tsp_approx(nodes: list[str], edges: list[tuple[str, str, float]]):
 
     # ⚡ Bolt: Check for disconnected components using the computed NumPy matrix
     # instead of `nx.is_connected(G)`. The latter performs an O(V+E) Python traversal.
-    # `np.isinf().any()` checks the matrix for infinite path lengths at C-speed natively.
-    if np.isinf(path_lengths).any():
+    # `path_lengths.max() == np.inf` checks the matrix for infinite path lengths natively
+    # at C-speed without allocating a temporary boolean array like `np.isinf().any()` does.
+    if path_lengths.max() == np.inf:
         raise ValueError("Graph is not connected, TSP has no solution.")
 
     # ⚡ Bolt: Use nx.from_numpy_array to construct the metric closure graph directly

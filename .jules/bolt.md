@@ -102,3 +102,6 @@
 ## 2026-11-28 - Fast NumPy Array Min/Max/Argmin
 **Learning:** Using numpy's global functions like `np.argmin(arr)` (or `np.sum()`, `np.min()`) incurs significant Python-level dispatch overhead because it must resolve the array's type, find the correct C implementation, and handle generic iterables. Inside a tight loop, this overhead (roughly 0.1-0.2ms per call) dominates execution time.
 **Action:** Always call the method directly on the numpy array object (e.g., `arr.argmin()`, `arr.sum()`) when you already know it is an `ndarray`. This bypasses the Python dispatch overhead and routes directly to the underlying C implementation, yielding up to a >2x speedup for scalar reductions in hot loops.
+## 2026-11-29 - Fast Infinity Checking
+**Learning:** Checking for the presence of infinity in a NumPy matrix using `np.isinf(x).any()` creates a temporary boolean array of the same size, incurring O(N²) memory allocation and overhead. Additionally, calling `np.any()` as a global function incurs Python-level dispatch overhead.
+**Action:** Use `x.max() == np.inf` instead. Calling the method directly leverages NumPy's highly optimized native C implementation without allocating an intermediate boolean array, providing a measurable speedup for large dense matrices.
